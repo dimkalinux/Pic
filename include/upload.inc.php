@@ -7,8 +7,11 @@ if (!defined('UP')) {
 
 
 class Upload {
+	private $file;
 
 	public function __construct($file) {
+		global $picMaxUploadSize;
+
 		$upload_file = new Upload_file($file);
 
 		// 1. CHECK SIZE
@@ -17,23 +20,54 @@ class Upload {
 		}
 
 		if ($upload_file->getSize() > $picMaxUploadSize) {
-			throw new Exception('Неверный размер файла');
+			throw new Exception("Неверный размер файла ");
 		}
 
-		// CHECK FORMAT
+		// 2. CHECK FORMAT
 		if (!$upload_file->isImage()) {
 			throw new Exception('Неверный формат файла');
 		}
+
+		$upload_storage_info = $this->get_upload_dir();
+
+		$uploadDir = $upload_storage_info['dir'];
+		$uploadStorage = $upload_storage_info['storage'];
+		$uploadLocation = $upload_storage_info['location'];
+
+		$uploadOriginalFilename = $uploadDir.'/'.$this->get_hash_filename($upload_file->getFilename().$upload_file->getSize());
+
+		// 3. MOVE original TO STORAGE
+		$upload_file->move($uploadOriginalFilename);
+
+		// 4.
+		$upload_image = new Image($uploadOriginalFilename);
+
+		// 5.
+		$upload_image->setFileExt();
+		$uploadHashedFilename = $upload_image->getFileName();
+		$uploadFilename = $upload_file->getFileName();
+		// 6.
+		$upload_image->process_thumbs();
+
+		// 7. ADD to DB
+		$upload_file->save_in_db($uploadLocation, $uploadStorage, $uploadFilename, $uploadHashedFilename, $upload_image->getWidth(), $upload_image->getHeight());
 	}
 
 
+	private function get_hash_filename($filename) {
+		return hash('crc32', $filename);
+	}
 
-	public function get_upload_dir() {
-		$uploadBaseDir = $this->get_storage();
+	private function get_upload_dir() {
+		global $picUploadBaseDir;
+
+		$storage = $this->get_storage();
 		$max_try = 10;
 
+		$uploadBaseDir = $picUploadBaseDir.$storage;
+
 		do {
-			$image_path_hash = generate_image_upload_save_path(48);
+			$image_path_hash = $this->generate_image_upload_save_path(32);
 			$full_dir = $uploadBaseDir.'/'.$image_path_hash;
 
 			if (is_dir($full_dir)) {
@@ -42,7 +76,7 @@ class Upload {
 			} else {
 				// CREATE DIR
 				if (mkdir($full_dir, 0700)) {
-					return $full_dir;
+					return array('dir' => $full_dir, 'storage' => $storage, 'location' => $image_path_hash);
 				}
 			}
 		} while ($max_try > 0);
@@ -50,55 +84,23 @@ class Upload {
 		return FALSE;
 	}
 
+
 	private function generate_image_upload_save_path($maxLength=null) {
-	    $entropy = '';
-
-	    // try ssl first
-	    if (function_exists('openssl_random_pseudo_bytes')) {
-	        $entropy = openssl_random_pseudo_bytes(64, $strong);
-	        // skip ssl since it wasn't using the strong algo
-	        if($strong !== true) {
-	            $entropy = '';
-	        }
-	    }
-
-	    // add some basic mt_rand/uniqid combo
-	    $entropy .= uniqid(mt_rand(), true);
-
-	    // try to read from the windows RNG
-	    if (class_exists('COM')) {
-	        try {
-	            $com = new COM('CAPICOM.Utilities.1');
-	            $entropy .= base64_decode($com->GetRandom(64, 0));
-	        } catch (Exception $ex) { }
-	    }
-
-	    // try to read from the unix RNG
-	    if (is_readable('/dev/urandom')) {
-	        $h = fopen('/dev/urandom', 'rb');
-	        $entropy .= fread($h, 64);
-	        fclose($h);
-	    }
-
-	    $hash = hash('whirlpool', $entropy);
-	    if ($maxLength) {
-	        return substr($hash, 0, $maxLength);
-	    }
-	    return $hash;
+	    return generate_random_hash($maxLength);
 	}
 
 
 	private function get_storage() {
 		global $picStorages, $picUploadBaseDir;
 
-		$storage_id = array_rand(array_flip($array), $n);
-		$fullUploadDir = $picUploadBaseDir.$storage_id;
+		$storage = array_rand(array_flip($picStorages), 1);
+		$fullUploadDir = $picUploadBaseDir.$storage;
 
 		if (!is_dir($fullUploadDir)) {
 			throw new Exception("Upload base dir '$fullUploadDir' not exists");
 		}
 
-		return $fullUploadDir;
+		return $storage;
 	}
 }
 

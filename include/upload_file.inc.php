@@ -51,6 +51,42 @@ class Upload_file {
 		return $this->size;
 	}
 
+	public function getFilename() {
+		return $this->name;
+	}
+
+
+	public function save_in_db($location, $storage, $filename, $hashed_filename, $width, $height) {
+		$image_key = $this->create_uniq_hash_key('key', 32);
+		$image_delete_key = generate_random_hash(32);
+		$image_location = $location;
+		$image_storage = $storage;
+		$image_filename = $filename;
+		$image_hashed_filename = $hashed_filename;
+		$image_size = $this->size;
+		$image_width = $width;
+		$image_height = $height;
+
+		$db = DB::singleton();
+		$db->query("INSERT INTO pic VALUES ('', ?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?)", $image_key, $image_delete_key, $image_location, $image_storage, $image_filename, $image_hashed_filename, $image_size, $image_width, $image_height);
+	}
+
+
+	private function create_uniq_hash_key($key_name, $key_length) {
+		$t = 10;
+		$db = DB::singleton();
+
+		do {
+			$hash = generate_random_hash($key_length);
+			$row = $db->getRow("SELECT COUNT(*) AS N FROM pic WHERE ?=? LIMIT 1", $key_name, $hash);
+			if (intval($row['N'], 10) === 0) {
+				return $hash;
+			}
+
+			$t--;
+		} while($t > 0);
+	}
+
 	/**
 	 * Returns the MIME content type of an uploaded file.
 	 * @return string
@@ -91,19 +127,12 @@ class Upload_file {
 	 * @return HttpUploadedFile  provides a fluent interface
 	 */
 	public function move($dest) {
-		$dir = dirname($dest);
-		if (@/**/mkdir($dir, 0755, TRUE)) { // intentionally @
-			chmod($dir, 0755);
-		}
 		$func = is_uploaded_file($this->tmpName) ? 'move_uploaded_file' : 'rename';
 		if (!$func($this->tmpName, $dest)) {
 			throw new Exception("Unable to move uploaded file '$this->tmpName' to '$dest'.");
 		}
 		chmod($dest, 0644);
-		$this->tmpName = $dest;
-		return $this;
 	}
-
 
 
 	/**

@@ -9,13 +9,14 @@ require UP_ROOT.'include/upload.inc.php';
 require UP_ROOT.'include/image.inc.php';
 require UP_ROOT.'include/upload_file.inc.php';
 
+$file = $_POST;
 
 try {
-	if (!isset($_FILES['upload'])) {
+	if (empty($file)) {
 		throw new Exception("Empty request for upload");
 	}
 
-	$upload_file = new Upload($_FILES['upload']);
+	$upload_file = new Upload($file);
 } catch (Exception $e) {
 	error($e->getMessage());
 }

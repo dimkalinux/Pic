@@ -4,8 +4,9 @@ define('DEBUG', FALSE);
 
 
 define('MYSQL_ADDRESS', '194.146.132.67');
-define('MYSQL_LOGIN', 'pic');
-define('MYSQL_PASSWORD', ':-)');
+define('MYSQL_DB', 'pic');
+define('MYSQL_LOGIN', 'picDB_User');
+define('MYSQL_PASSWORD', '_stB17ZfKs15:-)dddsDFa1d');
 define('MYSQL_CHARSET', 'utf8');
 
 // BASE URL aka CDN
@@ -36,7 +37,8 @@ $picMaxUploadSize = 10*1048576;
 // GOOGLE ANALYTICS SECTION
 $googleAnalyticsCode = '';
 
-$picStorages = array('1','2','3','4','5','6','7','8');
+//$picStorages = array('1','2','3','4','5','6','7','8');
+$picStorages = array('1','1','1');
 
 
 define('UP', 1);
