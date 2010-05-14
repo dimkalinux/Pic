@@ -29,9 +29,14 @@ $cookie_domain = 'pic.iteam.ua';
 $cookie_path = '/';
 $cookie_secure = 0;
 
+// UPLOAD
+$picUploadBaseDir = '/var/upload/pic/';
+$picMaxUploadSize = 10*1048576;
 
 // GOOGLE ANALYTICS SECTION
 $googleAnalyticsCode = '';
+
+$picStorages = array('1','2','3','4','5','6','7','8');
 
 
 define('UP', 1);

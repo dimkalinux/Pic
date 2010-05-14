@@ -5,14 +5,19 @@ if (!defined('UP_ROOT')) {
 }
 
 require UP_ROOT.'functions.inc.php';
-require UP_ROOT.'image.inc.php';
-require UP_ROOT.'upload_file.inc.php';
+require UP_ROOT.'include/upload.inc.php';
+require UP_ROOT.'include/image.inc.php';
+require UP_ROOT.'include/upload_file.inc.php';
 
 
 try {
-	$upload_file = new Upload_file();
-} catch (Exception $e) {
+	if (!isset($_FILES['upload'])) {
+		throw new Exception("Empty request for upload");
+	}
 
+	$upload_file = new Upload($_FILES['upload']);
+} catch (Exception $e) {
+	error($e->getMessage());
 }
 
 

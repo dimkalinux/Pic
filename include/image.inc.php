@@ -54,7 +54,7 @@ class Image {
 
 	}
 
-	public function create_thumbs() {
+	public function create_medium_thumbs() {
 
 	}
 

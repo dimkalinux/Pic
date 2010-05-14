@@ -52,12 +52,6 @@ require UP_ROOT.'include/common.inc.php';
 require UP_ROOT.'include/db.inc.php';
 require UP_ROOT.'include/logger.inc.php';
 
-if (function_exists('memcache_pconnect')) {
-	require UP_ROOT.'include/cache.inc.php';
-} else {
-	die('Not found cache');
-}
-
 
 function get_safe_string($str) {
 	return preg_replace ("/[^a-z0-9]/i", "", $str);
