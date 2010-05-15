@@ -57,8 +57,8 @@ class Upload_file {
 
 
 	public function save_in_db($location, $storage, $filename, $hashed_filename, $width, $height) {
-		$image_key = $this->create_uniq_hash_key('key', 32);
-		$image_delete_key = generate_random_hash(32);
+		$image_key = $this->create_uniq_hash_key('key', 16);
+		$image_delete_key = generate_random_hash(16);
 		$image_location = $location;
 		$image_storage = $storage;
 		$image_filename = $filename;
@@ -69,6 +69,8 @@ class Upload_file {
 
 		$db = DB::singleton();
 		$db->query("INSERT INTO pic VALUES ('', ?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?)", $image_key, $image_delete_key, $image_location, $image_storage, $image_filename, $image_hashed_filename, $image_size, $image_width, $image_height);
+
+		return array('key' => $image_key, 'delete_key' => $image_delete_key);
 	}
 
 

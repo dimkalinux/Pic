@@ -80,7 +80,7 @@ class Common {
 
 
 
-    public function redirect($url, $html = '', $title = 'Переадресация') {
+    public static function redirect($url, $html = '', $title = 'Переадресация') {
 		header($_SERVER['SERVER_PROTOCOL']." 303 See Other");
 		header("Location: ".$url);
 		header("Content-type: text/html; charset=UTF-8");

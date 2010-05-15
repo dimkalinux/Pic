@@ -5,12 +5,14 @@ if (!defined('UP')) {
 	exit;
 }
 
+require UP_ROOT.'include/image.inc.php';
+require UP_ROOT.'include/upload_file.inc.php';
 
 class Upload {
 	private $file;
 
 	public function __construct($file) {
-		global $picMaxUploadSize;
+		global $picMaxUploadSize, $picBaseUrl, $picDefaultPreviewSize;
 
 		$upload_file = new Upload_file($file);
 
@@ -50,7 +52,8 @@ class Upload {
 		$upload_image->process_thumbs();
 
 		// 7. ADD to DB
-		$upload_file->save_in_db($uploadLocation, $uploadStorage, $uploadFilename, $uploadHashedFilename, $upload_image->getWidth(), $upload_image->getHeight());
+		$uploaded_return_info = $upload_file->save_in_db($uploadLocation, $uploadStorage, $uploadFilename, $uploadHashedFilename, $upload_image->getWidth(), $upload_image->getHeight());
+		ami_redirect(ami_link('view_image', array($uploaded_return_info['key'], $uploaded_return_info['delete_key'], IMAGE_SIZE_SMALL)));
 	}
 
 

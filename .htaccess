@@ -1,0 +1,8 @@
+RewriteEngine On
+RewriteBase /
+
+RewriteRule 	^upload/$ 									upload.php [L]
+RewriteRule 	^delete/([a-z0-9]+)/([a-z0-9]+)/$			delete.php?k=$1&d=$2 [L]
+RewriteRule 	^delete/ok/$								delete.php?ok=1 [L]
+RewriteRule 	^view/([a-z0-9]+)/([a-z0-9]+)/([0-9])/$		view.php?k=$1&d=$2&s=$3 [L]
+RewriteRule 	^view/([a-z0-9]+)/$							show.php?k=$1 [L]

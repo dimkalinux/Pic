@@ -115,15 +115,15 @@ class Image {
 
 
 	private function create_small_thumbs() {
-		$this->create_thumbs(150, 150, $this->get_prefixed_name('sm', $this->image));
+		$this->create_thumbs(250, 250, $this->get_prefixed_name('sm', $this->image));
 	}
 
 	private function create_medium_thumbs() {
-		$this->create_thumbs(275, 275, $this->get_prefixed_name('md', $this->image));
+		$this->create_thumbs(500, 500, $this->get_prefixed_name('md', $this->image));
 	}
 
 	private function create_preview() {
-		$this->create_thumbs(800, 800, $this->get_prefixed_name('pv', $this->image));
+		$this->create_thumbs(875, 875, $this->get_prefixed_name('pv', $this->image));
 	}
 
 

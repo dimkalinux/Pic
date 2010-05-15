@@ -48,37 +48,62 @@ require UP_ROOT.'include/utf8/ucwords.php';
 require UP_ROOT.'include/utf8/trim.php';
 
 // LOAD ALL LIBS
+require UP_ROOT.'include/exceptions.inc.php';
+require UP_ROOT.'include/url.inc.php';
 require UP_ROOT.'include/common.inc.php';
 require UP_ROOT.'include/db.inc.php';
 require UP_ROOT.'include/logger.inc.php';
 
 
 function get_safe_string($str) {
-	return preg_replace ("/[^a-z0-9]/i", "", $str);
+    return preg_replace ("/[^a-z0-9]/i", "", $str);
 }
 
-function portal_htmlencode($str) {
+function get_safe_string_len($str, $maxLength) {
+    return substr(preg_replace("/[^a-z0-9]/i", "", $str), 0, $maxLength);
+}
+
+
+function pic_htmlencode($str) {
 	return htmlspecialchars($str, ENT_QUOTES, 'UTF-8');
 }
 
-function portal_htmldecode($str) {
+function pic_htmldecode($str) {
 	return htmlspecialchars_decode($str, ENT_QUOTES);
 }
 
 // Trim whitespace including non-breaking space
 function portal_trim($str, $charlist = " \t\n\r\x0b\xc2\xa0") {
-	return utf8_trim($str, $charlist);
+    return utf8_trim($str, $charlist);
 }
 
+function ami_link($link, $args = null) {
+    global $amiBaseUrl, $ami_urls;
 
-function show_error_message($message) {
-	$out = <<<FMB
-	<div id="status">&nbsp;</div>
-	<h2>Ошибка</h2>
-	<div class="message">$message</div>
+    $gen_link = $ami_urls[$link];
+    if ($args == null) {
+	$gen_link = $amiBaseUrl.'/'.$gen_link;
+    } else if (!is_array($args)) {
+	$gen_link = $amiBaseUrl.'/'.str_replace('$1', $args, $gen_link);
+    } else {
+	for ($i = 0; isset($args[$i]); ++$i) {
+
+	    $gen_link = str_replace('$'.($i + 1), $args[$i], $gen_link);
+	}
+	$gen_link = $amiBaseUrl.'/'.$gen_link;
+    }
+
+    return $gen_link;
+}
+
+function ami_show_error_message($message) {
+    $out = <<<FMB
+    <div id="status">&nbsp;</div>
+    <h1>Ошибка</h1>
+    <div class="message">$message</div>
 FMB;
-	printPage($out);
-	exit();
+    ami_printPage($out);
+    exit();
 }
 
 
@@ -174,26 +199,26 @@ function format_filesize($bytes, $quoted=FALSE) {
 
 
 // Display a simple error message
-function error() {
-	if (!headers_sent()) {
-		header('Content-type: text/html; charset=utf-8');
-		header('HTTP/1.1 503 Service Temporarily Unavailable');
-	}
+function ami_show_error() {
+    if (!headers_sent()) {
+	header('Content-type: text/html; charset=utf-8');
+	header('HTTP/1.1 503 Service Temporarily Unavailable');
+    }
 
-	$num_args = func_num_args();
-	if ($num_args == 3) {
-		$message = func_get_arg(0);
-		$file = func_get_arg(1);
-		$line = func_get_arg(2);
-	} else if ($num_args == 2) {
-		$file = func_get_arg(0);
-		$line = func_get_arg(1);
-	} else if ($num_args == 1) {
-		$message = func_get_arg(0);
-	}
+    $num_args = func_num_args();
+    if ($num_args == 3) {
+	$message = func_get_arg(0);
+	$file = func_get_arg(1);
+	$line = func_get_arg(2);
+    } else if ($num_args == 2) {
+	$file = func_get_arg(0);
+	$line = func_get_arg(1);
+    } else if ($num_args == 1) {
+	$message = func_get_arg(0);
+    }
 
-	// Empty all output buffers and stop buffering
-	while (@ob_end_clean());
+    // Empty all output buffers and stop buffering
+    while (@ob_end_clean());
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -207,17 +232,17 @@ function error() {
 <hr/>
 <?php
 
-	if (isset($message)) {
-		echo '<p>'.$message.'</p>'."\n";
-	}
+    if (isset($message)) {
+	echo '<p>'.$message.'</p>'."\n";
+    }
 
-	if ($num_args > 1 && DEBUG === TRUE) {
-		if (isset($file) && isset($line)) {
-			echo '<p><em>Ошибка в строке '.$line.' в '.$file.'</em></p>'."\n";
-		}
+    if ($num_args > 1 && DEBUG === TRUE) {
+	if (isset($file) && isset($line)) {
+	    echo '<p><em>Ошибка в строке '.$line.' в '.$file.'</em></p>'."\n";
 	}
+    }
 
-	echo '<p>Мы уже в&nbsp;курсе и&nbsp;стараемся исправить проблему как можно быстрее.<br/>Возвращайтесь немного позже, всё уже будет работать.</p>';
+    echo '<p>Мы уже в&nbsp;курсе и&nbsp;стараемся исправить проблему как можно быстрее.<br/>Возвращайтесь немного позже, всё уже будет работать.</p>';
 ?>
 
 </body>
@@ -238,7 +263,7 @@ function is_valid_email($email) {
 }
 
 
-function printPage($content, $page_name='main_page') {
+function ami_printPage($content, $page_name='main_page') {
 	global $base_url, $user, $page_title;
 
 	if (!defined('UP_ROOT')) {
@@ -316,5 +341,78 @@ function generate_random_hash($maxLength=null) {
 	    }
 	    return $hash;
 	}
+
+function ami_cleanDir($dir) {
+    if (!is_dir($dir)) {
+	throw new Exception("Is not dir '$dir'");
+    }
+
+    if ($dh = opendir($dir)) {
+	while (($current_file = readdir($dh)) !== FALSE) {
+	    if ($current_file == '.' || $current_file == '..') {
+		continue;
+	    }
+
+	    $full_filename = $dir.'/'.$current_file;
+
+	    if (is_file($full_filename)) {
+		if (!unlink($full_filename)) {
+		    $log = Logger::sigleton();
+		    $log->error('removeAllFilesInThisDir cant unlink: '.$full_filename);
+		}
+	    }
+	}
+	closedir($dh);
+    } else {
+	throw new Exception("Can not open dir '$dir'");
+    }
+}
+
+function ami_redirect($url, $html = '', $title = 'Переадресация') {
+    header($_SERVER['SERVER_PROTOCOL']." 303 See Other");
+    header("Location: ".$url);
+    header("Content-type: text/html; charset=UTF-8");
+    $hUrl = htmlspecialchars($url);
+
+    $page = <<<PAGE
+<!DOCTYPE html><title>{$title}</title>
+<script type="text/javascript">function doRedirect(){location.replace({$hUrl});}</script>
+<style type="text/css">p{font-family:Arial, sans-serif}</style>
+<body onload="doRedirect()" bgcolor="#ffffff" text="#000000" link="#0000cc" vlink="#551a8b" alink="#ff0000">
+<noscript><meta http-equiv="refresh" content="1; url='{$hUrl}'"></noscript>
+<p>Подождите&hellip;</p>
+<p>Если переадресация не сработала, перейдите по <a href="{$hUrl}">ссылке</a> вручную.</p>
+{$html}
+</body>
+PAGE;
+    exit($page);
+}
+
+
+function pic_getImageLink($storage, $location, $hashed_filename, $size) {
+    switch ($size) {
+	case IMAGE_SIZE_SMALL:
+	    $image_link = 'sm_'.$hashed_filename;
+	    break;
+
+	case IMAGE_SIZE_MIDDLE:
+	    $image_link = 'md_'.$hashed_filename;
+	    break;
+
+	case IMAGE_SIZE_PREVIEW:
+	    $image_link = 'pv_'.$hashed_filename;
+	    break;
+
+	case IMAGE_SIZE_ORIGINAL:
+	    $image_link = $hashed_filename;
+	    break;
+
+	default:
+	    throw new Exception('Out of range');
+	    break;
+    }
+
+    return ami_link('image', array($storage, $location, $image_link));
+}
 
 ?>

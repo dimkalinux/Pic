@@ -6,7 +6,7 @@ if (!defined('UP')) {
 }
 
 if (empty($page_title)) {
-	$page_title = 'PIC';
+	$page_title = 'ПИК';
 }
 
 if (empty($page_name)) {

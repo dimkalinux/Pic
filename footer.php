@@ -6,7 +6,17 @@ if (!defined('UP')) {
 ?>
 	</div>
 </div>
-<div id="footer"><p><!--Made on Omicron Persei VIII. Designed on Earth.-->©&nbsp;<? date_default_timezone_set(CONFIG_TIMEZONE); echo (date ("Y")); ?> <a href="http://iteam.ua/">iTeam</a></p></div>
+<div id="footer">
+	<ul id="sitenav">
+		<li class="copyright">©&nbsp;<? date_default_timezone_set(CONFIG_TIMEZONE); echo (date ("Y")); ?> <a href="http://iteam.ua/">iTeam</a></li>
+		<li class="first"><a href="">Портал</a></li>
+		<li><a href="http://forum.iteam.net.ua/">Форум</a></li>
+		<li><a href="http://up.iteam.net.ua/">АП</a></li>
+		<li><a href="http://film.lg.ua/">Фильмы</a></li>
+		<li><a href="http://serial.iteam.net.ua/">Сериалы</a></li>
+	</ul>
+	<!--Made on Omicron Persei VIII. Designed on Earth.-->
+</div>
 <script src="<?php echo JS_BASE_URL; ?>js/jquery.js" type="text/javascript"></script>
 <?php
 
