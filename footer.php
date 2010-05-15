@@ -14,6 +14,7 @@ if (!defined('UP')) {
 		<li><a href="http://up.iteam.net.ua/">АП</a></li>
 		<li><a href="http://film.lg.ua/">Фильмы</a></li>
 		<li><a href="http://serial.iteam.net.ua/">Сериалы</a></li>
+		<li><a href="http://hosting.iteam.lg.ua/">Хостинг</a></li>
 	</ul>
 	<!--Made on Omicron Persei VIII. Designed on Earth.-->
 </div>

@@ -15,6 +15,9 @@ CREATE TABLE `pic` (
     `size` bigint(20) default NULL,
     `width` bigint(20) NOT NULL,
     `height` bigint(20) NOT NULL,
+    `p_width` bigint(20) NOT NULL,
+    `p_height` bigint(20) NOT NULL,
+    `p_size` bigint(20) NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;

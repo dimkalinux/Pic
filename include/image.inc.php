@@ -18,6 +18,9 @@ class Image {
 	private $phpThumbFormat;
 	private $width;
 	private $height;
+	private $p_width;
+	private $p_height;
+	private $p_size;
 
 
 	public function __construct($file) {
@@ -72,6 +75,18 @@ class Image {
 		return basename($this->image);
 	}
 
+	public function getPreview_Width() {
+		return $this->p_width;
+	}
+
+	public function getPreview_Height() {
+		return $this->p_height;
+	}
+
+	public function getPreview_Size() {
+		return $this->p_size;
+	}
+
 	public function setFileExt() {
 		$ext = '';
 
@@ -119,11 +134,18 @@ class Image {
 	}
 
 	private function create_medium_thumbs() {
-		$this->create_thumbs(500, 500, $this->get_prefixed_name('md', $this->image));
+		$this->create_thumbs(500, 375, $this->get_prefixed_name('md', $this->image));
 	}
 
 	private function create_preview() {
-		$this->create_thumbs(875, 875, $this->get_prefixed_name('pv', $this->image));
+		$this->create_thumbs(875, 656, $this->get_prefixed_name('pv', $this->image));
+
+		// UPDATE preview INFO
+		$preview_image = $this->get_prefixed_name('pv', $this->image);
+		$info = @/**/getimagesize($preview_image);
+		$this->p_width = $info[0];
+		$this->p_height = $info[1];
+		$this->p_size = @/**/filesize($preview_image);
 	}
 
 

@@ -9,23 +9,16 @@ require UP_ROOT.'functions.inc.php';
 
 
 $key_id = isset($_GET['k']) ? get_safe_string_len($_GET['k'], 16) : FALSE;
-$key_delete = isset($_GET['d']) ? get_safe_string_len($_GET['d'], 16) : FALSE;
-$preview_size = isset($_GET['s']) ? intval($_GET['s'], 10) : PREVIEW_SIZE_MIDDLE;
 
 // build info
 try {
-	if (!$key_id || !$key_delete) {
+	if (!$key_id) {
 		throw new AppLevelException('Недостаточно параметров в запросе');
 	}
 
 
 	$db = DB::singleton();
-
-	if ($key_delete) {
-		$row = $db->getRow("SELECT * FROM pic WHERE id_key=? AND delete_key=? LIMIT 1", $key_id, $key_delete);
-	} else {
-		$row = $db->getRow("SELECT * FROM pic WHERE id_key=? LIMIT 1", $key);
-	}
+	$row = $db->getRow("SELECT * FROM pic WHERE id_key=? LIMIT 1", $key_id);
 
 	if (!$row) {
 		throw new AppLevelException('Ссылка не&nbsp;верна или устарела.<br/>Возможно файл был удалён.');
@@ -48,55 +41,41 @@ $storage = get_safe_string($row['storage']);
 $location = get_safe_string($row['location']);
 $hash_filename = $row['hash_filename'];
 $filename = pic_htmlencode($row['filename']);
-$filesize = $row['size'];
-$filesize_text = format_filesize($row['size']);
 $file_date = $row['uploaded'];
 
-$preview_link = pic_getImageLink($storage, $location, $hash_filename, $preview_size);
-$delete_link = ami_link('delete_image', array($key_id, $key_delete));
-//
-$preview_link_small = ami_link('view_image', array($key_id, $key_delete, IMAGE_SIZE_SMALL));
-$preview_link_middle = ami_link('view_image', array($key_id, $key_delete, IMAGE_SIZE_MIDDLE));
-$preview_link_preview = ami_link('view_image', array($key_id, $key_delete, IMAGE_SIZE_PREVIEW));
-//
-$show_link = ami_link('show_image', $key_id);
+$o_size = $row['size'];
+$o_size_text = format_filesize($row['size']);
+$p_size = $row['p_size'];
+$p_size_text = format_filesize($row['p_size']);
 
+$o_width = $row['width'];
+$o_height = $row['height'];
+$p_width = $row['p_width'];
+$p_height = $row['p_height'];
+
+$home_link = ami_link('root');
+$show_link = ami_link('show_image', $key_id);
+$view_link = ami_link('view_image', array($key_id, IMAGE_SIZE_MIDDLE));
+$preview_link = pic_getImageLink($storage, $location, $hash_filename, IMAGE_SIZE_PREVIEW);
+$original_link = pic_getImageLink($storage, $location, $hash_filename, IMAGE_SIZE_ORIGINAL);
 //
-$input_link_html = pic_htmlencode('<a href="'.$show_link.'"><img src="'.pic_getImageLink($storage, $location, $hash_filename, $preview_size).'" alt="'.$filename.'"></a>');
-$input_link_bbcode = pic_htmlencode('[url='.$show_link.'][img]'.pic_getImageLink($storage, $location, $hash_filename, $preview_size).'[/img][/url]');
-$input_link_original = pic_htmlencode(pic_getImageLink($storage, $location, $hash_filename, IMAGE_SIZE_ORIGINAL));
 
 $out = <<<FMB
-	<a href="$show_link"><img class="fancy_image" src="$preview_link" alt="$filename"/></a>
-
-	<ul class="inline tabs" id="image_tabs">
-		<li><a href="$preview_link_small">200px</li>
-		<li><a href="$preview_link_middle">500px</a></li>
-		<li class="separate"><a href="$delete_link">удалить</a></li>
-	</ul>
-
-	<div id="links_block">
-		<div class="links_row">
-			<label for="html">для сайта или блога</label>
-			<input size="35" value="$input_link_html" readonly="readonly" type="text" id="html" onclick="this.select()"/>
-		</div>
-
-		<div class="links_row">
-			<label for="bbcode">для форума</label>
-			<input size="35" value="$input_link_bbcode" readonly="readonly" type="text" id="bbcode" onclick="this.select()"/>
-		</div>
-		<div class="links_row">
-			<label for="show">для просмотра</label>
-			<input size="35" value="$show_link" readonly="readonly" type="text" id="show" onclick="this.select()"/>
-		</div>
-		<div class="links_row">
-			<label for="original">прямая ссылка на оригинал</label>
-			<input size="35" value="$input_link_original" readonly="readonly" type="text" id="original" onclick="this.select()"/>
-		</div>
+	<div id="header">
+		<!--<span class="text-cap">$filename</span>-->
+		<ul class="inline tabs" id="image_info">
+			<li><a href="$home_link" title="Вернуться на главную страницу">На главную</a></li>
+			<li><a href="$view_link" title="Получить ссылки на этот файл">Ссылки</a></li>
+			<!--<li>{$p_width}x{$p_height} $p_size_text</li>-->
+			<li><a href="$original_link" title="Скачать оригинал">{$o_width}x{$o_height} $o_size_text</a></li>
+		</ul>
+	</div>
+	<div id="img_block">
+		<img class="fancy_image" src="$preview_link" alt="$filename"/>
 	</div>
 FMB;
 
-ami_printPage($out, 'view_page');
+ami_printPage($out, 'show_page');
 exit();
 
 ?>

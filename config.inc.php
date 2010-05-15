@@ -28,7 +28,7 @@ define('IMAGE_SIZE_PREVIEW', 3);
 define('IMAGE_SIZE_ORIGINAL', 4);
 
 
-$amiBaseUrl = $picBaseUrl = $base_url = 'http://pic.iteam.net.ua';
+$amiBaseUrl = $picBaseUrl = $base_url = 'http://pic.iteam.ua';
 $picDefaultPreviewSize = IMAGE_SIZE_MIDDLE;
 
 // COOKIE SECTION

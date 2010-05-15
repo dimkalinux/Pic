@@ -14,7 +14,7 @@ $preview_size = isset($_GET['s']) ? intval($_GET['s'], 10) : PREVIEW_SIZE_MIDDLE
 
 // build info
 try {
-	if (!$key_id || !$key_delete) {
+	if (!$key_id) {
 		throw new AppLevelException('Недостаточно параметров в запросе');
 	}
 
@@ -24,7 +24,7 @@ try {
 	if ($key_delete) {
 		$row = $db->getRow("SELECT * FROM pic WHERE id_key=? AND delete_key=? LIMIT 1", $key_id, $key_delete);
 	} else {
-		$row = $db->getRow("SELECT * FROM pic WHERE id_key=? LIMIT 1", $key);
+		$row = $db->getRow("SELECT * FROM pic WHERE id_key=? LIMIT 1", $key_id);
 	}
 
 	if (!$row) {
@@ -53,11 +53,15 @@ $filesize_text = format_filesize($row['size']);
 $file_date = $row['uploaded'];
 
 $preview_link = pic_getImageLink($storage, $location, $hash_filename, $preview_size);
-$delete_link = ami_link('delete_image', array($key_id, $key_delete));
+
+$delete_link = '';
+if ($key_delete) {
+	$delete_link = '<li class="separate"><a href="'.ami_link('delete_image', array($key_id, $key_delete)).'">удалить</a></li>';
+}
 //
-$preview_link_small = ami_link('view_image', array($key_id, $key_delete, IMAGE_SIZE_SMALL));
-$preview_link_middle = ami_link('view_image', array($key_id, $key_delete, IMAGE_SIZE_MIDDLE));
-$preview_link_preview = ami_link('view_image', array($key_id, $key_delete, IMAGE_SIZE_PREVIEW));
+$preview_link_small = ami_link('view_image_owner', array($key_id, $key_delete, IMAGE_SIZE_SMALL));
+$preview_link_middle = ami_link('view_image_owner', array($key_id, $key_delete, IMAGE_SIZE_MIDDLE));
+$preview_link_preview = ami_link('view_image_owner', array($key_id, $key_delete, IMAGE_SIZE_PREVIEW));
 //
 $show_link = ami_link('show_image', $key_id);
 
@@ -67,12 +71,14 @@ $input_link_bbcode = pic_htmlencode('[url='.$show_link.'][img]'.pic_getImageLink
 $input_link_original = pic_htmlencode(pic_getImageLink($storage, $location, $hash_filename, IMAGE_SIZE_ORIGINAL));
 
 $out = <<<FMB
-	<a href="$show_link"><img class="fancy_image" src="$preview_link" alt="$filename"/></a>
+	<div id="img_block">
+		<a href="$show_link"><img class="fancy_image" src="$preview_link" alt="$filename"/></a>
+	</div>
 
 	<ul class="inline tabs" id="image_tabs">
-		<li><a href="$preview_link_small">200px</li>
-		<li><a href="$preview_link_middle">500px</a></li>
-		<li class="separate"><a href="$delete_link">удалить</a></li>
+		<li><a href="$preview_link_small" title="Маленькая картинка">+</li>
+		<li><a href="$preview_link_middle" title="Большая картинка">++</a></li>
+		$delete_link
 	</ul>
 
 	<div id="links_block">

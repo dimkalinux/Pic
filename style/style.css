@@ -84,27 +84,38 @@ a:focus { outline-style: none; outline-width: medium; }
 	margin:0 auto;
 }
 
-#main_page #wrap, #main_page #footer { width: 35em; }
+#main_page #wrap, #main_page #footer { width: 39em; }
 #main_page #primary { margin-top: 50%; }
-
-
-#view_page #primary { margin-top: 10em; }
-#view_page #wrap, #view_page #footer {  text-align: center; }
-
 #main_page #footer { padding: 8em 0 0; }
-#view_page #footer { padding: 4em 0 0; }
+
+#view_page #img_block { margin-top: 9em; }
+#view_page #wrap, #view_page #footer {  text-align: center; }
+#view_page #footer { padding: 3.5em 0 0; }
+
+#show_page #img_block { margin-top: 4em; }
+#show_page #wrap, #show_page #footer {  text-align: center; }
+#show_page #footer { padding: 4em 0 0; }
+
 
 #footer { margin: 0 auto; text-align: left; padding: 8em 0 0; }
 #footer > p, #footer > ul { color: #999;  font-size: .9em;  }
 #footer { font-family: "Verdana", sans-serif; }
 #footer ul { margin: 0.5em 1em .5em 0pt; list-style-type: none; list-style-image: none; list-style-position: outside; }
-#footer li { display: inline; padding-right: .4em; }
+#footer li { display: inline; padding-right: .5em; }
 #footer li a { color: #222222; text-decoration: none; font-weight: normal;  }
 #footer a:hover { color: #0099ff; text-decoration: underline; }
-#footer li + li { border-left: 1px solid #e5e5e5; padding-left: .5em; }
+#footer li + li { border-left: 1px solid #e5e5e5; padding-left: .6em; }
 #footer li.copyright { margin-right: 2em; }
 #footer li.first { border-left: none; }
 .separator { border-top: 1px solid #e5e5e5; padding-top: .2em; margin-bottom: 1em; }
+
+
+#header { text-align: center; border-bottom: solid 1px #eee; padding: .6em; color: #999; }
+#header #image_info { display: inline;  }
+#header #image_info li  { padding-right: .9em; }
+#header #image_info li + li { padding-left: .9em; }
+#header a { color: #222222; text-decoration: none; font-weight: normal;  }
+#header a:hover { color: #0099ff; text-decoration: underline; }
 
 
 h1 { color: #2b2b2b; font-weight: normal; font-size: 148.5%; margin-bottom: .8em;  }
@@ -137,7 +148,7 @@ label,
 #primary .simple {  list-style-type: none !important; margin-left: 1em; }
 
 ul.inline { list-style-type: none !important; }
-ul.inline li { display: inline; padding-right: .5em; }
+ul.inline li { display: inline; padding-right: .7em; }
 #image_tabs { margin: 1.5em 0 !important; }
 #image_tabs li { font-size: 1.25em; }
 ul.inline li.fr { float: right; padding-right: 0; }

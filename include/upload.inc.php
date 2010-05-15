@@ -52,8 +52,8 @@ class Upload {
 		$upload_image->process_thumbs();
 
 		// 7. ADD to DB
-		$uploaded_return_info = $upload_file->save_in_db($uploadLocation, $uploadStorage, $uploadFilename, $uploadHashedFilename, $upload_image->getWidth(), $upload_image->getHeight());
-		ami_redirect(ami_link('view_image', array($uploaded_return_info['key'], $uploaded_return_info['delete_key'], IMAGE_SIZE_SMALL)));
+		$uploaded_return_info = $upload_file->save_in_db($uploadLocation, $uploadStorage, $uploadFilename, $uploadHashedFilename, $upload_image->getWidth(), $upload_image->getHeight(), $upload_image->getPreview_Width(), $upload_image->getPreview_Height(), $upload_image->getPreview_Size());
+		ami_redirect(ami_link('view_image_owner', array($uploaded_return_info['key'], $uploaded_return_info['delete_key'], IMAGE_SIZE_SMALL)));
 	}
 
 
