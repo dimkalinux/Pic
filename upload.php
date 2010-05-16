@@ -15,17 +15,16 @@ try {
 		throw new AppLevelException("Получен запрос без файла.");
 	}
 
-	$upload_file = new Upload($file);
-
+	$upload = new Upload($file);
 }  catch (AppLevelException $e) {
 	if (isset($_POST['async'])) {
-		exit(json_encode(array('error'=> 1, 'message' => $e->getMessage())));
+		ami_async_response(array('error'=> 1, 'message' => $e->getMessage()), AMI_ASYNC_JSON);
 	} else {
 		ami_show_error_message($e->getMessage().'<p><br/><a href="'.$picBaseUrl.'">Перейти на главную страницу</a></p>');
 	}
 } catch (Exception $e) {
 	if (isset($_POST['async'])) {
-		exit(json_encode(array('error'=> 1, 'message' => $e->getMessage())));
+		ami_async_response(array('error'=> 1, 'message' => $e->getMessage()), AMI_ASYNC_JSON);
 	} else {
 		ami_show_error($e->getMessage());
 	}

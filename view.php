@@ -52,11 +52,13 @@ $filesize = $row['size'];
 $filesize_text = format_filesize($row['size']);
 $file_date = $row['uploaded'];
 
+
+$home_link = ami_link('root');
 $preview_link = pic_getImageLink($storage, $location, $hash_filename, $preview_size);
 
 $delete_link = '';
 if ($key_delete) {
-	$delete_link = '<li class="separate"><a href="'.ami_link('delete_image', array($key_id, $key_delete)).'">удалить</a></li>';
+	$delete_link = '<li><a href="'.ami_link('delete_image', array($key_id, $key_delete)).'" title="удалить это файл"><span class="icon" id="view_delete"></span></a></li>';
 }
 //
 $preview_link_small = ami_link('view_image_owner', array($key_id, $key_delete, IMAGE_SIZE_SMALL));
@@ -72,12 +74,13 @@ $input_link_original = pic_htmlencode(pic_getImageLink($storage, $location, $has
 
 $out = <<<FMB
 	<div id="img_block">
-		<a href="$show_link"><img class="fancy_image" src="$preview_link" alt="$filename"/></a>
+		<a href="$show_link" title="Перейти к просмотру"><img class="fancy_image" src="$preview_link" alt="$filename"/></a>
 	</div>
 
 	<ul class="inline tabs" id="image_tabs">
-		<li><a href="$preview_link_small" title="Маленькая картинка">+</li>
+		<li><a href="$preview_link_small" title="Маленькая картинка">+</a></li>
 		<li><a href="$preview_link_middle" title="Большая картинка">++</a></li>
+		<li><a href="$home_link">загрузить ещё</a></li>
 		$delete_link
 	</ul>
 

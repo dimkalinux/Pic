@@ -10,9 +10,9 @@ define('MYSQL_PASSWORD', '_stB17ZfKs15:-)dddsDFa1d');
 define('MYSQL_CHARSET', 'utf8');
 
 // BASE URL aka CDN
-define('CSS_BASE_URL', 'http://pic.iteam.net.ua/');
-define('JS_BASE_URL', 'http://pic.lluga.net/');
-define('JS_BASE_URL_1', 'http://pic.iteam.net.ua/');
+define('CSS_BASE_URL', 'http://pic.iteam.ua/');
+define('JS_BASE_URL', 'http://pic.iteam.ua/');
+define('JS_BASE_URL_1', 'http://pic.iteam.ua/');
 
 
 // AJAX
@@ -27,9 +27,27 @@ define('IMAGE_SIZE_MIDDLE', 2);
 define('IMAGE_SIZE_PREVIEW', 3);
 define('IMAGE_SIZE_ORIGINAL', 4);
 
+define('AMI_ASYNC_JSON', 1);
+define('AMI_ASYNC_XML', 2);
+
 
 $amiBaseUrl = $picBaseUrl = $base_url = 'http://pic.iteam.ua';
 $picDefaultPreviewSize = IMAGE_SIZE_MIDDLE;
+
+// IMAGE SECTION
+$pic_image_autorotate = TRUE;
+//
+$pic_image_small_height = 250;
+$pic_image_small_width = 250;
+$pic_image_small_quality = 90;
+
+$pic_image_medium_height = 350;
+$pic_image_medium_width = 500;
+$pic_image_medium_quality = 90;
+
+$pic_image_preview_height = 625;
+$pic_image_preview_width = 875;
+$pic_image_preview_quality = 90;
 
 // COOKIE SECTION
 $cookie_domain = 'pic.iteam.net.ua';

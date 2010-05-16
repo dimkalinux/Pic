@@ -20,8 +20,10 @@ require UP_ROOT.'header.php';
 			<div class="inputHelp">jpeg, png, gif до 10 мегабайт</div>
 		</div>
 	</form>
-
-
+	<div id="upload_status">&nbsp;</div>
 <?php
+
+ami_addOnDOMReady('PIC.upload.init();');
+
 require UP_ROOT.'footer.php';
 ?>

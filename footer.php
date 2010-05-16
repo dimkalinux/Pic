@@ -9,7 +9,7 @@ if (!defined('UP')) {
 <div id="footer">
 	<ul id="sitenav">
 		<li class="copyright">©&nbsp;<? date_default_timezone_set(CONFIG_TIMEZONE); echo (date ("Y")); ?> <a href="http://iteam.ua/">iTeam</a></li>
-		<li class="first"><a href="">Портал</a></li>
+		<li class="first"><a href="http://portal.iteam.net.ua/">Портал</a></li>
 		<li><a href="http://forum.iteam.net.ua/">Форум</a></li>
 		<li><a href="http://up.iteam.net.ua/">АП</a></li>
 		<li><a href="http://film.lg.ua/">Фильмы</a></li>
@@ -35,10 +35,10 @@ if (isset($addScript) && is_array($addScript) && count($addScript) > 0) {
 
 
 // ON-DOM-READY BLOCK
-if (isset($onDOMReady) && is_array($onDOMReady) && count($onDOMReady) > 0) {
+if (isset($ami_onDOMReady) && is_array($ami_onDOMReady) && count($ami_onDOMReady) > 0) {
 	// remove non-uniq values
-	$onDOMReady = array_unique($onDOMReady);
-	echo '<script type="text/javascript">$(document).ready(function () { '.implode("\n", $onDOMReady).'});</script>';
+	$ami_onDOMReady = array_unique($ami_onDOMReady);
+	echo '<script type="text/javascript">$(document).ready(function () { '.implode(";\n", $ami_onDOMReady).' });</script>';
 }
 
 

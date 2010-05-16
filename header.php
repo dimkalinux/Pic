@@ -32,4 +32,5 @@ header('Pragma: no-cache');		// For HTTP/1.0 compability
 <body id="<?php echo $page_name; ?>">
 <div id="wrap">
 	<div id="primary">
+
 <?php define('UP_HEADER', 1); ?>

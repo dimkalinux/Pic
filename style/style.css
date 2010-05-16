@@ -36,7 +36,7 @@ caption, th, td { text-align: left; font-weight: normal; }
 blockquote:before, blockquote:after, q:before, q:after { content: ""; }
 blockquote, q { quotes: "" ""; }
 
-html { min-height: 100%; margin-bottom: 1px !important; }
+html { min-height: 100%; }
 iframe { width: 0; height: 0; border: none;}
 * html .clear, * html .section { height: 1%; }
 .clear, .section { display: block; clear: both; }
@@ -77,24 +77,21 @@ a:focus { outline-style: none; outline-width: medium; }
 
 .clearfix:after { content: "."; display: block; clear: both; visibility: hidden; line-height: 0pt; height: 0pt; }
 
+body#main_page { background: #fff url('/img/newbadge20090106.png') top right no-repeat; }
 
-#wrap {
-	background:#FFFFFF none repeat scroll 0 0;
-	clear:both;
-	margin:0 auto;
-}
+#wrap { background:#FFFFFF none repeat scroll 0 0; clear:both; margin:0 auto; }
 
 #main_page #wrap, #main_page #footer { width: 39em; }
-#main_page #primary { margin-top: 50%; }
-#main_page #footer { padding: 8em 0 0; }
+#main_page #primary { margin-top: 20em; }
+#main_page #footer { padding: 7em 0 0; }
 
-#view_page #img_block { margin-top: 9em; }
+#view_page #img_block { margin-top: 6em; }
 #view_page #wrap, #view_page #footer {  text-align: center; }
 #view_page #footer { padding: 3.5em 0 0; }
 
 #show_page #img_block { margin-top: 4em; }
 #show_page #wrap, #show_page #footer {  text-align: center; }
-#show_page #footer { padding: 4em 0 0; }
+#show_page #footer { display: none; padding: 3.5em 0 0; }
 
 
 #footer { margin: 0 auto; text-align: left; padding: 8em 0 0; }
@@ -104,7 +101,7 @@ a:focus { outline-style: none; outline-width: medium; }
 #footer li { display: inline; padding-right: .5em; }
 #footer li a { color: #222222; text-decoration: none; font-weight: normal;  }
 #footer a:hover { color: #0099ff; text-decoration: underline; }
-#footer li + li { border-left: 1px solid #e5e5e5; padding-left: .6em; }
+#footer li + li { border-left: 1px solid #e5e5e5; padding-left: .7em; }
 #footer li.copyright { margin-right: 2em; }
 #footer li.first { border-left: none; }
 .separator { border-top: 1px solid #e5e5e5; padding-top: .2em; margin-bottom: 1em; }
@@ -118,7 +115,7 @@ a:focus { outline-style: none; outline-width: medium; }
 #header a:hover { color: #0099ff; text-decoration: underline; }
 
 
-h1 { color: #2b2b2b; font-weight: normal; font-size: 148.5%; margin-bottom: .8em;  }
+h1 { color: #000; font-weight: normal; font-size: 148.5%; margin-bottom: .8em;  }
 h2 { color: #000; font-weight: normal !important; font-size:138.1%; line-height: 24px; margin-bottom: 7px; }
 h3 { color: #000; font-weight: normal; font-size:118%; margin-bottom: .4em;  }
 h4 { color: #000; font-weight: normal; font-size: 105%; /*line-height: 11px;  */ }
@@ -148,7 +145,8 @@ label,
 #primary .simple {  list-style-type: none !important; margin-left: 1em; }
 
 ul.inline { list-style-type: none !important; }
-ul.inline li { display: inline; padding-right: .7em; }
+ul.inline li { display: inline; padding-right: .4em; }
+ul.inline li + li { padding-left: .4em; }
 #image_tabs { margin: 1.5em 0 !important; }
 #image_tabs li { font-size: 1.25em; }
 ul.inline li.fr { float: right; padding-right: 0; }
@@ -164,5 +162,10 @@ ul.inline li.separate { padding-left: .5em; }
 #links_block { margin: 0 auto; width: 35em;}
 .links_row {text-align: left; }
 #links_block label { display: block; }
-#links_block input[type="text"]  { border: 1px solid #E8E8E8; color:#999; }
-#links_block input[type="text"] { font-size:0.95em; margin-bottom:0.6em; padding:3px 2px; width:35em; }
+#links_block input[type="text"]  { border: 1px solid #E8E8E8; color:#999; font-family: "Trebuchet MS","Verdana",Arial,"Bitstream Vera Sans",sans-serif; font-size:0.95em; margin-bottom:0.6em; padding:3px 2px; width:35em; }
+
+.icon { width: 16px; height: 16px; display: inline-block; cursor: pointer; }
+#view_delete { background: transparent url('/img/icon-delete-remove.gif') top left no-repeat; }
+#view_delete:hover { background: transparent url('/img/icon-delete-remove-hover.gif') top left no-repeat; }
+
+#upload_status { margin: 2em 0 1em; }

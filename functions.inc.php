@@ -40,7 +40,7 @@ if (DEBUG === TRUE) {
 }
 
 // GLOBAL VARIABLES
-$addScript = $onDOMReady = array();
+$ami_addScript = $ami_onDOMReady = array();
 
 // LOAD UTF-8 FUNCTIONS
 require UP_ROOT.'include/utf8/utf8.php';
@@ -54,6 +54,36 @@ require UP_ROOT.'include/common.inc.php';
 require UP_ROOT.'include/db.inc.php';
 require UP_ROOT.'include/logger.inc.php';
 
+
+function ami_addOnDOMReady($code) {
+    global $ami_onDOMReady;
+    array_push($ami_onDOMReady, $code);
+}
+
+function ami_async_response($arr_response, $type=AMI_ASYNC_JSON) {
+    switch ($type) {
+	case AMI_ASYNC_JSON:
+	default:
+	    ami_JSON_response($arr_response);
+	    break;
+
+	case AMI_ASYNC_XML:
+	    ami_XML_response($arr_response);
+	    break;
+    }
+}
+
+function ami_JSON_response($arr) {
+    //header('Content-type: application/json');
+    header("Pragma: no-cache");
+    exit(json_encode($arr));
+}
+
+function ami_XML_response($arr) {
+    header('Content-type: application/xml');
+    header("Pragma: no-cache");
+    exit(json_encode($arr));
+}
 
 function get_safe_string($str) {
     return preg_replace ("/[^a-z0-9]/i", "", $str);

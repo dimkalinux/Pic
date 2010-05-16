@@ -128,17 +128,22 @@ class Image {
 
 
 
-
 	private function create_small_thumbs() {
-		$this->create_thumbs(250, 250, $this->get_prefixed_name('sm', $this->image));
+		global $pic_image_small_height, $pic_image_small_width, $pic_image_small_quality;
+
+		$this->create_thumbs($pic_image_small_width, $pic_image_small_height, $pic_image_small_quality, $this->get_prefixed_name('sm', $this->image));
 	}
 
 	private function create_medium_thumbs() {
-		$this->create_thumbs(500, 375, $this->get_prefixed_name('md', $this->image));
+		global $pic_image_medium_height, $pic_image_medium_width, $pic_image_medium_quality;
+
+		$this->create_thumbs($pic_image_medium_width, $pic_image_medium_height, $pic_image_medium_quality, $this->get_prefixed_name('md', $this->image));
 	}
 
 	private function create_preview() {
-		$this->create_thumbs(875, 656, $this->get_prefixed_name('pv', $this->image));
+		global $pic_image_preview_height, $pic_image_preview_width, $pic_image_preview_quality;
+
+		$this->create_thumbs($pic_image_preview_width, $pic_image_preview_height, $pic_image_preview_quality, $this->get_prefixed_name('pv', $this->image));
 
 		// UPDATE preview INFO
 		$preview_image = $this->get_prefixed_name('pv', $this->image);
@@ -156,14 +161,20 @@ class Image {
 	}
 
 
-	private function create_thumbs($width, $height, $file) {
+	private function create_thumbs($width, $height, $quality, $file) {
+		global $pic_image_autorotate;
+
 		$phpThumb = new phpThumb();
 		//
 		$phpThumb->setSourceFilename($this->image);
 		//
 		$phpThumb->w = $width;
 		$phpThumb->h = $height;
-		$phpThumb->q = 90;
+		$phpThumb->q = $quality;
+
+		if ($pic_image_autorotate) {
+			$phpThumb->ar = 'x';
+		}
 		//
 		$phpThumb->config_output_format = $this->phpThumbFormat;
 		//
