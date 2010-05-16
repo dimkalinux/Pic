@@ -1503,3 +1503,118 @@ PIC.log = function () {
  */
 (function($){$.ga={};$.ga.load=function(uid,callback){jQuery.ajax({type:'GET',url:(document.location.protocol=="https:"?"https://ssl":"http://www")+'.google-analytics.com/ga.js',cache:true,success:function(){if(typeof _gat==undefined){throw"_gat has not been defined";}t=_gat._getTracker(uid);bind();if($.isFunction(callback)){callback(t)}t._trackPageview()},dataType:'script',data:null})};var t;var bind=function(){if(noT()){throw"pageTracker has not been defined";}for(var $1 in t){if($1.charAt(0)!='_')continue;$.ga[$1.substr(1)]=t[$1]}};var noT=function(){return t==undefined}})(jQuery);
 
+
+
+var drop_target = document.body;
+drop_target.addEventListener('dragenter', stopEvent, false);
+drop_target.addEventListener('dragover', stopEvent, false);
+drop_target.addEventListener('drop', (window.FileReader) ? dndFirefox : dndGeneric, false);
+
+/**
+	 * Drag'n'drop (mainly drop) event handler to read file data in Firefox-way.
+	 * @link https://developer.mozilla.org/en/Using_files_from_web_applications
+	 * @param {Event} evt
+	 */
+	function dndFirefox(evt) {
+		stopEvent(evt);
+
+		var dt = evt.dataTransfer,
+			files = dt.files,
+			file;
+
+		if (dt && files) {
+			files = filterFileList(files);
+			file = files[0];
+
+			new FileUpload(file);
+		}
+	}
+
+	function FileUpload(file) {
+		var xhr = new XMLHttpRequest();
+		this.xhr = xhr;
+
+		var self = this;
+		/*this.xhr.upload.addEventListener("progress", function(e) {
+			if (e.lengthComputable) {
+				var percentage = Math.round((e.loaded * 100) / e.total);
+				self.ctrl.update(percentage);
+			}
+		}, false);*/
+
+		/*xhr.upload.addEventListener("load", function(e){
+			self.ctrl.update(100);
+			var canvas = self.ctrl.ctx.canvas;
+			canvas.parentNode.removeChild(canvas);
+		}, false);*/
+
+		xhr.open("POST", "http://pic.iteam.ua/u.php");
+		xhr.overrideMimeType('text/plain; charset=x-user-defined-binary');
+		xhr.sendAsBinary(file.getAsBinary());
+	}
+
+	/**
+	 * Drag'n'drop (mainly drop) event handler to read file data in generic way
+	 * (Firefox and Webkit).
+	 * @param {Event} evt
+	 */
+	function dndGeneric(evt) {
+		stopEvent(evt);
+
+		var dt = evt.dataTransfer;
+		if (!dt)
+			return;
+
+		var file_list = '';
+		try {
+			 file_list = dt.getData('text/plain');
+		} catch(e) {}
+
+		if (!file_list) {
+			try {
+				 file_list = dt.getData('text/uri-list');
+			} catch(e) {}
+		}
+
+		if (file_list) {
+			file_list = file_list.split(/\r?\n/g);
+
+			if (dt.files && file_list.length < dt.files.length) {
+				// trick for Google Chrome: in most cases users will drop
+				// files from the same folder
+				var file_dir = file_list[0].replace(/([\/\\])([^\/\\]+)$/, '$1');
+				file_list = [];
+				for (var i = 0, il = dt.files.length; i < il; i++) {
+					file_list.push(file_dir + dt.files[i].fileName);
+				}
+			}
+
+
+			webkitFileReader(filterFileList(file_list));
+		}
+	}
+
+
+	function stopEvent(evt) {
+		evt.stopPropagation();
+		evt.preventDefault();
+	}
+/**
+	 * Filters file list and leaves image files only
+	 * @param {File[]} files
+	 */
+	function filterFileList(files) {
+		var allowed_types = {png: 1, jpeg: 1, jpg: 1, txt: 1},
+			result = [];
+
+		for (var i = 0, il = files.length; i < il; i++) {
+			var item = (typeof(files[i]) == 'string') ? files[i] : files[i].fileName;
+			var m = (item || '').match(/\.(\w+)$/);
+			if (m && m[1].toLowerCase() in allowed_types)
+				result.push(files[i]);
+		}
+
+		return result;
+	}
+
+
