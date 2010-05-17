@@ -12,6 +12,10 @@ class Image {
 	const JPEG = IMAGETYPE_JPEG;
 	const PNG = IMAGETYPE_PNG;
 	const GIF = IMAGETYPE_GIF;
+	const TIFF_II = IMAGETYPE_TIFF_II;
+	const TIFF_MM = IMAGETYPE_TIFF_MM;
+	const TIFF = IMAGETYPE_TIFF;
+	const BMP = IMAGETYPE_BMP;
 
 	private $image;
 	private $format;
@@ -44,6 +48,16 @@ class Image {
 
 			case self::GIF:
 				$this->format = self::GIF;
+				break;
+
+			case self::TIFF_II:
+			case self::TIFF_MM:
+			case self::TIFF:
+				$this->format = self::TIFF;
+				break;
+
+			case self::BMP:
+				$this->format = self::BMP;
 				break;
 
 			default:
@@ -101,6 +115,16 @@ class Image {
 				$this->phpThumbFormat = 'png';
 				break;
 
+			case self::TIFF:
+				$ext = 'tif';
+				$this->phpThumbFormat = 'png';
+				break;
+
+			case self::BMP:
+				$ext = 'bmp';
+				$this->phpThumbFormat = 'png';
+				break;
+
 			case self::GIF:
 				$ext = 'gif';
 				$this->phpThumbFormat = 'gif';
@@ -131,22 +155,37 @@ class Image {
 	private function create_small_thumbs() {
 		global $pic_image_small_height, $pic_image_small_width, $pic_image_small_quality;
 
-		$this->create_thumbs($pic_image_small_width, $pic_image_small_height, $pic_image_small_quality, $this->get_prefixed_name('sm', $this->image));
+		$just_make_link = FALSE;
+		if (($pic_image_small_height >= $this->height) && ($pic_image_small_width >= $this->width)) {
+			$just_make_link = TRUE;
+		}
+
+		$this->create_thumbs($pic_image_small_width, $pic_image_small_height, $pic_image_small_quality, $this->get_prefixed_name_for_thumbs('sm', $this->image), $just_make_link);
 	}
 
 	private function create_medium_thumbs() {
 		global $pic_image_medium_height, $pic_image_medium_width, $pic_image_medium_quality;
 
-		$this->create_thumbs($pic_image_medium_width, $pic_image_medium_height, $pic_image_medium_quality, $this->get_prefixed_name('md', $this->image));
+		$just_make_link = FALSE;
+		if (($pic_image_medium_height >= $this->height) && ($pic_image_medium_width >= $this->width)) {
+			$just_make_link = TRUE;
+		}
+
+		$this->create_thumbs($pic_image_medium_width, $pic_image_medium_height, $pic_image_medium_quality, $this->get_prefixed_name_for_thumbs('md', $this->image), $just_make_link);
 	}
 
 	private function create_preview() {
 		global $pic_image_preview_height, $pic_image_preview_width, $pic_image_preview_quality;
 
-		$this->create_thumbs($pic_image_preview_width, $pic_image_preview_height, $pic_image_preview_quality, $this->get_prefixed_name('pv', $this->image));
+		$just_make_link = FALSE;
+		if (($pic_image_preview_height >= $this->height) && ($pic_image_preview_width >= $this->width)) {
+			$just_make_link = TRUE;
+		}
+
+		$this->create_thumbs($pic_image_preview_width, $pic_image_preview_height, $pic_image_preview_quality, $this->get_prefixed_name_for_thumbs('pv', $this->image), $just_make_link);
 
 		// UPDATE preview INFO
-		$preview_image = $this->get_prefixed_name('pv', $this->image);
+		$preview_image = $this->get_prefixed_name_for_thumbs('pv', $this->image);
 		$info = @/**/getimagesize($preview_image);
 		$this->p_width = $info[0];
 		$this->p_height = $info[1];
@@ -154,15 +193,36 @@ class Image {
 	}
 
 
-	private function get_prefixed_name($prefix, $original_name) {
+	private function get_prefixed_name_for_thumbs($prefix, $original_name) {
 		$path_parts = pathinfo($original_name);
 
-		return $path_parts['dirname'].'/'.$prefix.'_'.$path_parts['basename'];
+		$filename = $path_parts['dirname'].'/'.$prefix.'_'.$path_parts['basename'];
+
+		// CHANGE ext for TIFF & BMP
+		switch ($this->format) {
+			case self::TIFF:
+			case self::BMP:
+				$filename = pic_replaceFileExtension($filename, 'png');
+				break;
+
+			default:
+				break;
+		}
+
+		return $filename;
 	}
 
 
-	private function create_thumbs($width, $height, $quality, $file) {
+	private function create_thumbs($width, $height, $quality, $file, $just_make_link=FALSE) {
 		global $pic_image_autorotate;
+
+		// MAKE link EXCEPT TIFF & BMP
+		if (($just_make_link === TRUE) && ($this->format != self::TIFF) && ($this->format != self::BMP)) {
+			if (!link($this->image, $file)) {
+				throw new Exception('Ошибка при создании превью');
+			}
+			return TRUE;
+		}
 
 		$phpThumb = new phpThumb();
 		//

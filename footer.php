@@ -5,8 +5,7 @@ if (!defined('UP')) {
 }
 ?>
 	</div>
-</div>
-<div id="footer">
+	<div id="footer">
 	<ul id="sitenav">
 		<li class="copyright">©&nbsp;<? date_default_timezone_set(CONFIG_TIMEZONE); echo (date ("Y")); ?> <a href="http://iteam.ua/">iTeam</a></li>
 		<li class="first"><a href="http://portal.iteam.net.ua/">Портал</a></li>
@@ -18,6 +17,8 @@ if (!defined('UP')) {
 	</ul>
 	<!--Made on Omicron Persei VIII. Designed on Earth.-->
 </div>
+</div>
+
 <script src="<?php echo JS_BASE_URL; ?>js/jquery.js" type="text/javascript"></script>
 <?php
 

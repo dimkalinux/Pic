@@ -294,20 +294,20 @@ function is_valid_email($email) {
 
 
 function ami_printPage($content, $page_name='main_page') {
-	global $base_url, $user, $page_title;
+	global $base_url, $user, $page_title, $ami_onDOMReady;
 
 	if (!defined('UP_ROOT')) {
 		die('Not defined UP_ROOT');
 	}
 
 	if (!defined('UP_HEADER')) {
-		require_once UP_ROOT.'header.php';
+	    require_once UP_ROOT.'header.php';
 	}
 
 	echo $content;
 
 	if (!defined('UP_FOOTER')) {
-		require_once UP_ROOT.'footer.php';
+	    require_once UP_ROOT.'footer.php';
 	}
 }
 
@@ -442,7 +442,33 @@ function pic_getImageLink($storage, $location, $hashed_filename, $size) {
 	    break;
     }
 
+    // CHANGE ext FOR thumbs in TIFF format
+    if ($size != IMAGE_SIZE_ORIGINAL) {
+        $file_ext = pic_GetFileExt($hashed_filename);
+	switch ($file_ext) {
+	    case  'tif':
+	    case  'bmp':
+		$image_link = pic_replaceFileExtension($image_link, 'png');
+		break;
+
+	    default:
+		break;
+	}
+    }
+
     return ami_link('image', array($storage, $location, $image_link));
+}
+
+function pic_replaceFileExtension($filename, $new_extension) {
+    return preg_replace('/\..+$/', '.' . $new_extension, $filename);
+}
+
+function pic_GetFileExt($file_name) {
+    if (strlen($file_name) == 0) {
+	return FALSE;
+    }
+
+    return strtolower(substr(strrchr($file_name, "."), 1));
 }
 
 ?>

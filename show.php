@@ -55,7 +55,7 @@ $p_height = $row['p_height'];
 
 $home_link = ami_link('root');
 $show_link = ami_link('show_image', $key_id);
-$view_link = ami_link('view_image', array($key_id, IMAGE_SIZE_MIDDLE));
+$view_link = ami_link('links_image', array($key_id, IMAGE_SIZE_MIDDLE));
 $preview_link = pic_getImageLink($storage, $location, $hash_filename, IMAGE_SIZE_PREVIEW);
 $original_link = pic_getImageLink($storage, $location, $hash_filename, IMAGE_SIZE_ORIGINAL);
 //
@@ -67,11 +67,11 @@ $out = <<<FMB
 			<li><a href="$home_link" title="Вернуться на главную страницу">На главную</a></li>
 			<li><a href="$view_link" title="Получить ссылки на этот файл">Ссылки</a></li>
 			<!--<li>{$p_width}x{$p_height} $p_size_text</li>-->
-			<li><a href="$original_link" title="Скачать оригинал">{$o_width}x{$o_height} $o_size_text</a></li>
+			<li><a href="$original_link" title="Скачать оригинал">{$o_width}&#8202;x&#8202;{$o_height} $o_size_text</a></li>
 		</ul>
 	</div>
 	<div id="img_block">
-		<img class="fancy_image" src="$preview_link" alt="$filename"/>
+		<a href="$original_link"><img class="fancy_image" src="$preview_link" alt="$filename"/></a>
 	</div>
 FMB;
 

@@ -54,7 +54,7 @@ class Upload {
 		// 7. ADD to DB
 		$uploaded_return_info = $upload_file->save_in_db($uploadLocation, $uploadStorage, $uploadFilename, $uploadHashedFilename, $upload_image->getWidth(), $upload_image->getHeight(), $upload_image->getPreview_Width(), $upload_image->getPreview_Height(), $upload_image->getPreview_Size());
 
-		$view_uploaded_image_link = ami_link('view_image_owner', array($uploaded_return_info['key'], $uploaded_return_info['delete_key'], IMAGE_SIZE_SMALL));
+		$view_uploaded_image_link = ami_link('links_image_owner', array($uploaded_return_info['key'], $uploaded_return_info['delete_key'], IMAGE_SIZE_SMALL));
 		if (isset($file['async'])) {
 			ami_async_response(array('error'=> 0, 'url' => $view_uploaded_image_link), AMI_ASYNC_JSON);
 		} else {

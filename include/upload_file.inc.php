@@ -142,7 +142,7 @@ class Upload_file {
 	 * @return bool
 	 */
 	public function isImage() {
-		return in_array($this->getContentType(), array('image/gif', 'image/png', 'image/jpeg'), TRUE);
+		return in_array($this->getContentType(), array('image/gif', 'image/png', 'image/jpeg', 'image/tiff', 'image/bmp'), TRUE);
 	}
 
 

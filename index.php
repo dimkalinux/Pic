@@ -17,7 +17,7 @@ require UP_ROOT.'header.php';
 			<input type="submit" name="do" value="Загрузить" tabindex="2"/>
 		</div>
 		<div class="formRow">
-			<div class="inputHelp">jpeg, png, gif до 10 мегабайт</div>
+			<div class="inputHelp">jpeg, png, gif, tiff, bmp до&nbsp;10&nbsp;мегабайт</div>
 		</div>
 	</form>
 	<div id="upload_status">&nbsp;</div>

@@ -10,13 +10,10 @@ define('MYSQL_PASSWORD', '_stB17ZfKs15:-)dddsDFa1d');
 define('MYSQL_CHARSET', 'utf8');
 
 // BASE URL aka CDN
-define('CSS_BASE_URL', 'http://pic.iteam.ua/');
-define('JS_BASE_URL', 'http://pic.iteam.ua/');
-define('JS_BASE_URL_1', 'http://pic.iteam.ua/');
+define('CSS_BASE_URL', 'http://pic.iteam.net.ua/');
+define('JS_BASE_URL', 'http://pic.iteam.net.ua/');
+define('JS_BASE_URL_1', 'http://pic.iteam.net.ua/');
 
-
-// AJAX
-define('ACTION_', 1);
 
 //
 define('CONFIG_TIMEZONE', "Europe/Zaporozhye");
@@ -31,7 +28,7 @@ define('AMI_ASYNC_JSON', 1);
 define('AMI_ASYNC_XML', 2);
 
 
-$amiBaseUrl = $picBaseUrl = $base_url = 'http://pic.iteam.ua';
+$amiBaseUrl = $picBaseUrl = $base_url = 'http://pic.lg.ua';
 $picDefaultPreviewSize = IMAGE_SIZE_MIDDLE;
 
 // IMAGE SECTION
@@ -39,11 +36,11 @@ $pic_image_autorotate = TRUE;
 //
 $pic_image_small_height = 250;
 $pic_image_small_width = 250;
-$pic_image_small_quality = 90;
+$pic_image_small_quality = 87;
 
 $pic_image_medium_height = 350;
 $pic_image_medium_width = 500;
-$pic_image_medium_quality = 90;
+$pic_image_medium_quality = 87;
 
 $pic_image_preview_height = 625;
 $pic_image_preview_width = 875;
@@ -56,12 +53,12 @@ $cookie_secure = 0;
 
 // UPLOAD
 $picUploadBaseDir = '/var/upload/pic/';
-$picMaxUploadSize = 10*1048576;
+$picMaxUploadSize = 11*1048576;
 
 // GOOGLE ANALYTICS SECTION
 $googleAnalyticsCode = '';
 
-$picStorages = array('1','2','3','4','5','6','7','8');
+$picStorages = array('1','2','3');
 
 
 define('UP', 1);

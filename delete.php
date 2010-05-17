@@ -10,8 +10,8 @@ if (isset($_GET['ok'])) {
 	$home_link = ami_link('root');
 	$out = <<<ZZZ
 	<div id="status">&nbsp;</div>
-	<h2>OK</h2>
-	<p>Файл удалён с сервера</p>
+	<h2>Файл удалён</h2>
+	<p>Файл успешно удалён с сервера</p>
 	<p><a href="$home_link">Перейти на главную страницу</a></p>
 ZZZ;
 	ami_printPage($out);
@@ -53,20 +53,20 @@ try {
 	}
 
 	// is async request
-	if (isset($_POST['async'])) {
-		exit(json_encode(array('error'=> 0, 'message' => '')));
+	if (isset($_GET['async'])) {
+		ami_async_response(array('error'=> 0, 'message' => ''), AMI_ASYNC_JSON);
 	} else {
 		ami_redirect(ami_link('delete_image_ok'));
 	}
 } catch (AppLevelException $e) {
-	if (isset($_POST['async'])) {
-		exit(json_encode(array('error'=> 1, 'message' => $e->getMessage())));
+	if (isset($_GET['async'])) {
+		ami_async_response(array('error'=> 1, 'message' => $e->getMessage()), AMI_ASYNC_JSON);
 	} else {
 		ami_show_error_message($e->getMessage());
 	}
 } catch (Exception $e) {
-	if (isset($_POST['async'])) {
-		exit(json_encode(array('error'=> 1, 'message' => $e->getMessage())));
+	if (isset($_GET['async'])) {
+		ami_async_response(array('error'=> 1, 'message' => $e->getMessage()), AMI_ASYNC_JSON);
 	} else {
 		ami_show_error($e->getMessage());
 	}

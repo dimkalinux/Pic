@@ -6,7 +6,7 @@ if (!defined('UP')) {
 }
 
 if (empty($page_title)) {
-	$page_title = 'ПИК';
+	$page_title = 'Пик';
 }
 
 if (empty($page_name)) {
@@ -25,7 +25,7 @@ header('Pragma: no-cache');		// For HTTP/1.0 compability
 	<title><?php echo $page_title; ?></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<link rel="stylesheet" type="text/css" href="<?php echo CSS_BASE_URL; ?>style/style.css"/>
-	<!--<link rel="icon" type="image/png" href="/favicon.png">-->
+	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
 	<!--[if IE]><link rel="stylesheet" type="text/css" href="<?php echo CSS_BASE_URL; ?>style/ie_style.css" /><![endif]-->
 </head>
 <?php flush(); ?>

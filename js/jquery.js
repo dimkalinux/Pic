@@ -1140,6 +1140,8 @@ PIC.upload = function () {
 	}
 
 	function formCheck() {
+		$('#upload_status').html('&nbsp;');
+
 		var submit = $("input[type='file']").parent().find("input[type='submit']");
 		if ($("input[type='file'][value!='']").size() != 0) {
 			$(submit).removeAttr("disabled");
@@ -1235,255 +1237,12 @@ PIC.upload = function () {
 		//
 		error: function (msg) {
 			active = false;
-			alert(msg);
-			/*$('#uploadFile').removeAttr('disabled').focus();
-			$('#uploadForm').stopTime('progressTime');
-
-			$('#upload_progress,#upload_status').hide();
-			UP.formCheck.upload();
-
-			if (msg && msg.length > 0) {
-				UP.statusMsg.show(msg, UP.env.msgError, true);
-			}*/
+			$('#upload_status').html('Ошибка: '+msg);
 		}
 	};
 }();
 
 
-
-PIC.news = function () {
-	var newsBlock = '',
-		tabList = '',
-		update_interval = 0,
-		service_id = '';
-
-	function tab_click() {
-		var target_tab = $(this),
-			news_id = $(target_tab).attr('news-id');
-
-		select_tab(news_id, 1);
-	}
-
-	function select_tab(news_id, animate) {
-		var target_tab = $("li[news-id='"+news_id+"']");
-
-		// REMOVE ALL selected
-		$(tabList).children("li").each(function () {
-			$(this).removeClass('selected');
-		});
-
-		// SET ALL tabindex
-		$(tabList).children("li").each(function () {
-			$(this).children('a').attr('tabindex', -1);
-		});
-
-		$(target_tab).addClass('selected');
-		$(target_tab).find('a').attr('tabindex', 0);
-
-		// load info
-		document.location.hash = news_id;
-		tab_load_info(news_id, animate);
-	}
-
-	function tab_load_info(news_id, fancy) {
-		if (fancy === 1) {
-			$('#newsBody').fadeOut(150, function () {
-				$('#newsBody').html($('#news_'+news_id).html());
-				$('#newsBody').fadeIn(200);
-			});
-		} else {
-			$('#newsBody').html($('#news_'+news_id).html());
-		}
-	}
-
-	function update(service_id) {
-		$.ajax({
-			type: 	'GET',
-			url: 	PIC.env.ajaxBackend,
-			data: 	{ t_action: PORTAL.env.actionServiceUpdate, t_id: service_id },
-			dataType: 'json',
-			complete: function () {},
-			error: function () {},
-			success: function (data) {
-				if (parseInt(data.result, 10) === 1) {
-					$('#newsHiddenSourcesContent').html(data.message);
-
-					// UPDATE CURRENT NEW TAB
-					var currentTabNewsID = getCurrentSelectedTab();
-					if (currentTabNewsID !== 0 && currentTabNewsID != 'undefined') {
-						tab_load_info(currentTabNewsID, 0);
-					}
-				}
-			}
-		});
-	}
-
-	function getCurrentSelectedTab() {
-		return $(tabList).find('li.selected').attr('news-id') || 0;
-	}
-
-	return {
-		init: function (serviceBlockID) {
-			if ($('#'+serviceBlockID).size() < 1) {
-			    return;
-			}
-
-			newsBlock = $('#'+serviceBlockID);
-			tabList = $(newsBlock).find('ul.y-tablist');
-			update_interval = parseInt($(newsBlock).attr('update'), 10) || 0;
-			service_id = $(newsBlock).attr('id').split('-')[1]
-
-			$(tabList).children("li").each(function () {
-				$(this).bind('click', tab_click);
-			});
-
-			// load current news
-			var currentNewsID = window.location.hash;
-			if (currentNewsID) {
-				currentNewsID = currentNewsID.substring(1);
-				select_tab(currentNewsID, 0);
-			}
-
-			// START UPDATE
-			if (update_interval === 0) {
-				return;
-			}
-
-			if (update_interval < 120) {
-				update_interval = 120;
-			}
-
-			$(newsBlock).addClass('autoupdated');
-
-				// START TIMER
-			$(document).everyTime(update_interval+'s', 'timer_news', function () {
-				update(service_id);
-			});
-		}
-	};
-}();
-
-PIC.apps = function () {
-	function apps_header_click() {
-		var list = $(this).next('ul'),
-			id = $(list).attr('id');
-
-		$(list).slideToggle(200, function () {
-			var appsStatus = $(list).is(':visible')? 0 : 1,
-				allAppsStatus = $.cookie(PORTAL.env.appsStatusCookie) || '',
-				appsCS = '';
-
-				if (allAppsStatus === '') {
-					appsCS = id+':'+appsStatus;
-				} else {
-					var appsList = allAppsStatus.split('|'),
-						listHaveCurrentID = false;
-
-					// WALK trough LIST
-					$.each(appsList, function (i, apps) {
-						var _ID = apps.split(':')[0],
-							_Status = parseInt(apps.split(':')[1], 10);
-
-						if (!isNaN(_Status)) {
-							if (_ID != id) {
-								// JUST COPY other APPS STATUS
-								appsCS += _ID+':'+_Status+'|';
-							} else {
-								// IS CURRENT APPS - change value
-								appsCS += _ID+':'+appsStatus+'|';
-								listHaveCurrentID = true;
-							}
-						}
-					});
-
-					// ADD CURRENT to list
-					if (!listHaveCurrentID) {
-						appsCS += id+':'+appsStatus+'|';
-					}
-				}
-				// SET COOKIE
-				$.cookie(PORTAL.env.appsStatusCookie, appsCS, { expires: 99999, path: '/' });
-		});
-	}
-
-	return {
-		init: function () {
-			$('div.pa-apps-promolist').children('h3').each(function () {
-				var header = $(this);
-				$(header).bind('click', apps_header_click)
-					.addClass('jsenabled')
-					.css('cursor', 'pointer');
-			});
-
-			// HIDE hidden
-			var allAppsStatus = $.cookie(PORTAL.env.appsStatusCookie) || '';
-			if (allAppsStatus !== '') {
-				var appsList = allAppsStatus.split('|');
-
-				// WALK trough LIST
-				$.each(appsList, function (i, apps) {
-					var _ID = apps.split(':')[0],
-						_Status = parseInt(apps.split(':')[1], 10);
-
-					if (!isNaN(_Status)) {
-						if (_Status === 0) {
-							$('#'+_ID+':hidden').show();
-						} else {
-							$('#'+_ID+':visible').hide();
-						}
-					}
-				});
-			}
-		}
-	};
-}();
-
-PIC.serviceReloader = function () {
-	function update(service_id) {
-		$.ajax({
-			type: 	'GET',
-			url: 	PIC.env.ajaxBackend,
-			data: 	{ t_action: PORTAL.env.actionServiceUpdate, t_id: service_id },
-			dataType: 'json',
-			complete: function () {},
-			error: function () {},
-			success: function (data) {
-				if (parseInt(data.result, 10) === 1) {
-					$('#service-'+service_id).find('div.content').html(data.message);
-					$('#service-'+service_id).removeClass('service_error')
-				} else {
-					$('#service-'+service_id).find('div.content').html(data.message);
-					$('#service-'+service_id).addClass('service_error')
-				}
-			}
-		});
-	}
-
-	return {
-		init: function () {
-			$('.service_block').each(function () {
-				var service = $(this),
-					update_interval = parseInt($(service).attr('update'), 10) || 0,
-					service_id = $(service).attr('id').split('-')[1];
-
-				if (update_interval === 0) {
-					return;
-				}
-
-				if (update_interval < 60) {
-					update_interval = 60;
-				}
-
-				$(service).addClass('autoupdated');
-
-				// START TIMER
-				$(document).everyTime(update_interval+'s', 'timer_'+service_id, function () {
-					update(service_id);
-				});
-			});
-		}
-	};
-}();
 
 
 PIC.log = function () {
@@ -1496,6 +1255,52 @@ PIC.log = function () {
 	};
 }();
 
+PIC.ajaxify = function () {
+	return {
+		delete_image: function () {
+			$('a#delete_image').click(function () {
+				if ($(this).hasClass('active')) {
+					return false;
+				} else {
+					$(this).addClass('active');
+				}
+
+				var a_url = $(this).attr('href')+'async/',
+					icon = $(this).find('span.icon');
+
+				$.ajax({
+					type: 	'GET',
+					url: 	a_url,
+					dataType: 'json',
+					beforeSend: function() {
+						$(document).oneTime(300, 'icon_loading', function () {
+							$(icon).addClass('loading');
+						});
+					},
+					complete: function() {
+						$(this).removeClass('active');
+					},
+					error: function () {
+						alert('Ошибка');
+					},
+					success: function (r) {
+						if (r && parseInt(r.error, 10) === 0) {
+							$('#primary').fadeOut(350, function() {
+								$('body').attr('id', 'main_page');
+								$('#primary').html('<div id="status">&nbsp;</div><div id="r1"><h2>Файл удалён</h2>' +
+								'<p>Файл успешно удалён с сервера</p><p><a href="/">Перейти на главную страницу</a></p>');
+							}).fadeIn(250);
+						} else {
+							alert('Ошибка');
+						}
+					}
+				});
+				return false;
+			}).addClass("as_js_link").attr('disabled', 'disabled');;
+		}
+	};
+}();
+
 /*!
  * http://www.shamasis.net/projects/ga/
  * Refer jquery.ga.debug.js
@@ -1504,3 +1309,50 @@ PIC.log = function () {
 (function($){$.ga={};$.ga.load=function(uid,callback){jQuery.ajax({type:'GET',url:(document.location.protocol=="https:"?"https://ssl":"http://www")+'.google-analytics.com/ga.js',cache:true,success:function(){if(typeof _gat==undefined){throw"_gat has not been defined";}t=_gat._getTracker(uid);bind();if($.isFunction(callback)){callback(t)}t._trackPageview()},dataType:'script',data:null})};var t;var bind=function(){if(noT()){throw"pageTracker has not been defined";}for(var $1 in t){if($1.charAt(0)!='_')continue;$.ga[$1.substr(1)]=t[$1]}};var noT=function(){return t==undefined}})(jQuery);
 
 
+$.fn.centerInClient = function(options) {
+    /// <summary>Centers the selected items in the browser window. Takes into account scroll position.
+    /// Ideally the selected set should only match a single element.
+    /// </summary>
+    /// <param name="fn" type="Function">Optional function called when centering is complete. Passed DOM element as parameter</param>
+    /// <param name="forceAbsolute" type="Boolean">if true forces the element to be removed from the document flow
+    ///  and attached to the body element to ensure proper absolute positioning.
+    /// Be aware that this may cause ID hierachy for CSS styles to be affected.
+    /// </param>
+    /// <returns type="jQuery" />
+    var opt = { forceAbsolute: false,
+                container: window,    // selector of element to center in
+                completeHandler: null
+              };
+    $.extend(opt, options);
+
+    return this.each(function(i) {
+        var el = $(this);
+        var jWin = $(opt.container);
+        var isWin = opt.container == window;
+
+        // force to the top of document to ENSURE that
+        // document absolute positioning is available
+        if (opt.forceAbsolute) {
+            if (isWin)
+                el.remove().appendTo("body");
+            else
+                el.remove().appendTo(jWin.get(0));
+        }
+
+        // have to make absolute
+        el.css("position", "absolute");
+
+        // height is off a bit so fudge it
+        var heightFudge = isWin ? 2.0 : 1.8;
+
+        var x = (isWin ? jWin.width() : jWin.outerWidth()) / 2 - el.outerWidth() / 2;
+        var y = (isWin ? jWin.height() : jWin.outerHeight()) / heightFudge - el.outerHeight() / 2;
+
+        el.css("left", x + jWin.scrollLeft());
+        el.css("top", y + jWin.scrollTop());
+
+        // if specified make callback and pass element
+        if (opt.completeHandler)
+            opt.completeHandler(this);
+    });
+}
