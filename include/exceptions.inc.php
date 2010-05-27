@@ -1,7 +1,7 @@
 <?php
 
 // Make sure no one attempts to run this script "directly"
-if (!defined('UP')) {
+if (!defined('AMI')) {
 	exit;
 }
 
@@ -9,7 +9,7 @@ if (!defined('UP')) {
 /**
  * Application Level server exception.
  *
- * @package	pic\
+ * @package	pic
  */
 class AppLevelException extends Exception {}
 

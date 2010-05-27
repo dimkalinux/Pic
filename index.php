@@ -1,29 +1,48 @@
 <?php
 
-if (!defined('UP_ROOT')) {
-	define('UP_ROOT', './');
+if (!defined('AMI_ROOT')) {
+	define('AMI_ROOT', './');
 }
 
-require UP_ROOT.'functions.inc.php';
-require UP_ROOT.'header.php';
+require AMI_ROOT.'functions.inc.php';
+require AMI_ROOT.'header.php';
 ?>
-	<div id="status">&nbsp;</div>
-	<h1>Загрузить картинку на вечное хранение</h1>
+	<div class="span-15 last prepend-5">
+		<ul id="menu">
+			<li class="current">На главную</li>
+			<li><a href="<?echo ami_link('about'); ?>" title="Скачать оригинал">О проекте</a></li>
+		</ul>
+	</div>
 
-	<form method="post" action="<?echo ami_link('upload'); ?>" name="upload" enctype="multipart/form-data" accept-charset="utf-8">
-		<input type="hidden" name="form_sent" value="1"/>
-		<div class="formRow">
-			<input type="file" name="upload" tabindex="1"/>
-			<input type="submit" name="do" value="Загрузить" tabindex="2"/>
+	<div class="span-15 last prepend-5 body_block">
+		<h3>Загрузить картинки на вечное хранение</h3>
+
+		<form method="post" action="/upload/" name="upload" enctype="multipart/form-data" accept-charset="utf-8">
+			<div class="formRow">
+				<input type="file" name="upload" tabindex="1" multiple="true">
+				<input type="submit" name="do" value="Загрузить" tabindex="2">
+			</div>
+			<div class="formRow">
+				<div class="input_description quiet">jpeg, png, gif, tiff, bmp до&nbsp;10&nbsp;мегабайт</div>
+			</div>
+		</form>
+		<div id="upload_status">&nbsp;</div>
+
+		<div id="footer" class="clear prepend-top">
+			<ul id="sitenav">
+				<li class="copyright">©&nbsp;<? date_default_timezone_set(AMI_CONFIG_TIMEZONE); echo(date("Y")); ?> <a href="http://iteam.ua/">iTeam</a></li>
+				<li class="first"><a href="http://portal.iteam.net.ua/">Портал</a></li>
+				<li><a href="http://forum.iteam.net.ua/">Форум</a></li>
+				<li><a href="http://up.iteam.net.ua/">АП</a></li>
+				<li><a href="http://film.lg.ua/">Фильмы</a></li>
+				<li><a href="http://serial.iteam.net.ua/">Сериалы</a></li>
+				<li><a href="http://hosting.iteam.lg.ua/">Хостинг</a></li>
+			</ul>
 		</div>
-		<div class="formRow">
-			<div class="inputHelp">jpeg, png, gif, tiff, bmp до&nbsp;10&nbsp;мегабайт</div>
-		</div>
-	</form>
-	<div id="upload_status">&nbsp;</div>
+	</div>
 <?php
 
 ami_addOnDOMReady('PIC.upload.init();');
 
-require UP_ROOT.'footer.php';
+require AMI_ROOT.'footer.php';
 ?>

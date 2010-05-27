@@ -200,124 +200,16 @@ jQuery.fn.extend({
  * Released under the MIT and GPL licenses.
  */
 
-(function(jQuery){
 
-	// We override the animation for all of these color styles
-	jQuery.each(['backgroundColor', 'borderBottomColor', 'borderLeftColor', 'borderRightColor', 'borderTopColor', 'color', 'outlineColor'], function(i,attr){
-		jQuery.fx.step[attr] = function(fx){
-			if ( fx.state == 0 ) {
-				fx.start = getColor( fx.elem, attr );
-				fx.end = getRGB( fx.end );
-			}
-
-			fx.elem.style[attr] = "rgb(" + [
-				Math.max(Math.min( parseInt((fx.pos * (fx.end[0] - fx.start[0])) + fx.start[0]), 255), 0),
-				Math.max(Math.min( parseInt((fx.pos * (fx.end[1] - fx.start[1])) + fx.start[1]), 255), 0),
-				Math.max(Math.min( parseInt((fx.pos * (fx.end[2] - fx.start[2])) + fx.start[2]), 255), 0)
-			].join(",") + ")";
-		}
-	});
-
-	// Color Conversion functions from highlightFade
-	// By Blair Mitchelmore
-	// http://jquery.offput.ca/highlightFade/
-
-	// Parse strings looking for color tuples [255,255,255]
-	function getRGB(color) {
-		var result;
-
-		// Check if we're already dealing with an array of colors
-		if ( color && color.constructor == Array && color.length == 3 )
-			return color;
-
-		// Look for rgb(num,num,num)
-		if (result = /rgb\(\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*\)/.exec(color))
-			return [parseInt(result[1]), parseInt(result[2]), parseInt(result[3])];
-
-		// Look for rgb(num%,num%,num%)
-		if (result = /rgb\(\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\%\s*\)/.exec(color))
-			return [parseFloat(result[1])*2.55, parseFloat(result[2])*2.55, parseFloat(result[3])*2.55];
-
-		// Look for #a0b1c2
-		if (result = /#([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})/.exec(color))
-			return [parseInt(result[1],16), parseInt(result[2],16), parseInt(result[3],16)];
-
-		// Look for #fff
-		if (result = /#([a-fA-F0-9])([a-fA-F0-9])([a-fA-F0-9])/.exec(color))
-			return [parseInt(result[1]+result[1],16), parseInt(result[2]+result[2],16), parseInt(result[3]+result[3],16)];
-
-		// Otherwise, we're most likely dealing with a named color
-		return colors[jQuery.trim(color).toLowerCase()];
-	}
-
-	function getColor(elem, attr) {
-		var color;
-
-		do {
-			color = jQuery.curCSS(elem, attr);
-
-			// Keep going until we find an element that has color, or we hit the body
-			if ( color != '' && color != 'transparent' || jQuery.nodeName(elem, "body") )
-				break;
-
-			attr = "backgroundColor";
-		} while ( elem = elem.parentNode );
-
-		return getRGB(color);
-	};
-
-	// Some named colors to work with
-	// From Interface by Stefan Petre
-	// http://interface.eyecon.ro/
-
-	var colors = {
-		aqua:[0,255,255],
-		azure:[240,255,255],
-		beige:[245,245,220],
-		black:[0,0,0],
-		blue:[0,0,255],
-		brown:[165,42,42],
-		cyan:[0,255,255],
-		darkblue:[0,0,139],
-		darkcyan:[0,139,139],
-		darkgrey:[169,169,169],
-		darkgreen:[0,100,0],
-		darkkhaki:[189,183,107],
-		darkmagenta:[139,0,139],
-		darkolivegreen:[85,107,47],
-		darkorange:[255,140,0],
-		darkorchid:[153,50,204],
-		darkred:[139,0,0],
-		darksalmon:[233,150,122],
-		darkviolet:[148,0,211],
-		fuchsia:[255,0,255],
-		gold:[255,215,0],
-		green:[0,128,0],
-		indigo:[75,0,130],
-		khaki:[240,230,140],
-		lightblue:[173,216,230],
-		lightcyan:[224,255,255],
-		lightgreen:[144,238,144],
-		lightgrey:[211,211,211],
-		lightpink:[255,182,193],
-		lightyellow:[255,255,224],
-		lime:[0,255,0],
-		magenta:[255,0,255],
-		maroon:[128,0,0],
-		navy:[0,0,128],
-		olive:[128,128,0],
-		orange:[255,165,0],
-		pink:[255,192,203],
-		purple:[128,0,128],
-		violet:[128,0,128],
-		red:[255,0,0],
-		silver:[192,192,192],
-		white:[255,255,255],
-		yellow:[255,255,0]
-	};
-
-})(jQuery);
-
+(function(jQuery){jQuery.each(['backgroundColor','borderBottomColor','borderLeftColor','borderRightColor','borderTopColor','color','outlineColor'],function(i,attr){jQuery.fx.step[attr]=function(fx){if(fx.state==0){fx.start=getColor(fx.elem,attr);fx.end=getRGB(fx.end);}
+fx.elem.style[attr]="rgb("+[Math.max(Math.min(parseInt((fx.pos*(fx.end[0]-fx.start[0]))+fx.start[0]),255),0),Math.max(Math.min(parseInt((fx.pos*(fx.end[1]-fx.start[1]))+fx.start[1]),255),0),Math.max(Math.min(parseInt((fx.pos*(fx.end[2]-fx.start[2]))+fx.start[2]),255),0)].join(",")+")";}});function getRGB(color){var result;if(color&&color.constructor==Array&&color.length==3)
+return color;if(result=/rgb\(\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*\)/.exec(color))
+return[parseInt(result[1]),parseInt(result[2]),parseInt(result[3])];if(result=/rgb\(\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\%\s*\)/.exec(color))
+return[parseFloat(result[1])*2.55,parseFloat(result[2])*2.55,parseFloat(result[3])*2.55];if(result=/#([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})/.exec(color))
+return[parseInt(result[1],16),parseInt(result[2],16),parseInt(result[3],16)];if(result=/#([a-fA-F0-9])([a-fA-F0-9])([a-fA-F0-9])/.exec(color))
+return[parseInt(result[1]+result[1],16),parseInt(result[2]+result[2],16),parseInt(result[3]+result[3],16)];return colors[jQuery.trim(color).toLowerCase()];}
+function getColor(elem,attr){var color;do{color=jQuery.curCSS(elem,attr);if(color!=''&&color!='transparent'||jQuery.nodeName(elem,"body"))
+break;attr="backgroundColor";}while(elem=elem.parentNode);return getRGB(color);};var colors={aqua:[0,255,255],azure:[240,255,255],beige:[245,245,220],black:[0,0,0],blue:[0,0,255],brown:[165,42,42],cyan:[0,255,255],darkblue:[0,0,139],darkcyan:[0,139,139],darkgrey:[169,169,169],darkgreen:[0,100,0],darkkhaki:[189,183,107],darkmagenta:[139,0,139],darkolivegreen:[85,107,47],darkorange:[255,140,0],darkorchid:[153,50,204],darkred:[139,0,0],darksalmon:[233,150,122],darkviolet:[148,0,211],fuchsia:[255,0,255],gold:[255,215,0],green:[0,128,0],indigo:[75,0,130],khaki:[240,230,140],lightblue:[173,216,230],lightcyan:[224,255,255],lightgreen:[144,238,144],lightgrey:[211,211,211],lightpink:[255,182,193],lightyellow:[255,255,224],lime:[0,255,0],magenta:[255,0,255],maroon:[128,0,0],navy:[0,0,128],olive:[128,128,0],orange:[255,165,0],pink:[255,192,203],purple:[128,0,128],violet:[128,0,128],red:[255,0,0],silver:[192,192,192],white:[255,255,255],yellow:[255,255,0]};})(jQuery);
 
 /*!
  * jQuery Form Plugin
@@ -329,673 +221,81 @@ jQuery.fn.extend({
  *   http://www.opensource.org/licenses/mit-license.php
  *   http://www.gnu.org/licenses/gpl.html
  */
-;(function($) {
-
-/*
-	Usage Note:
-	-----------
-	Do not use both ajaxSubmit and ajaxForm on the same form.  These
-	functions are intended to be exclusive.  Use ajaxSubmit if you want
-	to bind your own submit handler to the form.  For example,
-
-	$(document).ready(function() {
-		$('#myForm').bind('submit', function() {
-			$(this).ajaxSubmit({
-				target: '#output'
-			});
-			return false; // <-- important!
-		});
-	});
-
-	Use ajaxForm when you want the plugin to manage all the event binding
-	for you.  For example,
-
-	$(document).ready(function() {
-		$('#myForm').ajaxForm({
-			target: '#output'
-		});
-	});
-
-	When using ajaxForm, the ajaxSubmit function will be invoked for you
-	at the appropriate time.
-*/
-
-/**
- * ajaxSubmit() provides a mechanism for immediately submitting
- * an HTML form using AJAX.
- */
-$.fn.ajaxSubmit = function(options) {
-	// fast fail if nothing selected (http://dev.jquery.com/ticket/2752)
-	if (!this.length) {
-		log('ajaxSubmit: skipping submit process - no element selected');
-		return this;
-	}
-
-	if (typeof options == 'function')
-		options = { success: options };
-
-	var url = $.trim(this.attr('action'));
-	if (url) {
-		// clean url (don't include hash vaue)
-		url = (url.match(/^([^#]+)/)||[])[1];
-   	}
-   	url = url || window.location.href || '';
-
-	options = $.extend({
-		url:  url,
-		type: this.attr('method') || 'GET',
-		iframeSrc: /^https/i.test(window.location.href || '') ? 'javascript:false' : 'about:blank'
-	}, options || {});
-
-	// hook for manipulating the form data before it is extracted;
-	// convenient for use with rich editors like tinyMCE or FCKEditor
-	var veto = {};
-	this.trigger('form-pre-serialize', [this, options, veto]);
-	if (veto.veto) {
-		log('ajaxSubmit: submit vetoed via form-pre-serialize trigger');
-		return this;
-	}
-
-	// provide opportunity to alter form data before it is serialized
-	if (options.beforeSerialize && options.beforeSerialize(this, options) === false) {
-		log('ajaxSubmit: submit aborted via beforeSerialize callback');
-		return this;
-	}
-
-	var a = this.formToArray(options.semantic);
-	if (options.data) {
-		options.extraData = options.data;
-		for (var n in options.data) {
-		  if(options.data[n] instanceof Array) {
-			for (var k in options.data[n])
-			  a.push( { name: n, value: options.data[n][k] } );
-		  }
-		  else
-			 a.push( { name: n, value: options.data[n] } );
-		}
-	}
-
-	// give pre-submit callback an opportunity to abort the submit
-	if (options.beforeSubmit && options.beforeSubmit(a, this, options) === false) {
-		log('ajaxSubmit: submit aborted via beforeSubmit callback');
-		return this;
-	}
-
-	// fire vetoable 'validate' event
-	this.trigger('form-submit-validate', [a, this, options, veto]);
-	if (veto.veto) {
-		log('ajaxSubmit: submit vetoed via form-submit-validate trigger');
-		return this;
-	}
-
-	var q = $.param(a);
-
-	if (options.type.toUpperCase() == 'GET') {
-		options.url += (options.url.indexOf('?') >= 0 ? '&' : '?') + q;
-		options.data = null;  // data is null for 'get'
-	}
-	else
-		options.data = q; // data is the query string for 'post'
-
-	var $form = this, callbacks = [];
-	if (options.resetForm) callbacks.push(function() { $form.resetForm(); });
-	if (options.clearForm) callbacks.push(function() { $form.clearForm(); });
-
-	// perform a load on the target only if dataType is not provided
-	if (!options.dataType && options.target) {
-		var oldSuccess = options.success || function(){};
-		callbacks.push(function(data) {
-			var fn = options.replaceTarget ? 'replaceWith' : 'html';
-			$(options.target)[fn](data).each(oldSuccess, arguments);
-		});
-	}
-	else if (options.success)
-		callbacks.push(options.success);
-
-	options.success = function(data, status, xhr) { // jQuery 1.4+ passes xhr as 3rd arg
-		for (var i=0, max=callbacks.length; i < max; i++)
-			callbacks[i].apply(options, [data, status, xhr || $form, $form]);
-	};
-
-	// are there files to upload?
-	var files = $('input:file', this).fieldValue();
-	var found = false;
-	for (var j=0; j < files.length; j++)
-		if (files[j])
-			found = true;
-
-	var multipart = false;
-//	var mp = 'multipart/form-data';
-//	multipart = ($form.attr('enctype') == mp || $form.attr('encoding') == mp);
-
-	// options.iframe allows user to force iframe mode
-	// 06-NOV-09: now defaulting to iframe mode if file input is detected
-   if ((files.length && options.iframe !== false) || options.iframe || found || multipart) {
-	   // hack to fix Safari hang (thanks to Tim Molendijk for this)
-	   // see:  http://groups.google.com/group/jquery-dev/browse_thread/thread/36395b7ab510dd5d
-	   if (options.closeKeepAlive)
-		   $.get(options.closeKeepAlive, fileUpload);
-	   else
-		   fileUpload();
-	   }
-   else
-	   $.ajax(options);
-
-	// fire 'notify' event
-	this.trigger('form-submit-notify', [this, options]);
-	return this;
-
-
-	// private function for handling file uploads (hat tip to YAHOO!)
-	function fileUpload() {
-		var form = $form[0];
-
-		if ($(':input[name=submit]', form).length) {
-			alert('Error: Form elements must not be named "submit".');
-			return;
-		}
-
-		var opts = $.extend({}, $.ajaxSettings, options);
-		var s = $.extend(true, {}, $.extend(true, {}, $.ajaxSettings), opts);
-
-		var id = 'jqFormIO' + (new Date().getTime());
-		var $io = $('<iframe id="' + id + '" name="' + id + '" src="'+ opts.iframeSrc +'" onload="(jQuery(this).data(\'form-plugin-onload\'))()" />');
-		var io = $io[0];
-
-		$io.css({ position: 'absolute', top: '-1000px', left: '-1000px' });
-
-		var xhr = { // mock object
-			aborted: 0,
-			responseText: null,
-			responseXML: null,
-			status: 0,
-			statusText: 'n/a',
-			getAllResponseHeaders: function() {},
-			getResponseHeader: function() {},
-			setRequestHeader: function() {},
-			abort: function() {
-				this.aborted = 1;
-				$io.attr('src', opts.iframeSrc); // abort op in progress
-			}
-		};
-
-		var g = opts.global;
-		// trigger ajax global events so that activity/block indicators work like normal
-		if (g && ! $.active++) $.event.trigger("ajaxStart");
-		if (g) $.event.trigger("ajaxSend", [xhr, opts]);
-
-		if (s.beforeSend && s.beforeSend(xhr, s) === false) {
-			s.global && $.active--;
-			return;
-		}
-		if (xhr.aborted)
-			return;
-
-		var cbInvoked = false;
-		var timedOut = 0;
-
-		// add submitting element to data if we know it
-		var sub = form.clk;
-		if (sub) {
-			var n = sub.name;
-			if (n && !sub.disabled) {
-				opts.extraData = opts.extraData || {};
-				opts.extraData[n] = sub.value;
-				if (sub.type == "image") {
-					opts.extraData[n+'.x'] = form.clk_x;
-					opts.extraData[n+'.y'] = form.clk_y;
-				}
-			}
-		}
-
-		// take a breath so that pending repaints get some cpu time before the upload starts
-		function doSubmit() {
-			// make sure form attrs are set
-			var t = $form.attr('target'), a = $form.attr('action');
-
-			// update form attrs in IE friendly way
-			form.setAttribute('target',id);
-			if (form.getAttribute('method') != 'POST')
-				form.setAttribute('method', 'POST');
-			if (form.getAttribute('action') != opts.url)
-				form.setAttribute('action', opts.url);
-
-			// ie borks in some cases when setting encoding
-			if (! opts.skipEncodingOverride) {
-				$form.attr({
-					encoding: 'multipart/form-data',
-					enctype:  'multipart/form-data'
-				});
-			}
-
-			// support timout
-			if (opts.timeout)
-				setTimeout(function() { timedOut = true; cb(); }, opts.timeout);
-
-			// add "extra" data to form if provided in options
-			var extraInputs = [];
-			try {
-				if (opts.extraData)
-					for (var n in opts.extraData)
-						extraInputs.push(
-							$('<input type="hidden" name="'+n+'" value="'+opts.extraData[n]+'" />')
-								.appendTo(form)[0]);
-
-				// add iframe to doc and submit the form
-				$io.appendTo('body');
-				$io.data('form-plugin-onload', cb);
-				form.submit();
-			}
-			finally {
-				// reset attrs and remove "extra" input elements
-				form.setAttribute('action',a);
-				t ? form.setAttribute('target', t) : $form.removeAttr('target');
-				$(extraInputs).remove();
-			}
-		};
-
-		if (opts.forceSync)
-			doSubmit();
-		else
-			setTimeout(doSubmit, 10); // this lets dom updates render
-
-		var domCheckCount = 100;
-
-		function cb() {
-			if (cbInvoked)
-				return;
-
-			var ok = true;
-			try {
-				if (timedOut) throw 'timeout';
-				// extract the server response from the iframe
-				var data, doc;
-
-				doc = io.contentWindow ? io.contentWindow.document : io.contentDocument ? io.contentDocument : io.document;
-
-				var isXml = opts.dataType == 'xml' || doc.XMLDocument || $.isXMLDoc(doc);
-				log('isXml='+isXml);
-				if (!isXml && (doc.body == null || doc.body.innerHTML == '')) {
-				 	if (--domCheckCount) {
-						// in some browsers (Opera) the iframe DOM is not always traversable when
-						// the onload callback fires, so we loop a bit to accommodate
-				 		log('requeing onLoad callback, DOM not available');
-						setTimeout(cb, 250);
-						return;
-					}
-					log('Could not access iframe DOM after 100 tries.');
-					return;
-				}
-
-				log('response detected');
-				cbInvoked = true;
-				xhr.responseText = doc.body ? doc.body.innerHTML : null;
-				xhr.responseXML = doc.XMLDocument ? doc.XMLDocument : doc;
-				xhr.getResponseHeader = function(header){
-					var headers = {'content-type': opts.dataType};
-					return headers[header];
-				};
-
-				if (opts.dataType == 'json' || opts.dataType == 'script') {
-					// see if user embedded response in textarea
-					var ta = doc.getElementsByTagName('textarea')[0];
-					if (ta)
-						xhr.responseText = ta.value;
-					else {
-						// account for browsers injecting pre around json response
-						var pre = doc.getElementsByTagName('pre')[0];
-						if (pre)
-							xhr.responseText = pre.innerHTML;
-					}
-				}
-				else if (opts.dataType == 'xml' && !xhr.responseXML && xhr.responseText != null) {
-					xhr.responseXML = toXml(xhr.responseText);
-				}
-				data = $.httpData(xhr, opts.dataType);
-			}
-			catch(e){
-				log('error caught:',e);
-				ok = false;
-				xhr.error = e;
-				$.handleError(opts, xhr, 'error', e);
-			}
-
-			// ordering of these callbacks/triggers is odd, but that's how $.ajax does it
-			if (ok) {
-				opts.success(data, 'success');
-				if (g) $.event.trigger("ajaxSuccess", [xhr, opts]);
-			}
-			if (g) $.event.trigger("ajaxComplete", [xhr, opts]);
-			if (g && ! --$.active) $.event.trigger("ajaxStop");
-			if (opts.complete) opts.complete(xhr, ok ? 'success' : 'error');
-
-			// clean up
-			setTimeout(function() {
-				$io.removeData('form-plugin-onload');
-				$io.remove();
-				xhr.responseXML = null;
-			}, 100);
-		};
-
-		function toXml(s, doc) {
-			if (window.ActiveXObject) {
-				doc = new ActiveXObject('Microsoft.XMLDOM');
-				doc.async = 'false';
-				doc.loadXML(s);
-			}
-			else
-				doc = (new DOMParser()).parseFromString(s, 'text/xml');
-			return (doc && doc.documentElement && doc.documentElement.tagName != 'parsererror') ? doc : null;
-		};
-	};
-};
-
-/**
- * ajaxForm() provides a mechanism for fully automating form submission.
- *
- * The advantages of using this method instead of ajaxSubmit() are:
- *
- * 1: This method will include coordinates for <input type="image" /> elements (if the element
- *	is used to submit the form).
- * 2. This method will include the submit element's name/value data (for the element that was
- *	used to submit the form).
- * 3. This method binds the submit() method to the form for you.
- *
- * The options argument for ajaxForm works exactly as it does for ajaxSubmit.  ajaxForm merely
- * passes the options argument along after properly binding events for submit elements and
- * the form itself.
- */
-$.fn.ajaxForm = function(options) {
-	return this.ajaxFormUnbind().bind('submit.form-plugin', function(e) {
-		e.preventDefault();
-		$(this).ajaxSubmit(options);
-	}).bind('click.form-plugin', function(e) {
-		var target = e.target;
-		var $el = $(target);
-		if (!($el.is(":submit,input:image"))) {
-			// is this a child element of the submit el?  (ex: a span within a button)
-			var t = $el.closest(':submit');
-			if (t.length == 0)
-				return;
-			target = t[0];
-		}
-		var form = this;
-		form.clk = target;
-		if (target.type == 'image') {
-			if (e.offsetX != undefined) {
-				form.clk_x = e.offsetX;
-				form.clk_y = e.offsetY;
-			} else if (typeof $.fn.offset == 'function') { // try to use dimensions plugin
-				var offset = $el.offset();
-				form.clk_x = e.pageX - offset.left;
-				form.clk_y = e.pageY - offset.top;
-			} else {
-				form.clk_x = e.pageX - target.offsetLeft;
-				form.clk_y = e.pageY - target.offsetTop;
-			}
-		}
-		// clear form vars
-		setTimeout(function() { form.clk = form.clk_x = form.clk_y = null; }, 100);
-	});
-};
-
-// ajaxFormUnbind unbinds the event handlers that were bound by ajaxForm
-$.fn.ajaxFormUnbind = function() {
-	return this.unbind('submit.form-plugin click.form-plugin');
-};
-
-/**
- * formToArray() gathers form element data into an array of objects that can
- * be passed to any of the following ajax functions: $.get, $.post, or load.
- * Each object in the array has both a 'name' and 'value' property.  An example of
- * an array for a simple login form might be:
- *
- * [ { name: 'username', value: 'jresig' }, { name: 'password', value: 'secret' } ]
- *
- * It is this array that is passed to pre-submit callback functions provided to the
- * ajaxSubmit() and ajaxForm() methods.
- */
-$.fn.formToArray = function(semantic) {
-	var a = [];
-	if (this.length == 0) return a;
-
-	var form = this[0];
-	var els = semantic ? form.getElementsByTagName('*') : form.elements;
-	if (!els) return a;
-	for(var i=0, max=els.length; i < max; i++) {
-		var el = els[i];
-		var n = el.name;
-		if (!n) continue;
-
-		if (semantic && form.clk && el.type == "image") {
-			// handle image inputs on the fly when semantic == true
-			if(!el.disabled && form.clk == el) {
-				a.push({name: n, value: $(el).val()});
-				a.push({name: n+'.x', value: form.clk_x}, {name: n+'.y', value: form.clk_y});
-			}
-			continue;
-		}
-
-		var v = $.fieldValue(el, true);
-		if (v && v.constructor == Array) {
-			for(var j=0, jmax=v.length; j < jmax; j++)
-				a.push({name: n, value: v[j]});
-		}
-		else if (v !== null && typeof v != 'undefined')
-			a.push({name: n, value: v});
-	}
-
-	if (!semantic && form.clk) {
-		// input type=='image' are not found in elements array! handle it here
-		var $input = $(form.clk), input = $input[0], n = input.name;
-		if (n && !input.disabled && input.type == 'image') {
-			a.push({name: n, value: $input.val()});
-			a.push({name: n+'.x', value: form.clk_x}, {name: n+'.y', value: form.clk_y});
-		}
-	}
-	return a;
-};
-
-/**
- * Serializes form data into a 'submittable' string. This method will return a string
- * in the format: name1=value1&amp;name2=value2
- */
-$.fn.formSerialize = function(semantic) {
-	//hand off to jQuery.param for proper encoding
-	return $.param(this.formToArray(semantic));
-};
-
-/**
- * Serializes all field elements in the jQuery object into a query string.
- * This method will return a string in the format: name1=value1&amp;name2=value2
- */
-$.fn.fieldSerialize = function(successful) {
-	var a = [];
-	this.each(function() {
-		var n = this.name;
-		if (!n) return;
-		var v = $.fieldValue(this, successful);
-		if (v && v.constructor == Array) {
-			for (var i=0,max=v.length; i < max; i++)
-				a.push({name: n, value: v[i]});
-		}
-		else if (v !== null && typeof v != 'undefined')
-			a.push({name: this.name, value: v});
-	});
-	//hand off to jQuery.param for proper encoding
-	return $.param(a);
-};
-
-/**
- * Returns the value(s) of the element in the matched set.  For example, consider the following form:
- *
- *  <form><fieldset>
- *	  <input name="A" type="text" />
- *	  <input name="A" type="text" />
- *	  <input name="B" type="checkbox" value="B1" />
- *	  <input name="B" type="checkbox" value="B2"/>
- *	  <input name="C" type="radio" value="C1" />
- *	  <input name="C" type="radio" value="C2" />
- *  </fieldset></form>
- *
- *  var v = $(':text').fieldValue();
- *  // if no values are entered into the text inputs
- *  v == ['','']
- *  // if values entered into the text inputs are 'foo' and 'bar'
- *  v == ['foo','bar']
- *
- *  var v = $(':checkbox').fieldValue();
- *  // if neither checkbox is checked
- *  v === undefined
- *  // if both checkboxes are checked
- *  v == ['B1', 'B2']
- *
- *  var v = $(':radio').fieldValue();
- *  // if neither radio is checked
- *  v === undefined
- *  // if first radio is checked
- *  v == ['C1']
- *
- * The successful argument controls whether or not the field element must be 'successful'
- * (per http://www.w3.org/TR/html4/interact/forms.html#successful-controls).
- * The default value of the successful argument is true.  If this value is false the value(s)
- * for each element is returned.
- *
- * Note: This method *always* returns an array.  If no valid value can be determined the
- *	   array will be empty, otherwise it will contain one or more values.
- */
-$.fn.fieldValue = function(successful) {
-	for (var val=[], i=0, max=this.length; i < max; i++) {
-		var el = this[i];
-		var v = $.fieldValue(el, successful);
-		if (v === null || typeof v == 'undefined' || (v.constructor == Array && !v.length))
-			continue;
-		v.constructor == Array ? $.merge(val, v) : val.push(v);
-	}
-	return val;
-};
-
-/**
- * Returns the value of the field element.
- */
-$.fieldValue = function(el, successful) {
-	var n = el.name, t = el.type, tag = el.tagName.toLowerCase();
-	if (typeof successful == 'undefined') successful = true;
-
-	if (successful && (!n || el.disabled || t == 'reset' || t == 'button' ||
-		(t == 'checkbox' || t == 'radio') && !el.checked ||
-		(t == 'submit' || t == 'image') && el.form && el.form.clk != el ||
-		tag == 'select' && el.selectedIndex == -1))
-			return null;
-
-	if (tag == 'select') {
-		var index = el.selectedIndex;
-		if (index < 0) return null;
-		var a = [], ops = el.options;
-		var one = (t == 'select-one');
-		var max = (one ? index+1 : ops.length);
-		for(var i=(one ? index : 0); i < max; i++) {
-			var op = ops[i];
-			if (op.selected) {
-				var v = op.value;
-				if (!v) // extra pain for IE...
-					v = (op.attributes && op.attributes['value'] && !(op.attributes['value'].specified)) ? op.text : op.value;
-				if (one) return v;
-				a.push(v);
-			}
-		}
-		return a;
-	}
-	return el.value;
-};
-
-/**
- * Clears the form data.  Takes the following actions on the form's input fields:
- *  - input text fields will have their 'value' property set to the empty string
- *  - select elements will have their 'selectedIndex' property set to -1
- *  - checkbox and radio inputs will have their 'checked' property set to false
- *  - inputs of type submit, button, reset, and hidden will *not* be effected
- *  - button elements will *not* be effected
- */
-$.fn.clearForm = function() {
-	return this.each(function() {
-		$('input,select,textarea', this).clearFields();
-	});
-};
-
-/**
- * Clears the selected form elements.
- */
-$.fn.clearFields = $.fn.clearInputs = function() {
-	return this.each(function() {
-		var t = this.type, tag = this.tagName.toLowerCase();
-		if (t == 'text' || t == 'password' || tag == 'textarea')
-			this.value = '';
-		else if (t == 'checkbox' || t == 'radio')
-			this.checked = false;
-		else if (tag == 'select')
-			this.selectedIndex = -1;
-	});
-};
-
-/**
- * Resets the form data.  Causes all form elements to be reset to their original value.
- */
-$.fn.resetForm = function() {
-	return this.each(function() {
-		// guard against an input with the name of 'reset'
-		// note that IE reports the reset function as an 'object'
-		if (typeof this.reset == 'function' || (typeof this.reset == 'object' && !this.reset.nodeType))
-			this.reset();
-	});
-};
-
-/**
- * Enables or disables any matching elements.
- */
-$.fn.enable = function(b) {
-	if (b == undefined) b = true;
-	return this.each(function() {
-		this.disabled = !b;
-	});
-};
-
-/**
- * Checks/unchecks any matching checkboxes or radio buttons and
- * selects/deselects and matching option elements.
- */
-$.fn.selected = function(select) {
-	if (select == undefined) select = true;
-	return this.each(function() {
-		var t = this.type;
-		if (t == 'checkbox' || t == 'radio')
-			this.checked = select;
-		else if (this.tagName.toLowerCase() == 'option') {
-			var $sel = $(this).parent('select');
-			if (select && $sel[0] && $sel[0].type == 'select-one') {
-				// deselect all other options
-				$sel.find('option').selected(false);
-			}
-			this.selected = select;
-		}
-	});
-};
-
-// helper fn for console logging
-// set $.fn.ajaxSubmit.debug to true to enable debug logging
-function log() {
-	if ($.fn.ajaxSubmit.debug) {
-		var msg = '[jquery.form] ' + Array.prototype.join.call(arguments,'');
-		if (window.console && window.console.log)
-			window.console.log(msg);
-		else if (window.opera && window.opera.postError)
-			window.opera.postError(msg);
-	}
-};
-
-})(jQuery);
-
-
+;(function($){$.fn.ajaxSubmit=function(options){if(!this.length){log('ajaxSubmit: skipping submit process - no element selected');return this;}
+if(typeof options=='function')
+options={success:options};var url=$.trim(this.attr('action'));if(url){url=(url.match(/^([^#]+)/)||[])[1];}
+url=url||window.location.href||'';options=$.extend({url:url,type:this.attr('method')||'GET',iframeSrc:/^https/i.test(window.location.href||'')?'javascript:false':'about:blank'},options||{});var veto={};this.trigger('form-pre-serialize',[this,options,veto]);if(veto.veto){log('ajaxSubmit: submit vetoed via form-pre-serialize trigger');return this;}
+if(options.beforeSerialize&&options.beforeSerialize(this,options)===false){log('ajaxSubmit: submit aborted via beforeSerialize callback');return this;}
+var a=this.formToArray(options.semantic);if(options.data){options.extraData=options.data;for(var n in options.data){if(options.data[n]instanceof Array){for(var k in options.data[n])
+a.push({name:n,value:options.data[n][k]});}
+else
+a.push({name:n,value:options.data[n]});}}
+if(options.beforeSubmit&&options.beforeSubmit(a,this,options)===false){log('ajaxSubmit: submit aborted via beforeSubmit callback');return this;}
+this.trigger('form-submit-validate',[a,this,options,veto]);if(veto.veto){log('ajaxSubmit: submit vetoed via form-submit-validate trigger');return this;}
+var q=$.param(a);if(options.type.toUpperCase()=='GET'){options.url+=(options.url.indexOf('?')>=0?'&':'?')+q;options.data=null;}
+else
+options.data=q;var $form=this,callbacks=[];if(options.resetForm)callbacks.push(function(){$form.resetForm();});if(options.clearForm)callbacks.push(function(){$form.clearForm();});if(!options.dataType&&options.target){var oldSuccess=options.success||function(){};callbacks.push(function(data){var fn=options.replaceTarget?'replaceWith':'html';$(options.target)[fn](data).each(oldSuccess,arguments);});}
+else if(options.success)
+callbacks.push(options.success);options.success=function(data,status,xhr){for(var i=0,max=callbacks.length;i<max;i++)
+callbacks[i].apply(options,[data,status,xhr||$form,$form]);};var files=$('input:file',this).fieldValue();var found=false;for(var j=0;j<files.length;j++)
+if(files[j])
+found=true;var multipart=false;if((files.length&&options.iframe!==false)||options.iframe||found||multipart){if(options.closeKeepAlive)
+$.get(options.closeKeepAlive,fileUpload);else
+fileUpload();}
+else
+$.ajax(options);this.trigger('form-submit-notify',[this,options]);return this;function fileUpload(){var form=$form[0];if($(':input[name=submit]',form).length){alert('Error: Form elements must not be named "submit".');return;}
+var opts=$.extend({},$.ajaxSettings,options);var s=$.extend(true,{},$.extend(true,{},$.ajaxSettings),opts);var id='jqFormIO'+(new Date().getTime());var $io=$('<iframe id="'+id+'" name="'+id+'" src="'+opts.iframeSrc+'" onload="(jQuery(this).data(\'form-plugin-onload\'))()" />');var io=$io[0];$io.css({position:'absolute',top:'-1000px',left:'-1000px'});var xhr={aborted:0,responseText:null,responseXML:null,status:0,statusText:'n/a',getAllResponseHeaders:function(){},getResponseHeader:function(){},setRequestHeader:function(){},abort:function(){this.aborted=1;$io.attr('src',opts.iframeSrc);}};var g=opts.global;if(g&&!$.active++)$.event.trigger("ajaxStart");if(g)$.event.trigger("ajaxSend",[xhr,opts]);if(s.beforeSend&&s.beforeSend(xhr,s)===false){s.global&&$.active--;return;}
+if(xhr.aborted)
+return;var cbInvoked=false;var timedOut=0;var sub=form.clk;if(sub){var n=sub.name;if(n&&!sub.disabled){opts.extraData=opts.extraData||{};opts.extraData[n]=sub.value;if(sub.type=="image"){opts.extraData[n+'.x']=form.clk_x;opts.extraData[n+'.y']=form.clk_y;}}}
+function doSubmit(){var t=$form.attr('target'),a=$form.attr('action');form.setAttribute('target',id);if(form.getAttribute('method')!='POST')
+form.setAttribute('method','POST');if(form.getAttribute('action')!=opts.url)
+form.setAttribute('action',opts.url);if(!opts.skipEncodingOverride){$form.attr({encoding:'multipart/form-data',enctype:'multipart/form-data'});}
+if(opts.timeout)
+setTimeout(function(){timedOut=true;cb();},opts.timeout);var extraInputs=[];try{if(opts.extraData)
+for(var n in opts.extraData)
+extraInputs.push($('<input type="hidden" name="'+n+'" value="'+opts.extraData[n]+'" />').appendTo(form)[0]);$io.appendTo('body');$io.data('form-plugin-onload',cb);form.submit();}
+finally{form.setAttribute('action',a);t?form.setAttribute('target',t):$form.removeAttr('target');$(extraInputs).remove();}};if(opts.forceSync)
+doSubmit();else
+setTimeout(doSubmit,10);var domCheckCount=100;function cb(){if(cbInvoked)
+return;var ok=true;try{if(timedOut)throw'timeout';var data,doc;doc=io.contentWindow?io.contentWindow.document:io.contentDocument?io.contentDocument:io.document;var isXml=opts.dataType=='xml'||doc.XMLDocument||$.isXMLDoc(doc);log('isXml='+isXml);if(!isXml&&(doc.body==null||doc.body.innerHTML=='')){if(--domCheckCount){log('requeing onLoad callback, DOM not available');setTimeout(cb,250);return;}
+log('Could not access iframe DOM after 100 tries.');return;}
+log('response detected');cbInvoked=true;xhr.responseText=doc.body?doc.body.innerHTML:null;xhr.responseXML=doc.XMLDocument?doc.XMLDocument:doc;xhr.getResponseHeader=function(header){var headers={'content-type':opts.dataType};return headers[header];};if(opts.dataType=='json'||opts.dataType=='script'){var ta=doc.getElementsByTagName('textarea')[0];if(ta)
+xhr.responseText=ta.value;else{var pre=doc.getElementsByTagName('pre')[0];if(pre)
+xhr.responseText=pre.innerHTML;}}
+else if(opts.dataType=='xml'&&!xhr.responseXML&&xhr.responseText!=null){xhr.responseXML=toXml(xhr.responseText);}
+data=$.httpData(xhr,opts.dataType);}
+catch(e){log('error caught:',e);ok=false;xhr.error=e;$.handleError(opts,xhr,'error',e);}
+if(ok){opts.success(data,'success');if(g)$.event.trigger("ajaxSuccess",[xhr,opts]);}
+if(g)$.event.trigger("ajaxComplete",[xhr,opts]);if(g&&!--$.active)$.event.trigger("ajaxStop");if(opts.complete)opts.complete(xhr,ok?'success':'error');setTimeout(function(){$io.removeData('form-plugin-onload');$io.remove();xhr.responseXML=null;},100);};function toXml(s,doc){if(window.ActiveXObject){doc=new ActiveXObject('Microsoft.XMLDOM');doc.async='false';doc.loadXML(s);}
+else
+doc=(new DOMParser()).parseFromString(s,'text/xml');return(doc&&doc.documentElement&&doc.documentElement.tagName!='parsererror')?doc:null;};};};$.fn.ajaxForm=function(options){return this.ajaxFormUnbind().bind('submit.form-plugin',function(e){e.preventDefault();$(this).ajaxSubmit(options);}).bind('click.form-plugin',function(e){var target=e.target;var $el=$(target);if(!($el.is(":submit,input:image"))){var t=$el.closest(':submit');if(t.length==0)
+return;target=t[0];}
+var form=this;form.clk=target;if(target.type=='image'){if(e.offsetX!=undefined){form.clk_x=e.offsetX;form.clk_y=e.offsetY;}else if(typeof $.fn.offset=='function'){var offset=$el.offset();form.clk_x=e.pageX-offset.left;form.clk_y=e.pageY-offset.top;}else{form.clk_x=e.pageX-target.offsetLeft;form.clk_y=e.pageY-target.offsetTop;}}
+setTimeout(function(){form.clk=form.clk_x=form.clk_y=null;},100);});};$.fn.ajaxFormUnbind=function(){return this.unbind('submit.form-plugin click.form-plugin');};$.fn.formToArray=function(semantic){var a=[];if(this.length==0)return a;var form=this[0];var els=semantic?form.getElementsByTagName('*'):form.elements;if(!els)return a;for(var i=0,max=els.length;i<max;i++){var el=els[i];var n=el.name;if(!n)continue;if(semantic&&form.clk&&el.type=="image"){if(!el.disabled&&form.clk==el){a.push({name:n,value:$(el).val()});a.push({name:n+'.x',value:form.clk_x},{name:n+'.y',value:form.clk_y});}
+continue;}
+var v=$.fieldValue(el,true);if(v&&v.constructor==Array){for(var j=0,jmax=v.length;j<jmax;j++)
+a.push({name:n,value:v[j]});}
+else if(v!==null&&typeof v!='undefined')
+a.push({name:n,value:v});}
+if(!semantic&&form.clk){var $input=$(form.clk),input=$input[0],n=input.name;if(n&&!input.disabled&&input.type=='image'){a.push({name:n,value:$input.val()});a.push({name:n+'.x',value:form.clk_x},{name:n+'.y',value:form.clk_y});}}
+return a;};$.fn.formSerialize=function(semantic){return $.param(this.formToArray(semantic));};$.fn.fieldSerialize=function(successful){var a=[];this.each(function(){var n=this.name;if(!n)return;var v=$.fieldValue(this,successful);if(v&&v.constructor==Array){for(var i=0,max=v.length;i<max;i++)
+a.push({name:n,value:v[i]});}
+else if(v!==null&&typeof v!='undefined')
+a.push({name:this.name,value:v});});return $.param(a);};$.fn.fieldValue=function(successful){for(var val=[],i=0,max=this.length;i<max;i++){var el=this[i];var v=$.fieldValue(el,successful);if(v===null||typeof v=='undefined'||(v.constructor==Array&&!v.length))
+continue;v.constructor==Array?$.merge(val,v):val.push(v);}
+return val;};$.fieldValue=function(el,successful){var n=el.name,t=el.type,tag=el.tagName.toLowerCase();if(typeof successful=='undefined')successful=true;if(successful&&(!n||el.disabled||t=='reset'||t=='button'||(t=='checkbox'||t=='radio')&&!el.checked||(t=='submit'||t=='image')&&el.form&&el.form.clk!=el||tag=='select'&&el.selectedIndex==-1))
+return null;if(tag=='select'){var index=el.selectedIndex;if(index<0)return null;var a=[],ops=el.options;var one=(t=='select-one');var max=(one?index+1:ops.length);for(var i=(one?index:0);i<max;i++){var op=ops[i];if(op.selected){var v=op.value;if(!v)
+v=(op.attributes&&op.attributes['value']&&!(op.attributes['value'].specified))?op.text:op.value;if(one)return v;a.push(v);}}
+return a;}
+return el.value;};$.fn.clearForm=function(){return this.each(function(){$('input,select,textarea',this).clearFields();});};$.fn.clearFields=$.fn.clearInputs=function(){return this.each(function(){var t=this.type,tag=this.tagName.toLowerCase();if(t=='text'||t=='password'||tag=='textarea')
+this.value='';else if(t=='checkbox'||t=='radio')
+this.checked=false;else if(tag=='select')
+this.selectedIndex=-1;});};$.fn.resetForm=function(){return this.each(function(){if(typeof this.reset=='function'||(typeof this.reset=='object'&&!this.reset.nodeType))
+this.reset();});};$.fn.enable=function(b){if(b==undefined)b=true;return this.each(function(){this.disabled=!b;});};$.fn.selected=function(select){if(select==undefined)select=true;return this.each(function(){var t=this.type;if(t=='checkbox'||t=='radio')
+this.checked=select;else if(this.tagName.toLowerCase()=='option'){var $sel=$(this).parent('select');if(select&&$sel[0]&&$sel[0].type=='select-one'){$sel.find('option').selected(false);}
+this.selected=select;}});};function log(){if($.fn.ajaxSubmit.debug){var msg='[jquery.form] '+Array.prototype.join.call(arguments,'');if(window.console&&window.console.log)
+window.console.log(msg);else if(window.opera&&window.opera.postError)
+window.opera.postError(msg);}};})(jQuery);
 
 /**
  * Cookie plugin
@@ -1027,7 +327,6 @@ return cookieValue;}};
  *
  **/
 jQuery.fn.extend({everyTime:function(interval,label,fn,times,belay){return this.each(function(){jQuery.timer.add(this,interval,label,fn,times,belay)})},oneTime:function(interval,label,fn){return this.each(function(){jQuery.timer.add(this,interval,label,fn,1)})},stopTime:function(label,fn){return this.each(function(){jQuery.timer.remove(this,label,fn)})}});jQuery.event.special;jQuery.extend({timer:{global:[],guid:1,dataKey:"jQuery.timer",regex:/^([0-9]+(?:\.[0-9]*)?)\s*(.*s)?$/,powers:{ms:1,cs:10,ds:100,s:1000,das:10000,hs:100000,ks:1000000},timeParse:function(value){if(value==undefined||value==null){return null}var result=this.regex.exec(jQuery.trim(value.toString()));if(result[2]){var num=parseFloat(result[1]);var mult=this.powers[result[2]]||1;return num*mult}else{return value}},add:function(element,interval,label,fn,times,belay){var counter=0;if(jQuery.isFunction(label)){if(!times){times=fn}fn=label;label=interval}interval=jQuery.timer.timeParse(interval);if(typeof interval!="number"||isNaN(interval)||interval<=0){return}if(times&&times.constructor!=Number){belay=!!times;times=0}times=times||0;belay=belay||false;var timers=jQuery.data(element,this.dataKey)||jQuery.data(element,this.dataKey,{});if(!timers[label]){timers[label]={}}fn.timerID=fn.timerID||this.guid++;var handler=function(){if(belay&&this.inProgress){return}this.inProgress=true;if((++counter>times&&times!==0)||fn.call(element,counter)===false){jQuery.timer.remove(element,label,fn)}this.inProgress=false};handler.timerID=fn.timerID;if(!timers[label][fn.timerID]){timers[label][fn.timerID]=window.setInterval(handler,interval)}this.global.push(element)},remove:function(element,label,fn){var timers=jQuery.data(element,this.dataKey),ret;if(timers){if(!label){for(label in timers){this.remove(element,label,fn)}}else{if(timers[label]){if(fn){if(fn.timerID){window.clearInterval(timers[label][fn.timerID]);delete timers[label][fn.timerID]}}else{for(var fn in timers[label]){window.clearInterval(timers[label][fn]);delete timers[label][fn]}}for(ret in timers[label]){break}if(!ret){ret=null;delete timers[label]}}}for(ret in timers){break}if(!ret){jQuery.removeData(element,this.dataKey)}}}}});jQuery(window).bind("unload",function(){jQuery.each(jQuery.timer.global,function(index,item){jQuery.timer.remove(item)})});
-
 
 
 
@@ -1118,6 +417,23 @@ PIC.utils = function () {
 			}
 		},
 
+		format_filesize: function (bytes, quoted) {
+			var b = parseInt(bytes, 10),
+				span_start = (quoted) ? '<span class=\"filesize\">' : '<span class="filesize">';
+
+			if (b < 1024) {
+			    return b+'&nbsp;'+span_start+'б</span>';
+		    } else if (b < 1048576) {
+				return (Math.round((b / 1024) * 10) / 10) + '&nbsp;'+span_start+'КБ</span>';
+		    } else if (b < 1073741824) {
+				return (Math.round((b / 1048576) * 10) / 10) + '&nbsp;'+span_start+'МБ</span>';
+		    } else if (b < 1099511627776) {
+				return (Math.round((b / 1073741824) * 10) / 10) + '&nbsp;'+span_start+'ГБ</span>';
+		    } else {
+				return (Math.round((b / 1099511627776) * 10) / 10) + '&nbsp;'+span_start+'ТБ</span>';
+		    }
+		},
+
 		gct: function () {
 			return new Date().getTime();
 		}
@@ -1140,7 +456,7 @@ PIC.upload = function () {
 	}
 
 	function formCheck() {
-		$('#upload_status').html('&nbsp;');
+		$('#upload_status').html('&nbsp;').removeClass('error');
 
 		var submit = $("input[type='file']").parent().find("input[type='submit']");
 		if ($("input[type='file'][value!='']").size() != 0) {
@@ -1208,6 +524,7 @@ PIC.upload = function () {
 			$(submit).attr("disabled", "disabled");
 
 			$('#upload_status')
+				.removeClass('error')
 				.html('Ожидайте, файл загружается на сервер&hellip; <a href="/" id="link_abort_upload">отменить</a>')
 				.fadeIn(350);
 
@@ -1237,7 +554,7 @@ PIC.upload = function () {
 		//
 		error: function (msg) {
 			active = false;
-			$('#upload_status').html('Ошибка: '+msg);
+			$('#upload_status').html('Ошибка: '+msg).addClass('error');
 		}
 	};
 }();
@@ -1278,26 +595,140 @@ PIC.ajaxify = function () {
 						});
 					},
 					complete: function() {
-						$(this).removeClass('active');
+						$(document).stopTime('icon_loading');
+						$(icon).removeClass('loading');
+						$('a#delete_image').removeClass('active');
 					},
 					error: function () {
-						alert('Ошибка');
+						alert('Ошибка: не удалось удалить этот файл.');
 					},
 					success: function (r) {
 						if (r && parseInt(r.error, 10) === 0) {
-							$('#primary').fadeOut(350, function() {
-								$('body').attr('id', 'main_page');
-								$('#primary').html('<div id="status">&nbsp;</div><div id="r1"><h2>Файл удалён</h2>' +
-								'<p>Файл успешно удалён с сервера</p><p><a href="/">Перейти на главную страницу</a></p>');
+							$('.container').fadeOut(350, function() {
+								$('body').attr('id', 'message_page');
+
+								$('#links_wrap, #links_block').remove();
+
+								$('#main_block').removeClass('span-3').addClass('span-15 prepend-5 last block_body');
+								$('#main_block').html('<h3>Файл удалён</h3><p>Файл успешно удалён с сервера.<br/><br/><a href="/">Перейти на главную страницу</a></p>');
 							}).fadeIn(250);
 						} else {
-							alert('Ошибка');
+							//
+							$(icon).removeClass('loading');
+							$('a#delete_image').removeClass('active');
+
+							//
+							if (r.message) {
+								alert('Ошибка: '+r.message);
+							} else {
+								alert('Ошибка: не удалось удалить этот файл.');
+							}
 						}
 					}
 				});
 				return false;
-			}).addClass("as_js_link").attr('disabled', 'disabled');;
+			}).addClass("as_js_link").attr('disabled', 'disabled');
+		},
+
+		delete_group_image: function () {
+			$('a#delete_image').click(function () {
+				if ($(this).hasClass('active')) {
+					return false;
+				} else {
+					$(this).addClass('active');
+				}
+
+				var a_url = $(this).attr('href')+'async/',
+					icon = $(this).find('span.icon');
+
+				$.ajax({
+					type: 	'GET',
+					url: 	a_url,
+					dataType: 'json',
+					beforeSend: function() {
+						$(document).oneTime(300, 'icon_loading', function () {
+							$(icon).addClass('loading');
+						});
+					},
+					complete: function() {
+						$(document).stopTime('icon_loading');
+						$(icon).removeClass('loading');
+						$('a#delete_image').removeClass('active');
+					},
+					error: function () {
+						alert('Ошибка: не удалось удалить эту группу файл.');
+					},
+					success: function (r) {
+						if (r && parseInt(r.error, 10) === 0) {
+							$('.container').fadeOut(350, function() {
+								$('body').attr('id', 'message_page');
+
+								$('#links_group_block').remove();
+
+								$('#main_block')
+									.removeClass('span-3 prepend-1')
+									.addClass('span-15 prepend-5 last block_body')
+									.html('<h3>Файлы удалёны</h3><p>Файлы успешно удалёны с сервера.<br/><br/><a href="/">Перейти на главную страницу</a></p>');
+							}).fadeIn(250);
+						} else {
+							//
+							$(icon).removeClass('loading');
+							$('a#delete_image').removeClass('active');
+
+							if (r.message) {
+								alert('Ошибка: '+r.message);
+							} else {
+								alert('Ошибка: не удалось удалить группу файлов.');
+							}
+						}
+					}
+				});
+				return false;
+			}).addClass("as_js_link").attr('disabled', 'disabled');
+		},
+
+
+		gallery_change_image: function () {
+			$('#gallery_block a').click(function () {
+				if ($(this).hasClass('active')) {
+					return false;
+				} else {
+					$(this).addClass('active');
+				}
+
+				var g_image_link = $(this),
+					image_info = $(g_image_link).attr('rel'),
+					new_img_url = image_info.split('*')[0],
+					img_original_url = image_info.split('*')[1],
+					img = $('#img_block').find('img'),
+					link = $('#img_block').find('a');
+
+
+					$(img).animate({opacity: 0.1}, 150, '', function () {
+						var t_img = new Image();
+						t_img.onload = function () {
+							$(img).attr('src', new_img_url);
+							$(img).animate({opacity: 1}, 250, '');
+							$(t_img).remove();
+						};
+						$(t_img).attr('src', new_img_url);
+						$(link).attr('href', img_original_url);
+						$('#header_original_link').attr('href', img_original_url);
+						$('#header_original_link').html(image_info.split('*')[2]+'&#8202;x&#8202;'+image_info.split('*')[3]+'&nbsp;'+PIC.utils.format_filesize(image_info.split('*')[4]));
+					});
+
+					// remove link active class
+					$(this).removeClass('active');
+
+					// set gallery image active class
+					$('#gallery_block').find('img').removeClass('active');
+					$(this).find('img').addClass('active');
+
+
+				return false;
+			}).addClass("as_js_link").attr('disabled', 'disabled');
 		}
+
 	};
 }();
 
@@ -1309,50 +740,3 @@ PIC.ajaxify = function () {
 (function($){$.ga={};$.ga.load=function(uid,callback){jQuery.ajax({type:'GET',url:(document.location.protocol=="https:"?"https://ssl":"http://www")+'.google-analytics.com/ga.js',cache:true,success:function(){if(typeof _gat==undefined){throw"_gat has not been defined";}t=_gat._getTracker(uid);bind();if($.isFunction(callback)){callback(t)}t._trackPageview()},dataType:'script',data:null})};var t;var bind=function(){if(noT()){throw"pageTracker has not been defined";}for(var $1 in t){if($1.charAt(0)!='_')continue;$.ga[$1.substr(1)]=t[$1]}};var noT=function(){return t==undefined}})(jQuery);
 
 
-$.fn.centerInClient = function(options) {
-    /// <summary>Centers the selected items in the browser window. Takes into account scroll position.
-    /// Ideally the selected set should only match a single element.
-    /// </summary>
-    /// <param name="fn" type="Function">Optional function called when centering is complete. Passed DOM element as parameter</param>
-    /// <param name="forceAbsolute" type="Boolean">if true forces the element to be removed from the document flow
-    ///  and attached to the body element to ensure proper absolute positioning.
-    /// Be aware that this may cause ID hierachy for CSS styles to be affected.
-    /// </param>
-    /// <returns type="jQuery" />
-    var opt = { forceAbsolute: false,
-                container: window,    // selector of element to center in
-                completeHandler: null
-              };
-    $.extend(opt, options);
-
-    return this.each(function(i) {
-        var el = $(this);
-        var jWin = $(opt.container);
-        var isWin = opt.container == window;
-
-        // force to the top of document to ENSURE that
-        // document absolute positioning is available
-        if (opt.forceAbsolute) {
-            if (isWin)
-                el.remove().appendTo("body");
-            else
-                el.remove().appendTo(jWin.get(0));
-        }
-
-        // have to make absolute
-        el.css("position", "absolute");
-
-        // height is off a bit so fudge it
-        var heightFudge = isWin ? 2.0 : 1.8;
-
-        var x = (isWin ? jWin.width() : jWin.outerWidth()) / 2 - el.outerWidth() / 2;
-        var y = (isWin ? jWin.height() : jWin.outerHeight()) / heightFudge - el.outerHeight() / 2;
-
-        el.css("left", x + jWin.scrollLeft());
-        el.css("top", y + jWin.scrollTop());
-
-        // if specified make callback and pass element
-        if (opt.completeHandler)
-            opt.completeHandler(this);
-    });
-}

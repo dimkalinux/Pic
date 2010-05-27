@@ -1,61 +1,74 @@
 <?php
 
 // Make sure no one attempts to run this script "directly"
-if (!defined('UP')) {
+if (!defined('AMI')) {
 	exit;
 }
 
-require UP_ROOT.'include/image.inc.php';
-require UP_ROOT.'include/upload_file.inc.php';
+require AMI_ROOT.'include/image.inc.php';
+require AMI_ROOT.'include/upload_file.inc.php';
 
 class Upload {
 	private $file;
+	private $upload_uid;
+	private $upload_delete_key;
 
-	public function __construct($file) {
-		global $picMaxUploadSize, $picBaseUrl, $picDefaultPreviewSize;
+	public function __construct($files, $async) {
+		global $pic_MaxUploadSize, $pic_BaseURL, $pic_DefaultPreviewSize;
 
-		$upload_file = new Upload_file($file);
+		$multi_upload = (bool)/**/(count($files) > 1);
 
-		// 1. CHECK SIZE
-		if ($upload_file->getSize() < 1) {
-			throw new Exception('Получен пустой файл');
+		$this->upload_uid = ami_GenerateRandomHash(16);
+		$this->upload_delete_key = ami_GenerateRandomHash(16);
+
+		foreach ($files as $file) {
+			$upload_file = new Upload_file($file, $multi_upload);
+
+			// 1. CHECK SIZE
+			if ($upload_file->getSize() < 1) {
+				throw new AppLevelException('Получен пустой файл');
+			}
+
+			if ($upload_file->getSize() > $pic_MaxUploadSize) {
+				throw new AppLevelException("Неверный размер файла ");
+			}
+
+			// 2. CHECK FORMAT
+			if (FALSE === $upload_file->isImage()) {
+				throw new AppLevelException('Неверный формат файла1');
+			}
+
+			$upload_storage_info = $this->get_upload_dir();
+
+			$uploadDir = $upload_storage_info['dir'];
+			$uploadStorage = $upload_storage_info['storage'];
+			$uploadLocation = $upload_storage_info['location'];
+
+			$uploadOriginalFilename = $uploadDir.'/'.$this->get_hash_filename($upload_file->getFilename().$upload_file->getSize());
+
+			// 3. MOVE original TO STORAGE
+			$upload_file->move($uploadOriginalFilename);
+
+			// 4.
+			$upload_image = new Image($uploadOriginalFilename, $multi_upload);
+
+			// 5.
+			$upload_image->setFileExt();
+			$uploadHashedFilename = $upload_image->getFileName();
+			$uploadFilename = $upload_file->getFileName();
+			// 6.
+			$upload_image->process_thumbs();
+
+			// 7. ADD to DB
+			$uploaded_return_info = $upload_file->save_in_db($uploadLocation, $uploadStorage, $uploadFilename, $uploadHashedFilename, $upload_image->getWidth(), $upload_image->getHeight(), $upload_image->getPreview_Width(), $upload_image->getPreview_Height(), $upload_image->getPreview_Size(), $this->upload_uid, $this->upload_delete_key);
 		}
 
-		if ($upload_file->getSize() > $picMaxUploadSize) {
-			throw new Exception("Неверный размер файла ");
+		if (is_array($files) && count($files) > 1) {
+			$view_uploaded_image_link = ami_link('links_group_image_owner', array($this->upload_uid, $uploaded_return_info['delete_key'], PIC_IMAGE_SIZE_SMALL));
+		} else {
+			$view_uploaded_image_link = ami_link('links_image_owner', array($uploaded_return_info['key'], $uploaded_return_info['delete_key'], PIC_IMAGE_SIZE_SMALL));
 		}
-
-		// 2. CHECK FORMAT
-		if (!$upload_file->isImage()) {
-			throw new Exception('Неверный формат файла');
-		}
-
-		$upload_storage_info = $this->get_upload_dir();
-
-		$uploadDir = $upload_storage_info['dir'];
-		$uploadStorage = $upload_storage_info['storage'];
-		$uploadLocation = $upload_storage_info['location'];
-
-		$uploadOriginalFilename = $uploadDir.'/'.$this->get_hash_filename($upload_file->getFilename().$upload_file->getSize());
-
-		// 3. MOVE original TO STORAGE
-		$upload_file->move($uploadOriginalFilename);
-
-		// 4.
-		$upload_image = new Image($uploadOriginalFilename);
-
-		// 5.
-		$upload_image->setFileExt();
-		$uploadHashedFilename = $upload_image->getFileName();
-		$uploadFilename = $upload_file->getFileName();
-		// 6.
-		$upload_image->process_thumbs();
-
-		// 7. ADD to DB
-		$uploaded_return_info = $upload_file->save_in_db($uploadLocation, $uploadStorage, $uploadFilename, $uploadHashedFilename, $upload_image->getWidth(), $upload_image->getHeight(), $upload_image->getPreview_Width(), $upload_image->getPreview_Height(), $upload_image->getPreview_Size());
-
-		$view_uploaded_image_link = ami_link('links_image_owner', array($uploaded_return_info['key'], $uploaded_return_info['delete_key'], IMAGE_SIZE_SMALL));
-		if (isset($file['async'])) {
+		if ($async) {
 			ami_async_response(array('error'=> 0, 'url' => $view_uploaded_image_link), AMI_ASYNC_JSON);
 		} else {
 			ami_redirect($view_uploaded_image_link);
@@ -67,13 +80,14 @@ class Upload {
 		return hash('crc32', $filename);
 	}
 
+
 	private function get_upload_dir() {
-		global $picUploadBaseDir;
+		global $pic_UploadBaseDir;
 
 		$storage = $this->get_storage();
 		$max_try = 10;
 
-		$uploadBaseDir = $picUploadBaseDir.$storage;
+		$uploadBaseDir = $pic_UploadBaseDir.$storage;
 
 		do {
 			$image_path_hash = $this->generate_image_upload_save_path(32);
@@ -95,15 +109,15 @@ class Upload {
 
 
 	private function generate_image_upload_save_path($maxLength=null) {
-	    return generate_random_hash($maxLength);
+	    return ami_GenerateRandomHash($maxLength);
 	}
 
 
 	private function get_storage() {
-		global $picStorages, $picUploadBaseDir;
+		global $pic_UploadStorages, $pic_UploadBaseDir;
 
-		$storage = array_rand(array_flip($picStorages), 1);
-		$fullUploadDir = $picUploadBaseDir.$storage;
+		$storage = array_rand(array_flip($pic_UploadStorages), 1);
+		$fullUploadDir = $pic_UploadBaseDir.$storage;
 
 		if (!is_dir($fullUploadDir)) {
 			throw new Exception("Upload base dir '$fullUploadDir' not exists");

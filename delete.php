@@ -1,26 +1,18 @@
 <?php
 
-if (!defined('UP_ROOT')) {
-	define('UP_ROOT', './');
+if (!defined('AMI_ROOT')) {
+	define('AMI_ROOT', './');
 }
 
-require UP_ROOT.'functions.inc.php';
+require AMI_ROOT.'functions.inc.php';
 
 if (isset($_GET['ok'])) {
-	$home_link = ami_link('root');
-	$out = <<<ZZZ
-	<div id="status">&nbsp;</div>
-	<h2>Файл удалён</h2>
-	<p>Файл успешно удалён с сервера</p>
-	<p><a href="$home_link">Перейти на главную страницу</a></p>
-ZZZ;
-	ami_printPage($out);
-	exit();
+	ami_show_message('Файл удалён', 'Файл успешно удалён с сервера.');
 }
 
 try {
-	$key_id = isset($_GET['k']) ? get_safe_string_len($_GET['k'], 16) : FALSE;
-	$key_delete = isset($_GET['d']) ? get_safe_string_len($_GET['d'], 16) : FALSE;
+	$key_id = isset($_GET['k']) ? ami_get_safe_string_len($_GET['k'], 32) : FALSE;
+	$key_delete = isset($_GET['d']) ? ami_get_safe_string_len($_GET['d'], 32) : FALSE;
 
 	if (!$key_id || !$key_delete) {
 		throw new AppLevelException('Недостаточно параметров в запросе');
@@ -33,12 +25,12 @@ try {
 	}
 
 	$id = $row['id'];
-	$storage = get_safe_string($row['storage']);
-	$location = get_safe_string($row['location']);
+	$storage = ami_get_safe_string($row['storage']);
+	$location = ami_get_safe_string($row['location']);
 	$hash_filename = $row['hash_filename'];
 
 	// REMOVE FROM SERVER
-	$storage_dir = $picUploadBaseDir.$storage.'/'.$location;
+	$storage_dir = $pic_UploadBaseDir.$storage.'/'.$location;
 	ami_cleanDir($storage_dir);
 	if (!rmdir($storage_dir)) {
 		$log = Logger::singleton();
@@ -54,7 +46,7 @@ try {
 
 	// is async request
 	if (isset($_GET['async'])) {
-		ami_async_response(array('error'=> 0, 'message' => ''), AMI_ASYNC_JSON);
+		ami_async_response(array('error'=> 0, 'message' => '', 'redirect' => ami_link('delete_image_ok')), AMI_ASYNC_JSON);
 	} else {
 		ami_redirect(ami_link('delete_image_ok'));
 	}

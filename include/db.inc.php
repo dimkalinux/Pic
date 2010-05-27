@@ -1,10 +1,10 @@
 <?php
 
-// VERSION 0.5
+// VERSION 0.5.1
 
 // Make sure no one attempts to run this script "directly"
-if (!defined('UP')) {
-	exit;
+if (!defined('AMI')) {
+	exit();
 }
 
 
@@ -192,14 +192,14 @@ class DB {
 
 
 	private function connect() {
-		$link = @/**/mysqli_connect(MYSQL_ADDRESS, MYSQL_LOGIN, MYSQL_PASSWORD, MYSQL_DB);
+		$link = @/**/mysqli_connect(AMI_MYSQL_ADDRESS, AMI_MYSQL_LOGIN, AMI_MYSQL_PASSWORD, AMI_MYSQL_DB);
 
 		if (!$link || mysqli_connect_errno()) {
 			throw new Exception('База данных недоступна');
 		}
 
 		// Setup the client-server character set (UTF-8)
-		if (defined('MYSQL_CHARSET') && !mysqli_query($link, "SET NAMES ".MYSQL_CHARSET)) {
+		if (defined('AMI_MYSQL_CHARSET') && !mysqli_query($link, "SET NAMES ".AMI_MYSQL_CHARSET)) {
 			throw new Exception('Ошибка кодировки в базе данных');
 		}
 
@@ -247,9 +247,6 @@ class DB {
 	private function lastError() {
 		if ($this->link) {
 			$error = mysqli_error($this->link);
-			/*if (!$error) {
-				$error = mysqli_error();
-			}*/
 		} else {
 			$error = mysqli_error();
 		}

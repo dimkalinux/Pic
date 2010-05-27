@@ -1,11 +1,11 @@
 <?php
 
 // Make sure no one attempts to run this script "directly"
-if (!defined('UP')) {
+if (!defined('AMI')) {
 	exit;
 }
 
-require UP_ROOT.'include/phpThumb/phpthumb.class.php';
+require AMI_ROOT.'include/phpThumb/phpthumb.class.php';
 
 
 class Image {
@@ -14,7 +14,6 @@ class Image {
 	const GIF = IMAGETYPE_GIF;
 	const TIFF_II = IMAGETYPE_TIFF_II;
 	const TIFF_MM = IMAGETYPE_TIFF_MM;
-	const TIFF = IMAGETYPE_TIFF;
 	const BMP = IMAGETYPE_BMP;
 
 	private $image;
@@ -25,11 +24,12 @@ class Image {
 	private $p_width;
 	private $p_height;
 	private $p_size;
+	private $multi_upload;
 
 
-	public function __construct($file) {
+	public function __construct($file, $multi_upload) {
 	    if (!is_file($file)) {
-			throw new Exception("File '$file' not found.");
+			throw new Exception("Файл '$file' не найден.");
 		}
 
 		if (!extension_loaded('gd')) {
@@ -51,23 +51,28 @@ class Image {
 				break;
 
 			case self::TIFF_II:
-			case self::TIFF_MM:
-			case self::TIFF:
-				$this->format = self::TIFF;
+				$this->format = self::TIFF_II;
 				break;
+
+			case self::TIFF_MM:
+				$this->format = self::TIFF_MM;
+				break;
+
 
 			case self::BMP:
 				$this->format = self::BMP;
 				break;
 
 			default:
-				throw new Exception("Unknown image type or file '$file' not found.");
+				throw new Exception("Неизвестный формат файла.");
 				break;
 		}
 
 		$this->image = $file;
 		$this->width = $info[0];
 		$this->height = $info[1];
+		//
+		$this->multi_upload = $multi_upload;
 	}
 
 
@@ -115,7 +120,8 @@ class Image {
 				$this->phpThumbFormat = 'png';
 				break;
 
-			case self::TIFF:
+			case self::TIFF_II:
+			case self::TIFF_MM:
 				$ext = 'tif';
 				$this->phpThumbFormat = 'png';
 				break;
@@ -131,7 +137,7 @@ class Image {
 				break;
 
 			default:
-				throw new Exception("Unknown image type or file '$file' not found.");
+				throw new Exception("Неизвестный формат файла.");
 				break;
 		}
 
@@ -148,9 +154,23 @@ class Image {
 		$this->create_small_thumbs();
 		$this->create_medium_thumbs();
 		$this->create_preview();
+
+		// CREATE GALLERY thumbs
+		if ($this->multi_upload) {
+			$this->create_gallery_thumbs();
+		}
 	}
 
+	private function create_gallery_thumbs() {
+		global $pic_image_gallery_height, $pic_image_gallery_width, $pic_image_gallery_quality;
 
+		$just_make_link = FALSE;
+		if (($pic_image_gallery_height >= $this->height) && ($pic_image_gallery_width >= $this->width)) {
+			$just_make_link = TRUE;
+		}
+
+		$this->create_thumbs($pic_image_gallery_width, $pic_image_gallery_height, $pic_image_gallery_quality, $this->get_prefixed_name_for_thumbs('gl', $this->image), $just_make_link);
+	}
 
 	private function create_small_thumbs() {
 		global $pic_image_small_height, $pic_image_small_width, $pic_image_small_quality;
@@ -200,7 +220,8 @@ class Image {
 
 		// CHANGE ext for TIFF & BMP
 		switch ($this->format) {
-			case self::TIFF:
+			case self::TIFF_II:
+			case self::TIFF_MM:
 			case self::BMP:
 				$filename = pic_replaceFileExtension($filename, 'png');
 				break;
@@ -217,7 +238,7 @@ class Image {
 		global $pic_image_autorotate;
 
 		// MAKE link EXCEPT TIFF & BMP
-		if (($just_make_link === TRUE) && ($this->format != self::TIFF) && ($this->format != self::BMP)) {
+		if (($just_make_link === TRUE) && ($this->format != self::TIFF_II) && ($this->format != self::TIFF_MM) && ($this->format != self::BMP)) {
 			if (!link($this->image, $file)) {
 				throw new Exception('Ошибка при создании превью');
 			}

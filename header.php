@@ -1,16 +1,18 @@
 <?php
 
 // Make sure no one attempts to run this script "directly"
-if (!defined('UP')) {
+if (!defined('AMI')) {
 	exit;
 }
 
-if (empty($page_title)) {
-	$page_title = 'Пик';
+if (empty($ami_PageTitle)) {
+	$ami_PageTitle = 'Пик';
 }
 
-if (empty($page_name)) {
-	$page_name = 'main_page';
+if (defined('AMI_PAGE_TYPE')) {
+	$ami_PageType = AMI_PAGE_TYPE;
+} else {
+	$ami_PageType = 'main_page';
 }
 
 // Send no-cache headers
@@ -22,15 +24,15 @@ header('Pragma: no-cache');		// For HTTP/1.0 compability
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang="ru-RU" dir="ltr">
 <head>
-	<title><?php echo $page_title; ?></title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-	<link rel="stylesheet" type="text/css" href="<?php echo CSS_BASE_URL; ?>style/style.css"/>
-	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
-	<!--[if IE]><link rel="stylesheet" type="text/css" href="<?php echo CSS_BASE_URL; ?>style/ie_style.css" /><![endif]-->
+	<title><?php echo $ami_PageTitle; ?></title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<link rel="stylesheet" href="<?php echo AMI_CSS_BASE_URL; ?>style/blueprint/screen.css" type="text/css" media="screen, projection">
+	<link rel="stylesheet" href="<?php echo AMI_CSS_BASE_URL; ?>style/blueprint/print.css" type="text/css" media="print">
+	<!--[if lt IE 8]><link rel="stylesheet" href="<?php echo AMI_CSS_BASE_URL; ?>style/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
+	<link rel="stylesheet" href="<?php echo AMI_CSS_BASE_URL; ?>style/style.css" type="text/css" media="screen, projection">
+	<link rel="shortcut icon" type="image/x-icon" href="<?php echo AMI_JS_BASE_URL; ?>favicon.ico">
 </head>
 <?php flush(); ?>
-<body id="<?php echo $page_name; ?>">
-<div id="wrap">
-	<div id="primary">
-
-<?php define('UP_HEADER', 1); ?>
+<body id="<?php echo $ami_PageType; ?>">
+	<div class="container _showgrid">
+<?php define('AMI_HEADER', 1); ?>

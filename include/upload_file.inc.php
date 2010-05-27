@@ -1,8 +1,8 @@
 <?php
 
 // Make sure no one attempts to run this script "directly"
-if (!defined('UP')) {
-	exit;
+if (!defined('AMI')) {
+	exit();
 }
 
 
@@ -23,16 +23,15 @@ class Upload_file {
 	private $error;
 
 
-
-	public function __construct($file) {
+	public function __construct($file, $multi_upload) {
 		if (!isset($file)) {
-			throw new Exception("File '$file' not found.");
+			throw new Exception("Файл '$file' не найден.");
 		}
 
 		foreach (array('upload_name', 'upload_content_type', 'upload_size', 'upload_path') as $key) {
 			if (!isset($file[$key]) || !is_scalar($file[$key])) {
 				$this->error = UPLOAD_ERR_NO_FILE;
-				throw new Exception("Not set '$key' in upload");
+				throw new Exception("В запросе отсутствует поле '$key'");
 			}
 		}
 
@@ -40,12 +39,15 @@ class Upload_file {
 		$this->size = $file['upload_size'];
 		$this->tmpName = $file['upload_path'];
 		$this->error = 0;
+
 	}
 
 	public function __destruct() {
-		// ???
+		// RM TMP files
+		if (is_file($this->tmpName)) {
+			@/**/unlink($this->tmpName);
+		}
 	}
-
 
 	public function getSize() {
 		return $this->size;
@@ -56,9 +58,9 @@ class Upload_file {
 	}
 
 
-	public function save_in_db($location, $storage, $filename, $hashed_filename, $width, $height, $p_width, $p_height, $p_size) {
+	public function save_in_db($location, $storage, $filename, $hashed_filename, $width, $height, $p_width, $p_height, $p_size, $key_group, $key_delete) {
 		$image_key = $this->create_uniq_hash_key('key', 16);
-		$image_delete_key = generate_random_hash(16);
+		$image_delete_key = $key_delete;
 		$image_location = $location;
 		$image_storage = $storage;
 		$image_filename = $filename;
@@ -68,7 +70,7 @@ class Upload_file {
 		$image_height = $height;
 
 		$db = DB::singleton();
-		$db->query("INSERT INTO pic VALUES ('', ?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", $image_key, $image_delete_key, $image_location, $image_storage, $image_filename, $image_hashed_filename, $image_size, $image_width, $image_height, $p_width, $p_height, $p_size);
+		$db->query("INSERT INTO pic VALUES ('', ?, ?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", $key_group, $image_key, $image_delete_key, $image_location, $image_storage, $image_filename, $image_hashed_filename, $image_size, $image_width, $image_height, $p_width, $p_height, $p_size);
 
 		return array('key' => $image_key, 'delete_key' => $image_delete_key);
 	}
@@ -79,7 +81,7 @@ class Upload_file {
 		$db = DB::singleton();
 
 		do {
-			$hash = generate_random_hash($key_length);
+			$hash = ami_GenerateRandomHash($key_length);
 			$row = $db->getRow("SELECT COUNT(*) AS N FROM pic WHERE ?=? LIMIT 1", $key_name, $hash);
 			if (intval($row['N'], 10) === 0) {
 				return $hash;
@@ -87,6 +89,8 @@ class Upload_file {
 
 			$t--;
 		} while($t > 0);
+
+		throw new Exception("Не удалось создать уникальное значение для ключа '$key'");
 	}
 
 	/**
@@ -133,7 +137,9 @@ class Upload_file {
 		if (!$func($this->tmpName, $dest)) {
 			throw new Exception("Unable to move uploaded file '$this->tmpName' to '$dest'.");
 		}
-		chmod($dest, 0644);
+
+		//
+		chmod($dest, 0444);
 	}
 
 

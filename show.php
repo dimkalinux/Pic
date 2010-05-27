@@ -1,14 +1,14 @@
 <?php
 
-if (!defined('UP_ROOT')) {
-	define('UP_ROOT', './');
+if (!defined('AMI_ROOT')) {
+	define('AMI_ROOT', './');
 }
 
-require UP_ROOT.'functions.inc.php';
+require AMI_ROOT.'functions.inc.php';
 
 
 
-$key_id = isset($_GET['k']) ? get_safe_string_len($_GET['k'], 16) : FALSE;
+$key_id = isset($_GET['k']) ? ami_get_safe_string_len($_GET['k'], 32) : FALSE;
 
 // build info
 try {
@@ -23,6 +23,30 @@ try {
 	if (!$row) {
 		throw new AppLevelException('Ссылка не&nbsp;верна или устарела.<br/>Возможно файл был удалён.');
 	}
+
+	$storage = ami_get_safe_string($row['storage']);
+	$location = ami_get_safe_string($row['location']);
+	$hash_filename = $row['hash_filename'];
+	$filename = ami_htmlencode($row['filename']);
+	$file_date = $row['uploaded'];
+
+	$o_size = $row['size'];
+	$o_size_text = ami_format_filesize($row['size']);
+	$p_size = $row['p_size'];
+	$p_size_text = ami_format_filesize($row['p_size']);
+
+	$o_width = $row['width'];
+	$o_height = $row['height'];
+	$p_width = $row['p_width'];
+	$p_height = $row['p_height'];
+
+	// GENERATE LINKS
+	$home_link = ami_link('root');
+	$about_link = ami_link('about');
+	$show_link = ami_link('show_image', $key_id);
+	$view_link = ami_link('links_image', array($key_id, PIC_IMAGE_SIZE_MIDDLE));
+	$preview_link = pic_getImageLink($storage, $location, $hash_filename, PIC_IMAGE_SIZE_PREVIEW);
+	$original_link = pic_getImageLink($storage, $location, $hash_filename, PIC_IMAGE_SIZE_ORIGINAL);
 } catch (AppLevelException $e) {
 	if (isset($_POST['async'])) {
 		exit(json_encode(array('error'=> 1, 'message' => $error_message)));
@@ -37,42 +61,23 @@ try {
 	}
 }
 
-$storage = get_safe_string($row['storage']);
-$location = get_safe_string($row['location']);
-$hash_filename = $row['hash_filename'];
-$filename = pic_htmlencode($row['filename']);
-$file_date = $row['uploaded'];
 
-$o_size = $row['size'];
-$o_size_text = format_filesize($row['size']);
-$p_size = $row['p_size'];
-$p_size_text = format_filesize($row['p_size']);
-
-$o_width = $row['width'];
-$o_height = $row['height'];
-$p_width = $row['p_width'];
-$p_height = $row['p_height'];
-
-$home_link = ami_link('root');
-$show_link = ami_link('show_image', $key_id);
-$view_link = ami_link('links_image', array($key_id, IMAGE_SIZE_MIDDLE));
-$preview_link = pic_getImageLink($storage, $location, $hash_filename, IMAGE_SIZE_PREVIEW);
-$original_link = pic_getImageLink($storage, $location, $hash_filename, IMAGE_SIZE_ORIGINAL);
 //
 
 $out = <<<FMB
-	<div id="header">
-		<!--<span class="text-cap">$filename</span>-->
-		<ul class="inline tabs" id="image_info">
-			<li><a href="$home_link" title="Вернуться на главную страницу">На главную</a></li>
-			<li><a href="$view_link" title="Получить ссылки на этот файл">Ссылки</a></li>
-			<!--<li>{$p_width}x{$p_height} $p_size_text</li>-->
-			<li><a href="$original_link" title="Скачать оригинал">{$o_width}&#8202;x&#8202;{$o_height} $o_size_text</a></li>
-		</ul>
-	</div>
+<div class="span-24 center">
+	<ul id="menu">
+		<li><a href="$home_link" title="Вернуться на главную страницу">На главную</a></li>
+		<li><a href="$about_link" title="">О проекте</a></li>
+		<li><a href="$view_link" title="Получить ссылки на этот файл">Ссылки</a></li>
+		<li><a href="$original_link" title="Скачать оригинал">{$o_width}&#8202;x&#8202;{$o_height} $o_size_text</a></li>
+	</ul>
+</div>
+<div class="span-24 body_block center">
 	<div id="img_block">
 		<a href="$original_link"><img class="fancy_image" src="$preview_link" alt="$filename"/></a>
 	</div>
+</div>
 FMB;
 
 ami_printPage($out, 'show_page');

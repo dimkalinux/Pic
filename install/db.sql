@@ -1,10 +1,11 @@
-USE pic;
+USE pic2;
 
 DROP TABLE IF EXISTS `pic`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 CREATE TABLE `pic` (
     `id` int(10) unsigned NOT NULL auto_increment,
+    `group_id` varchar(128) NOT NULL,
     `id_key` varchar(128) NOT NULL,
     `delete_key` varchar(128) NOT NULL,
     `uploaded` datetime NOT NULL,

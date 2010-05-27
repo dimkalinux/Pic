@@ -1,14 +1,14 @@
 <?php
 
 // Make sure no one attempts to run this script "directly"
-if (!defined('UP')) {
-    exit;
+if (!defined('AMI')) {
+    exit();
 }
 
 
 class Common {
     protected function getRemoteData($sourceUrl, $connectTimeout=10, $timeout=30) {
-	if (DEBUG === TRUE) {
+	if (AMI_DEBUG === TRUE) {
 	    $q_start = get_microtime();
 	}
 

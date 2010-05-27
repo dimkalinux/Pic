@@ -1,10 +1,27 @@
 RewriteEngine On
 RewriteBase /
 
-RewriteRule 	^upload/$ 									upload.php [L]
-RewriteRule 	^delete/([a-z0-9]+)/([a-z0-9]+)/$			delete.php?k=$1&d=$2 [L]
-RewriteRule 	^delete/([a-z0-9]+)/([a-z0-9]+)/async/$		delete.php?k=$1&d=$2&async=1 [L]
-RewriteRule 	^delete/ok/$								delete.php?ok=1 [L]
-RewriteRule 	^links/([a-z0-9]+)/([a-z0-9]+)/([0-9])/$	links.php?k=$1&d=$2&s=$3 [L]
-RewriteRule 	^links/([a-z0-9]+)/([0-9])/$				links.php?k=$1&s=$2 [L]
-RewriteRule 	^show/([a-z0-9]+)/$							show.php?k=$1 [L]
+RewriteRule 	^upload/$ 										upload.php [L]
+
+RewriteRule 	^delete/ok/$									delete.php?ok=1 [L]
+RewriteRule 	^delete/group/ok/$								delete_group.php?ok=1 [L]
+
+RewriteRule 	^delete/([a-z0-9]+)/([a-z0-9]+)/$				delete.php?k=$1&d=$2 [L]
+RewriteRule 	^delete/group/([a-z0-9]+)/([a-z0-9]+)/$			delete_group.php?g=$1&d=$2 [L]
+RewriteRule 	^delete/([a-z0-9]+)/([a-z0-9]+)/async/$			delete.php?k=$1&d=$2&async=1 [L]
+RewriteRule 	^delete/group/([a-z0-9]+)/([a-z0-9]+)/async/$	delete_group.php?g=$1&d=$2&async=1 [L]
+
+RewriteRule 	^links/group/([a-z0-9]+)/([a-z0-9]+)/([0-9])/$	links_group.php?g=$1&d=$2&s=$3 [L]
+RewriteRule 	^links/group/([a-z0-9]+)/([0-9])/$				links_group.php?g=$1&s=$2 [L]
+
+RewriteRule 	^links/([a-z0-9]+)/([a-z0-9]+)/([0-9])/$		links.php?k=$1&d=$2&s=$3 [L]
+RewriteRule 	^links/([a-z0-9]+)/([0-9])/$					links.php?k=$1&s=$2 [L]
+
+RewriteRule 	^show/group/([a-z0-9]+)/([a-z0-9]+)/$			show_group.php?g=$1&k=$2 [L]
+RewriteRule 	^show/group/([a-z0-9]+)/$						show_group.php?g=$1 [L]
+RewriteRule 	^show/([a-z0-9]+)/$								show.php?k=$1 [L]
+
+RewriteRule 	^about/$										about.php [L]
+
+
+

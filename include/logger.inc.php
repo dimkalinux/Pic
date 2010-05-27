@@ -1,24 +1,24 @@
 <?php
 
 // Make sure no one attempts to run this script "directly"
-if (!defined('UP')) {
-	exit;
+if (!defined('AMI')) {
+    exit();
 }
 
 
 class Logger {
-	private $db;
-	// Содержит экземпляр класса
-	private static $instance;
+    private $db;
+    // Содержит экземпляр класса
+    private static $instance;
 
 
-	public function __construct() {
-	    $this->db = DB::singleton();
-	}
+    public function __construct() {
+	$this->db = DB::singleton();
+    }
 
-	public function __destruct() {
-		// ???
-	}
+    public function __destruct() {
+	    // ???
+    }
 
 	// Метод синглтон
     public static function singleton() {
@@ -35,35 +35,35 @@ class Logger {
         trigger_error('Клонирование запрещено.', E_USER_ERROR);
     }
 
-	public function info($message) {
-		$this->log('info', $message);
+    public function info($message) {
+	$this->log('info', $message);
+    }
+
+    public function debug($message) {
+	if (AMI_DEBUG === TRUE) {
+	    $this->log('debug', $message);
+	}
+    }
+
+    public function warn($message) {
+	$this->log('warn', $message);
+    }
+
+    public function error($message) {
+	$this->log('error', $message);
+    }
+
+
+    private function log($type, $message) {
+	if (!$this->db) {
+	    return;
 	}
 
-	public function debug($message) {
-		if (DEBUG === TRUE) {
-			$this->log('debug', $message);
-		}
+	if (!empty($message)) {
+	    $message = utf8_substr($message, 0, 2048);
+	    $this->db->silentQuery("INSERT INTO `logs` VALUES('', NOW(), '$type', ?)", $message);
 	}
-
-	public function warn($message) {
-		$this->log('warn', $message);
-	}
-
-	public function error($message) {
-		$this->log('error', $message);
-	}
-
-
-	private function log($type, $message) {
-		if (!$this->db) {
-		    return;
-		}
-
-		if (!empty($message)) {
-		    $message = mb_substr($message, 0, 2048);
-		    $this->db->silentQuery("INSERT INTO `logs` VALUES('', NOW(), '$type', ?)", $message);
-		}
-	}
+    }
 }
 
 ?>

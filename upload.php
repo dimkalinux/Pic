@@ -1,35 +1,57 @@
 <?php
 
-if (!defined('UP_ROOT')) {
-	define('UP_ROOT', './');
+if (!defined('AMI_ROOT')) {
+    define('AMI_ROOT', './');
 }
 
-require UP_ROOT.'functions.inc.php';
-require UP_ROOT.'include/upload.inc.php';
+require AMI_ROOT.'functions.inc.php';
+require AMI_ROOT.'include/upload.inc.php';
 
 
-$file = $_POST;
+$async = FALSE;
+if (isset($_POST['async'])) {
+    $async = TRUE;
+    unset($_POST['async']);
+}
 
 try {
-	if (empty($file) || !isset($file['upload_name'])) {
-		throw new AppLevelException("Получен запрос без файла.");
-	}
+    /*if (!isset($_POST['upload'])) {
+	throw new AppLevelException("Получен запрос без файла.");
+    }*/
 
-	$upload = new Upload($file);
+    $files = $_POST;
+    fixFilesArray($files);
+
+    $upload = new Upload($files, $async);
 }  catch (AppLevelException $e) {
-	if (isset($_POST['async'])) {
-		ami_async_response(array('error'=> 1, 'message' => $e->getMessage()), AMI_ASYNC_JSON);
-	} else {
-		ami_show_error_message($e->getMessage().'<p><br/><a href="'.$picBaseUrl.'">Перейти на главную страницу</a></p>');
-	}
+    if ($async) {
+	ami_async_response(array('error'=> 1, 'message' => $e->getMessage()), AMI_ASYNC_JSON);
+    } else {
+	ami_show_error_message($e->getMessage().'<p><br/><a href="'.$picBaseUrl.'">Перейти на главную страницу</a></p>');
+    }
 } catch (Exception $e) {
-	if (isset($_POST['async'])) {
-		ami_async_response(array('error'=> 1, 'message' => $e->getMessage()), AMI_ASYNC_JSON);
-	} else {
-		ami_show_error($e->getMessage());
-	}
+    if ($async) {
+	ami_async_response(array('error'=> 1, 'message' => $e->getMessage()), AMI_ASYNC_JSON);
+    } else {
+	ami_show_error($e->getMessage());
+    }
 }
 
 
+function fixFilesArray(&$files) {
+    $names = array('upload_name' => 1, 'upload_content_type' => 1, 'upload_path' => 1, 'upload_size' => 1);
+
+    foreach ($files as $key => $part) {
+        // only deal with valid keys and multiple files
+        $key = (string) $key;
+        if (isset($names[$key]) && is_array($part)) {
+            foreach ($part as $position => $value) {
+		        $files[$position][$key] = $value;
+            }
+            // remove old key reference
+            unset($files[$key]);
+        }
+    }
+}
 
 ?>
