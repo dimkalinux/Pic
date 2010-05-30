@@ -5,12 +5,12 @@ if (!defined('AMI')) {
 	exit;
 }
 
-
 /**
  * Application Level server exception.
  *
  * @package	pic
  */
 class AppLevelException extends Exception {}
+class InvalidInputDataException extends Exception {}
 
 ?>

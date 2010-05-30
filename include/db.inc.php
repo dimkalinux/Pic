@@ -1,6 +1,6 @@
 <?php
 
-// VERSION 0.5.1
+// VERSION 0.5.2
 
 // Make sure no one attempts to run this script "directly"
 if (!defined('AMI')) {
@@ -105,6 +105,23 @@ class DB {
 	/* */
 	public function affected() {
 		return ($this->link) ? mysqli_affected_rows($this->link) : FALSE;
+	}
+
+	public function create_uniq_hash_key($key_name, $key_length, $table) {
+		$t = 10;
+		$db = DB::singleton();
+
+		do {
+			$hash = ami_GenerateRandomHash($key_length);
+			$row = $db->getRow("SELECT COUNT(*) AS N FROM $table WHERE ?=? LIMIT 1", $key_name, $hash);
+			if (intval($row['N'], 10) === 0) {
+				return $hash;
+			}
+
+			$t--;
+		} while($t > 0);
+
+		throw new Exception("Не удалось создать уникальное значение для ключа '$key'");
 	}
 
 

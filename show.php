@@ -41,10 +41,7 @@ try {
 	$p_height = $row['p_height'];
 
 	// GENERATE LINKS
-	$home_link = ami_link('root');
-	$about_link = ami_link('about');
 	$show_link = ami_link('show_image', $key_id);
-	$view_link = ami_link('links_image', array($key_id, PIC_IMAGE_SIZE_MIDDLE));
 	$preview_link = pic_getImageLink($storage, $location, $hash_filename, PIC_IMAGE_SIZE_PREVIEW);
 	$original_link = pic_getImageLink($storage, $location, $hash_filename, PIC_IMAGE_SIZE_ORIGINAL);
 } catch (AppLevelException $e) {
@@ -61,24 +58,22 @@ try {
 	}
 }
 
+$ami_Menu['links'] = '<li><a href="'.ami_link('links_image', array($key_id, PIC_IMAGE_SIZE_MIDDLE)).'" title="Получить ссылки на этот файл">Ссылки</a></li>';
+$ami_Menu['original'] = '<li><a href="'.$original_link.'" title="Скачать оригинал">'.$o_width.'&#8202;x&#8202;'.$o_height.'&nbsp;'.$o_size_text.'</a></li>';
+
 
 //
 
 $out = <<<FMB
-<div class="span-24 center">
-	<ul id="menu">
-		<li><a href="$home_link" title="Вернуться на главную страницу">На главную</a></li>
-		<li><a href="$about_link" title="">О проекте</a></li>
-		<li><a href="$view_link" title="Получить ссылки на этот файл">Ссылки</a></li>
-		<li><a href="$original_link" title="Скачать оригинал">{$o_width}&#8202;x&#8202;{$o_height} $o_size_text</a></li>
-	</ul>
-</div>
 <div class="span-24 body_block center">
 	<div id="img_block">
 		<a href="$original_link"><img class="fancy_image" src="$preview_link" alt="$filename"/></a>
 	</div>
 </div>
 FMB;
+
+// SET PAGE TITLE as FILENAME
+$ami_PageTitle = $filename;
 
 ami_printPage($out, 'show_page');
 exit();

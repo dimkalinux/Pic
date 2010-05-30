@@ -49,8 +49,6 @@ $hash_filename = $row['hash_filename'];
 $filename = ami_htmlencode($row['filename']);
 
 
-$home_link = ami_link('root');
-$about_link = ami_link('about');
 $preview_link = pic_getImageLink($storage, $location, $hash_filename, $preview_size);
 
 $delete_link = '';
@@ -79,13 +77,6 @@ $input_link_bbcode = ami_htmlencode('[url='.$show_link.'][img]'.pic_getImageLink
 $input_link_original = ami_htmlencode(pic_getImageLink($storage, $location, $hash_filename, PIC_IMAGE_SIZE_ORIGINAL));
 
 $out = <<<FMB
-<div class="span-17 prepend-5 last">
-	<ul id="menu">
-		<li><a href="$home_link" title="Вернуться на главную страницу">На главную</a></li>
-		<li><a href="$about_link" title="">О проекте</a></li>
-	</ul>
-</div>
-
 <div class="span-3 body_block" id="main_block">
 	<ul id="image_menu">
 		$preview_link_small
@@ -120,6 +111,10 @@ $out = <<<FMB
 	</div>
 </div>
 FMB;
+
+
+// SET PAGE TITLE as FILENAME
+$ami_PageTitle = $filename;
 
 ami_addOnDOMReady('PIC.ajaxify.delete_image();');
 ami_printPage($out, 'links_page');

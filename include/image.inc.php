@@ -154,11 +154,7 @@ class Image {
 		$this->create_small_thumbs();
 		$this->create_medium_thumbs();
 		$this->create_preview();
-
-		// CREATE GALLERY thumbs
-		if ($this->multi_upload) {
-			$this->create_gallery_thumbs();
-		}
+		$this->create_gallery_thumbs();
 	}
 
 	private function create_gallery_thumbs() {

@@ -46,8 +46,7 @@ try {
 		$preview_link_middle = '<li><a href="'.ami_link('links_group_image_owner', array($key_group, $key_delete, PIC_IMAGE_SIZE_MIDDLE)).'" title="Большая картинка">500px</a></li>';
 	}
 
-	$home_link = ami_link('root');
-	$about_link = ami_link('about');
+	$twitter_link = 'http://twitter.com/home?status='.ami_link('show_group_image', array($key_group));
 
 	$i = $tabindex_html = $tabindex_bbcode = $tabindex_show = $tabindex_original = 0;
 	$out = '';
@@ -72,7 +71,7 @@ try {
 		$preview_link = pic_getImageLink($storage, $location, $hash_filename, PIC_IMAGE_SIZE_SMALL);
 		$preview_link_preview = ami_link('links_image_owner', array($key_id, $key_delete, PIC_IMAGE_SIZE_PREVIEW));
 		$show_link = ami_link('show_image', $key_id);
-		$show_group_link = ami_link('show_group_image', array($key_group, $key_id));
+		$show_group_link = ami_link('show_group_image_preselect', array($key_group, $key_id));
 
 		// LINKS
 		$input_link_html = ami_htmlencode('<a href="'.$show_link.'"><img src="'.pic_getImageLink($storage, $location, $hash_filename, $preview_size).'" alt="'.$filename.'"></a>');
@@ -122,18 +121,11 @@ FMB;
 }
 
 $page = <<<FMB
-<div class="span-19 prepend-5 last">
-	<ul id="menu">
-		<li><a href="$home_link" title="Вернуться на главную страницу">На главную</a></li>
-		<li><a href="$about_link" title="">О проекте</a></li>
-	</ul>
-</div>
-
 <div class="span-3 prepend-1 body_block" id="main_block">
 	<ul id="image_menu">
 		$preview_link_small
 		$preview_link_middle
-		<li><a href="http://twitter.com/home?status=$show_group_link" title="Опубликовать картинки в Твиттере">twitter</a></li>
+		<li><a href="$twitter_link" title="Опубликовать картинки в Твиттере">twitter</a></li>
 		$delete_link
 	</ul>
 </div>

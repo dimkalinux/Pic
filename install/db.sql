@@ -1,6 +1,6 @@
 USE pic2;
 
-DROP TABLE IF EXISTS `pic`;
+/*DROP TABLE IF EXISTS `pic`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 CREATE TABLE `pic` (
@@ -22,5 +22,35 @@ CREATE TABLE `pic` (
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
+*/
+
+DROP TABLE IF EXISTS `users`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `users` (
+    `id` int(10) unsigned NOT NULL auto_increment,
+    `email` varchar(256) default NULL,
+    `password` text NOT NULL,
+    `regdate` datetime NOT NULL,
+    `admin` tinyint(1) default '0',
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+SET character_set_client = @saved_cs_client;
 
 
+DROP TABLE IF EXISTS `session`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `session` (
+  `sid` varchar(40) NOT NULL,
+  `uid` int(10) unsigned NOT NULL,
+  `ip` int(10) unsigned NOT NULL,
+  `expire` datetime NOT NULL,
+  `email` varchar(129) default NULL,
+  `admin` tinyint(1) default '0',
+  KEY `sid` (`sid`,`uid`,`ip`)
+) ENGINE=MEMORY DEFAULT CHARSET=utf8;
+SET character_set_client = @saved_cs_client;
+
+
+ALTER TABLE pic ADD COLUMN owner_id int(10) unsigned NOT NULL AFTER 'p_size';

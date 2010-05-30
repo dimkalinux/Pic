@@ -13,16 +13,18 @@ class Upload {
 	private $upload_uid;
 	private $upload_delete_key;
 
-	public function __construct($files, $async) {
+	public function __construct($files, $async, $user_id) {
 		global $pic_MaxUploadSize, $pic_BaseURL, $pic_DefaultPreviewSize;
 
 		$multi_upload = (bool)/**/(count($files) > 1);
 
-		$this->upload_uid = ami_GenerateRandomHash(16);
+		// GENERATE UPLAOD GROUP KEY
+		$db = DB::singleton();
+		$this->upload_uid = $db->create_uniq_hash_key('group_id', 16, 'pic');
 		$this->upload_delete_key = ami_GenerateRandomHash(16);
 
 		foreach ($files as $file) {
-			$upload_file = new Upload_file($file, $multi_upload);
+			$upload_file = new Upload_file($file, $multi_upload, $user_id);
 
 			// 1. CHECK SIZE
 			if ($upload_file->getSize() < 1) {

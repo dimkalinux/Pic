@@ -15,6 +15,55 @@ if (defined('AMI_PAGE_TYPE')) {
 	$ami_PageType = 'main_page';
 }
 
+$ami_CurrentPage = basename($_SERVER['PHP_SELF']);
+
+//
+$ami_MenuTemplate = '<div class="span-18 last prepend-5 last"><ul id="menu">%s</ul></div>';
+
+// INDEX PAGE
+if ($ami_CurrentPage == 'index.php') {
+	ami_array_insert($ami_Menu, 0, '<li class="current">На главную</li>', 'root');
+} else {
+	ami_array_insert($ami_Menu, 0, '<li><a href="'.ami_link('root').'" title="Вернуться на главную страницу">На главную</a></li>', 'root');
+}
+
+// ABOUT PAGE
+if (in_array($ami_CurrentPage, array('index.php', 'about.php', 'login.php', 'register.php', 'myfiles.php', 'profile.php', 'links.php', 'links_group.php'))) {
+	if ($ami_CurrentPage == 'about.php') {
+		ami_array_insert($ami_Menu, 1, '<li class="current">О проекте</li>', 'about');
+	} else {
+		ami_array_insert($ami_Menu, 1, '<li><a href="'.ami_link('about').'" title="Зачем это всё?">О проекте</a></li>', 'about');
+	}
+}
+
+if ($ami_User['is_guest']) {
+	if (in_array($ami_CurrentPage, array('index.php', 'about.php', 'login.php', 'register.php'))) {
+		// LOGIN
+		if ($ami_CurrentPage == 'login.php') {
+			$ami_Menu['login'] = '<li class="current">Вход</li>';
+		} else {
+			$ami_Menu['login'] = '<li><a href="'.ami_link('login').'" title="Войти в систему">Вход</a></li>';
+		}
+
+		// REGISTER
+		if ($ami_CurrentPage == 'register.php') {
+			$ami_Menu['register'] =  '<li class="current">Регистрация</li>';
+		}/* else {
+			$ami_Menu['register'] = '<li><a href="'.ami_link('register').'" title="Зарегистрироваться в системе">Регистрация</a></li>';
+		}*/
+	}
+} else {
+	// FILES
+	/*if ($ami_CurrentPage == 'myfiles.php') {
+		ami_array_insert($ami_Menu, 2, '<li class="current">Мои файлы</li>', 'myfiles');
+	} else {
+		ami_array_insert($ami_Menu, 2, '<li><a href="'.ami_link('myfiles').'" title="">Мои файлы</a></li>', 'myfiles');
+	}*/
+
+	$ami_Menu['logout'] = '<li><a href="'.ami_link('profile').'" title="Мой профиль">'.ami_htmlencode($ami_User['email']).'</a></li>';
+}
+
+
 // Send no-cache headers
 header('Expires: Thu, 21 Jul 1977 07:30:00 GMT');	// When yours truly first set eyes on this world! :)
 header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
@@ -29,10 +78,13 @@ header('Pragma: no-cache');		// For HTTP/1.0 compability
 	<link rel="stylesheet" href="<?php echo AMI_CSS_BASE_URL; ?>style/blueprint/screen.css" type="text/css" media="screen, projection">
 	<link rel="stylesheet" href="<?php echo AMI_CSS_BASE_URL; ?>style/blueprint/print.css" type="text/css" media="print">
 	<!--[if lt IE 8]><link rel="stylesheet" href="<?php echo AMI_CSS_BASE_URL; ?>style/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
-	<link rel="stylesheet" href="<?php echo AMI_CSS_BASE_URL; ?>style/style.css" type="text/css" media="screen, projection">
+	<link rel="stylesheet" href="<?php echo AMI_CSS_BASE_URL; ?>style/style_classic.css" type="text/css" media="screen, projection">
 	<link rel="shortcut icon" type="image/x-icon" href="<?php echo AMI_JS_BASE_URL; ?>favicon.ico">
 </head>
 <?php flush(); ?>
 <body id="<?php echo $ami_PageType; ?>">
 	<div class="container _showgrid">
-<?php define('AMI_HEADER', 1); ?>
+<?php
+	echo(sprintf($ami_MenuTemplate, implode('',$ami_Menu)));
+	define('AMI_HEADER', 1);
+?>

@@ -26,6 +26,8 @@ define('PIC_IMAGE_SIZE_GALLERY', 5);
 define('AMI_ASYNC_JSON', 1);
 define('AMI_ASYNC_XML', 2);
 
+define('AMI_GUEST_UID', 0);
+
 
 $ami_BaseURL = $pic_BaseURL = 'http://pic.lluga.net';
 $pic_DefaultPreviewSize = PIC_IMAGE_SIZE_MIDDLE;
@@ -49,6 +51,15 @@ $pic_image_medium_quality = 90;
 $pic_image_preview_height = 600;
 $pic_image_preview_width = 875;
 $pic_image_preview_quality = 90;
+
+// COOKIE SECTION
+$ami_LoginCookieName = 'pic_login';
+$ami_LoginCookieDomain = '';
+$ami_LoginCookiePath = '/';
+$ami_LoginCookieSecure = 0;
+$ami_LoginCookieSalt = 'zzjdIof(df*f;ad';
+//
+$ami_CSRF_Key = '05dddlaoezz:_=dd';
 
 
 // UPLOAD

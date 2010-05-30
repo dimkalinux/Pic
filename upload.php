@@ -22,18 +22,18 @@ try {
     $files = $_POST;
     fixFilesArray($files);
 
-    $upload = new Upload($files, $async);
+    $upload = new Upload($files, $async, $ami_User['id']);
 }  catch (AppLevelException $e) {
     if ($async) {
-	ami_async_response(array('error'=> 1, 'message' => $e->getMessage()), AMI_ASYNC_JSON);
+        ami_async_response(array('error'=> 1, 'message' => $e->getMessage()), AMI_ASYNC_JSON);
     } else {
-	ami_show_error_message($e->getMessage().'<p><br/><a href="'.$picBaseUrl.'">Перейти на главную страницу</a></p>');
+        ami_show_error_message($e->getMessage());
     }
 } catch (Exception $e) {
     if ($async) {
-	ami_async_response(array('error'=> 1, 'message' => $e->getMessage()), AMI_ASYNC_JSON);
+        ami_async_response(array('error'=> 1, 'message' => $e->getMessage()), AMI_ASYNC_JSON);
     } else {
-	ami_show_error($e->getMessage());
+        ami_show_error($e->getMessage());
     }
 }
 

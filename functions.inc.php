@@ -39,7 +39,7 @@ if (AMI_DEBUG === TRUE) {
 }
 
 // GLOBAL VARIABLES
-$ami_addScript = $ami_onDOMReady = array();
+$ami_addScript = $ami_onDOMReady = $ami_Menu = array();
 
 // LOAD UTF-8 FUNCTIONS
 require AMI_ROOT.'include/utf8/utf8.php';
@@ -47,10 +47,22 @@ require AMI_ROOT.'include/utf8/ucwords.php';
 require AMI_ROOT.'include/utf8/trim.php';
 
 // LOAD ALL LIBS
+require AMI_ROOT.'include/password.inc.php';
 require AMI_ROOT.'include/exceptions.inc.php';
+require AMI_ROOT.'include/user.inc.php';
 require AMI_ROOT.'include/url.inc.php';
 require AMI_ROOT.'include/db.inc.php';
 require AMI_ROOT.'include/logger.inc.php';
+
+
+
+// get user info
+try {
+    $ami_User = User::get_CurrentUser();
+} catch(Exception $e) {
+    ami_show_error($e->getMessage());
+}
+
 
 
 function ami_addOnDOMReady($code) {
@@ -104,6 +116,32 @@ function ami_trim($str, $charlist = " \t\n\r\x0b\xc2\xa0") {
     return utf8_trim($str, $charlist);
 }
 
+
+// Inserts $element into $input at $offset
+// $offset can be either a numerical offset to insert at (eg: 0 inserts at the beginning of the array)
+// or a string, which is the key that the new element should be inserted before
+// $key is optional: it's used when inserting a new key/value pair into an associative array
+function ami_array_insert(&$input, $offset, $element, $key = null) {
+    if ($key == null) {
+	$key = $offset;
+    }
+
+    // Determine the proper offset if we're using a string
+    if (!is_int($offset)) {
+	$offset = array_search($offset, array_keys($input), true);
+    }
+
+    // Out of bounds checks
+    if ($offset > count($input)) {
+	$offset = count($input);
+    } else if ($offset < 0) {
+	$offset = 0;
+    }
+
+    $input = array_merge(array_slice($input, 0, $offset), array($key => $element), array_slice($input, $offset));
+}
+
+
 function ami_link($link, $args = null) {
     global $ami_BaseURL, $ami_urls;
 
@@ -133,15 +171,8 @@ function ami_show_message($header, $message) {
     $about_link = ami_link('about');
 
     $out = <<<FMB
-    <div class="span-15 prepend-5 last">
-	<ul id="menu">
-	    <li><a href="$home_link" title="Вернуться на главную страницу">На главную</a></li>
-	    <li><a href="$about_link" title="">О проекте</a></li>
-	</ul>
-    </div>
-
     <div class="span-15 prepend-5 body_block">
-	<h3>$header</h3>
+	<h2>$header</h2>
 	<div>
 	    $message
 	    <br/><br/>
@@ -267,7 +298,7 @@ function ami_show_error() {
 
 
 function ami_printPage($content, $page_type='message_page') {
-    global $ami_BaseURL, $ami_PageTitle, $ami_onDOMReady;
+    global $ami_BaseURL, $ami_PageTitle, $ami_onDOMReady, $ami_User, $ami_Menu;
 
     if (!defined('AMI_ROOT')) {
 	die('Not defined AMI_ROOT');
@@ -325,7 +356,7 @@ function ami_GenerateRandomHash($maxLength=null, $strong=FALSE) {
     }
 
     // add some basic mt_rand/uniqid combo
-    $entropy .= uniqid(mt_rand(), true);
+    $entropy .= uniqid(mt_rand(), TRUE);
 
     // try to read from the windows RNG
     if (class_exists('COM')) {
@@ -451,5 +482,45 @@ function pic_GetFileExt($file_name) {
 
     return strtolower(substr(strrchr($file_name, "."), 1));
 }
+
+// Generates a valid CSRF token for use when submitting a form to $target_url
+// $target_url should be an absolute URL and it should be exactly the URL that the user is going to
+// Alternately, if the form token is going to be used in GET (which would mean the token is going to be
+// a part of the URL itself), $target_url may be a plain string containing information related to the URL.
+function ami_MakeFormToken($target_url) {
+    return sha1(str_replace('&amp;', '&', $target_url).ami_GetIP());
+}
+
+
+function ami_CheckFormToken($csrf='ss11:254BINGOdaf_fd') {
+    if (!isset($_REQUEST['csrf_token'])) {
+	return FALSE;
+    }
+
+    return ($csrf === $_REQUEST['csrf_token']);
+}
+
+function ami_IsValidEmail($email) {
+    if (utf8_strlen($email) > 128) {
+    	return FALSE;
+    }
+
+    return preg_match('/^(([^<>()[\]\\.,;:\s@"\']+(\.[^<>()[\]\\.,;:\s@"\']+)*)|("[^"\']+"))@((\[\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\])|(([a-zA-Z\d\-]+\.)+[a-zA-Z]{2,}))$/ui', $email);
+}
+
+function ami_SetCookie($name, $value, $expire) {
+    global $ami_LoginCookieDomain, $ami_LoginCookiePath, $ami_LoginCookieSecure;
+
+    // Enable sending of a P3P header
+    header('P3P: CP="CUR ADM"');
+
+    if (version_compare(PHP_VERSION, '5.2.0', '>=')) {
+	setcookie($name, $value, $expire, $ami_LoginCookiePath, $ami_LoginCookieDomain, $ami_LoginCookieSecure, TRUE);
+    } else {
+	setcookie($name, $value, $expire, $ami_LoginCookiePath.'; HttpOnly', $ami_LoginCookieDomain, $ami_LoginCookieSecure);
+    }
+}
+
+
 
 ?>

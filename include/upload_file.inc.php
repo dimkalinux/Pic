@@ -22,8 +22,10 @@ class Upload_file {
 	/* @var int */
 	private $error;
 
+	private $user_id;
 
-	public function __construct($file, $multi_upload) {
+
+	public function __construct($file, $multi_upload, $user_id) {
 		if (!isset($file)) {
 			throw new Exception("Файл '$file' не найден.");
 		}
@@ -39,6 +41,7 @@ class Upload_file {
 		$this->size = $file['upload_size'];
 		$this->tmpName = $file['upload_path'];
 		$this->error = 0;
+		$this->user_id = $user_id;
 
 	}
 
@@ -59,7 +62,9 @@ class Upload_file {
 
 
 	public function save_in_db($location, $storage, $filename, $hashed_filename, $width, $height, $p_width, $p_height, $p_size, $key_group, $key_delete) {
-		$image_key = $this->create_uniq_hash_key('key', 16);
+		$db = DB::singleton();
+		$image_key = $db->create_uniq_hash_key('key', 16, 'pic');
+
 		$image_delete_key = $key_delete;
 		$image_location = $location;
 		$image_storage = $storage;
@@ -69,29 +74,11 @@ class Upload_file {
 		$image_width = $width;
 		$image_height = $height;
 
-		$db = DB::singleton();
-		$db->query("INSERT INTO pic VALUES ('', ?, ?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", $key_group, $image_key, $image_delete_key, $image_location, $image_storage, $image_filename, $image_hashed_filename, $image_size, $image_width, $image_height, $p_width, $p_height, $p_size);
+		$db->query("INSERT INTO pic VALUES ('', ?, ?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", $key_group, $image_key, $image_delete_key, $image_location, $image_storage, $image_filename, $image_hashed_filename, $image_size, $image_width, $image_height, $p_width, $p_height, $p_size, $this->user_id);
 
 		return array('key' => $image_key, 'delete_key' => $image_delete_key);
 	}
 
-
-	private function create_uniq_hash_key($key_name, $key_length) {
-		$t = 10;
-		$db = DB::singleton();
-
-		do {
-			$hash = ami_GenerateRandomHash($key_length);
-			$row = $db->getRow("SELECT COUNT(*) AS N FROM pic WHERE ?=? LIMIT 1", $key_name, $hash);
-			if (intval($row['N'], 10) === 0) {
-				return $hash;
-			}
-
-			$t--;
-		} while($t > 0);
-
-		throw new Exception("Не удалось создать уникальное значение для ключа '$key'");
-	}
 
 	/**
 	 * Returns the MIME content type of an uploaded file.

@@ -436,6 +436,12 @@ PIC.utils = function () {
 
 		gct: function () {
 			return new Date().getTime();
+		},
+
+		init_form: function (form) {
+			if (form && $('div.error').length() == 0) {
+				$(form).find("input:password[value=''], input:text[value='']").filter(':first').focus();
+			}
 		}
 	};
 }();
@@ -604,14 +610,15 @@ PIC.ajaxify = function () {
 					},
 					success: function (r) {
 						if (r && parseInt(r.error, 10) === 0) {
-							$('.container').fadeOut(350, function() {
+							$('.container').fadeOut(250, function() {
 								$('body').attr('id', 'message_page');
 
 								$('#links_wrap, #links_block').remove();
 
 								$('#main_block').removeClass('span-3').addClass('span-15 prepend-5 last block_body');
-								$('#main_block').html('<h3>Файл удалён</h3><p>Файл успешно удалён с сервера.<br/><br/><a href="/">Перейти на главную страницу</a></p>');
-							}).fadeIn(250);
+								$('#main_block').html('<h2>Файл удалён</h2><p>Файл успешно удалён с сервера.<br/><br/><a href="/">Перейти на главную страницу</a></p>');
+								$(document).attr("title", "Файл удалён");
+							}).fadeIn(200);
 						} else {
 							//
 							$(icon).removeClass('loading');
@@ -660,7 +667,7 @@ PIC.ajaxify = function () {
 					},
 					success: function (r) {
 						if (r && parseInt(r.error, 10) === 0) {
-							$('.container').fadeOut(350, function() {
+							$('.container').fadeOut(250, function() {
 								$('body').attr('id', 'message_page');
 
 								$('#links_group_block').remove();
@@ -668,8 +675,9 @@ PIC.ajaxify = function () {
 								$('#main_block')
 									.removeClass('span-3 prepend-1')
 									.addClass('span-15 prepend-5 last block_body')
-									.html('<h3>Файлы удалёны</h3><p>Файлы успешно удалёны с сервера.<br/><br/><a href="/">Перейти на главную страницу</a></p>');
-							}).fadeIn(250);
+									.html('<h2>Файлы удалёны</h2><p>Файлы успешно удалёны с сервера.<br/><br/><a href="/">Перейти на главную страницу</a></p>');
+									$(document).attr("title", "Файлы удалёны");
+							}).fadeIn(200);
 						} else {
 							//
 							$(icon).removeClass('loading');
@@ -697,6 +705,7 @@ PIC.ajaxify = function () {
 				}
 
 				var g_image_link = $(this),
+					g_image_img = $(g_image_link).find('img'),
 					image_info = $(g_image_link).attr('rel'),
 					new_img_url = image_info.split('*')[0],
 					img_original_url = image_info.split('*')[1],
@@ -707,7 +716,10 @@ PIC.ajaxify = function () {
 					$(img).animate({opacity: 0.1}, 150, '', function () {
 						var t_img = new Image();
 						t_img.onload = function () {
-							$(img).attr('src', new_img_url);
+							$(img)
+								.attr('src', new_img_url)
+								.attr('alt', $(g_image_img).attr('alt'));
+
 							$(img).animate({opacity: 1}, 250, '');
 							$(t_img).remove();
 						};
@@ -715,6 +727,8 @@ PIC.ajaxify = function () {
 						$(link).attr('href', img_original_url);
 						$('#header_original_link').attr('href', img_original_url);
 						$('#header_original_link').html(image_info.split('*')[2]+'&#8202;x&#8202;'+image_info.split('*')[3]+'&nbsp;'+PIC.utils.format_filesize(image_info.split('*')[4]));
+						// set page link
+						$(document).attr("title", $(g_image_img).attr('alt'));
 					});
 
 					// remove link active class
@@ -739,4 +753,61 @@ PIC.ajaxify = function () {
  */
 (function($){$.ga={};$.ga.load=function(uid,callback){jQuery.ajax({type:'GET',url:(document.location.protocol=="https:"?"https://ssl":"http://www")+'.google-analytics.com/ga.js',cache:true,success:function(){if(typeof _gat==undefined){throw"_gat has not been defined";}t=_gat._getTracker(uid);bind();if($.isFunction(callback)){callback(t)}t._trackPageview()},dataType:'script',data:null})};var t;var bind=function(){if(noT()){throw"pageTracker has not been defined";}for(var $1 in t){if($1.charAt(0)!='_')continue;$.ga[$1.substr(1)]=t[$1]}};var noT=function(){return t==undefined}})(jQuery);
 
+/*
+var drg = function(e) {
+	e.stopPropagation();
+	e.preventDefault();
+}, element = document.body; // узел, на который будем "сбрасывать" файлы
 
+element.addEventListener("dragenter", drg, false); // событие при наведении указателя
+element.addEventListener("dragover", drg, false); // событие при покидании мыши области элемента
+element.addEventListener("drop", function(e){ // непосредственно "сброс"
+	if (!e.dataTransfer.files) {
+		return;
+	}
+	e.stopPropagation();
+	e.preventDefault();
+
+	var files = e.dataTransfer.files // тот же список файлов, что и у инпута
+	for (var i = 0; i < files.length; i++) {
+		var file = files[i];
+		firefox_upload_file(file, '/upload/');
+	}
+}, false);
+
+
+function firefox_upload_file(file, uploadURL) {
+	// file — файл для загрузки
+	// uploadURL - ссылка для загрузки файла
+	var xhr = new XMLHttpRequest();
+	xhr.open('POST', uploadURL, true);
+
+	if (typeof FormData == 'function') { // правильный способ
+		var fData = new FormData();
+		fData.append('upload', file);
+		xhr.send(fData);
+	} else if (xhr.sendAsBinary) { // пусть работает хоть как-то
+		var fReader = new FileReader();
+		fReader.addEventListener('load', function() {
+			var boundaryString = 'prevedmedved',
+				boundary = '--' + boundaryString,
+				requestbody = '';
+
+				requestbody += boundary + '\n'
+					+ 'Content-Disposition: form-data; name="upload"; filename="' + file.name + '"' + '\n' // имя параметра — upfile
+					+ 'Content-Type: application/octet-stream' + '\n'
+					+ '\n'
+					+ fReader.result // бинарное содержимое файла
+					+ '\n'
+					+ boundary;
+
+				xhr.setRequestHeader("Content-type", 'multipart/form-data; boundary="' + boundaryString + '"');
+				xhr.setRequestHeader("Connection", "close");
+				xhr.setRequestHeader("Content-length", requestbody.length);
+				xhr.sendAsBinary(requestbody);
+			}, false);
+
+		fReader.readAsBinaryString(file);
+	}
+}
+*/
