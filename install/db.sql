@@ -54,3 +54,14 @@ SET character_set_client = @saved_cs_client;
 
 
 ALTER TABLE pic ADD COLUMN owner_id int(10) unsigned NOT NULL AFTER 'p_size';
+
+
+DROP TABLE IF EXISTS `users_config`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `users_config` (
+    `uid` int(10) unsigned NOT NULL,
+    `name` varchar(128) NOT NULL,
+    `val` varchar(128) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+SET character_set_client = @saved_cs_client;

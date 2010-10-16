@@ -136,6 +136,10 @@ PAGE;
 		return $r.'&nbsp;'.$this->time_to_string($r, 'серия', 'серии', 'серий');
 	}
 
+	public function format_pics($r) {
+		return $r.'&nbsp;'.$this->time_to_string($r, 'фотография', 'фотографии', 'фотографий');
+	}
+
 	protected function format_uah($u) {
 		$i = intval($u, 10);
 		setlocale(LC_MONETARY, 'uk_UA.utf8');

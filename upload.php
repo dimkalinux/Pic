@@ -14,23 +14,36 @@ if (isset($_POST['async'])) {
     unset($_POST['async']);
 }
 
-try {
-    /*if (!isset($_POST['upload'])) {
-	throw new AppLevelException("Получен запрос без файла.");
-    }*/
+$use_api = FALSE;
+if (isset($_POST['api'])) {
+    $use_api = TRUE;
+    unset($_POST['api']);
+}
 
+$reduce_original = 0;
+if (isset($_POST['reduce_original'])) {
+    $reduce_original = intval($_POST['reduce_original'], 10);
+    unset($_POST['reduce_original']);
+}
+
+try {
     $files = $_POST;
     fixFilesArray($files);
 
-    $upload = new Upload($files, $async, $ami_User['id']);
-}  catch (AppLevelException $e) {
-    if ($async) {
+    if (empty($files)) {
+        throw new AppLevelException("Получен запрос без файла.");
+    }
+
+
+    $upload = new Upload($files, $async, $ami_User, $use_api, $reduce_original);
+} catch (AppLevelException $e) {
+    if ($async || $use_api) {
         ami_async_response(array('error'=> 1, 'message' => $e->getMessage()), AMI_ASYNC_JSON);
     } else {
         ami_show_error_message($e->getMessage());
     }
 } catch (Exception $e) {
-    if ($async) {
+    if ($async || $use_api) {
         ami_async_response(array('error'=> 1, 'message' => $e->getMessage()), AMI_ASYNC_JSON);
     } else {
         ami_show_error($e->getMessage());

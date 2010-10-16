@@ -19,6 +19,7 @@ class Image {
 	private $image;
 	private $format;
 	private $phpThumbFormat;
+	private $phpThumbOriginalFormat;
 	private $width;
 	private $height;
 	private $p_width;
@@ -113,27 +114,32 @@ class Image {
 			case self::JPEG:
 				$ext = 'jpg';
 				$this->phpThumbFormat = 'jpeg';
+				$this->phpThumbOriginalFormat = 'jpeg';
 				break;
 
 			case self::PNG:
 				$ext = 'png';
 				$this->phpThumbFormat = 'png';
+				$this->phpThumbOriginalFormat = 'png';
 				break;
 
 			case self::TIFF_II:
 			case self::TIFF_MM:
 				$ext = 'tif';
 				$this->phpThumbFormat = 'png';
+				$this->phpThumbOriginalFormat = 'tif';
 				break;
 
 			case self::BMP:
 				$ext = 'bmp';
 				$this->phpThumbFormat = 'png';
+				$this->phpThumbOriginalFormat = 'bmp';
 				break;
 
 			case self::GIF:
 				$ext = 'gif';
 				$this->phpThumbFormat = 'gif';
+				$this->phpThumbOriginalFormat = 'gif';
 				break;
 
 			default:
@@ -147,6 +153,45 @@ class Image {
 		} else {
 			$this->image = $newImage;
 		}
+	}
+
+	public function resizeOriginal($size) {
+		$path_parts = pathinfo($this->image);
+		$tmp_filename = $path_parts['dirname'].'/tmp_'.$path_parts['basename'];
+
+		$phpThumb = new phpThumb();
+		//
+		$phpThumb->setSourceFilename($this->image);
+		//
+		$phpThumb->w = $size;
+		$phpThumb->h = $size;
+		$phpThumb->q = 95;
+
+		$phpThumb->config_output_format = $this->phpThumbOriginalFormat;
+		//
+		$phpThumb->config_error_die_on_error = FALSE;
+		$phpThumb->config_allow_src_above_docroot = TRUE;
+
+		if (!$phpThumb->GenerateThumbnail()) {
+			throw new Exception('Ошибка при изменении размера оригинала');
+		}
+
+		if (!$phpThumb->RenderToFile($tmp_filename)) {
+			throw new Exception('Ошибка при сохранении оригинала');
+		}
+
+		// rm original
+		ami_safeFileUnlink($this->image);
+
+		// rename tmp to original
+		if (!rename($tmp_filename, $this->image)) {
+			throw new Exception('Ошибка при изменении размера оригинала');
+		}
+
+		// UPDATE IMAGE SIZE
+		$info = @/**/getimagesize($this->image);
+		$this->width = $info[0];
+		$this->height = $info[1];
 	}
 
 
@@ -266,6 +311,10 @@ class Image {
 		if (!$phpThumb->RenderToFile($file)) {
 			throw new Exception('Ошибка при сохранении превью');
 		}
+	}
+
+	private function rotate($files, $degree) {
+
 	}
 }
 

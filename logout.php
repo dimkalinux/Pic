@@ -13,19 +13,25 @@ if (isset($_GET['async'])) {
 }
 
 try {
-	User::logout();
-	ami_redirect(ami_link('root'));
+    $o_ami_user = new AMI_User();
+
+    if (isset($_GET['facebook'])) {
+	$o_ami_user->logout_facebook();
+    } else {
+	$o_ami_user->logout();
+    }
+    ami_redirect(ami_link('root'));
 }  catch (AppLevelException $e) {
     if ($async) {
-		ami_async_response(array('error'=> 1, 'message' => $e->getMessage()), AMI_ASYNC_JSON);
+	ami_async_response(array('error'=> 1, 'message' => $e->getMessage()), AMI_ASYNC_JSON);
     } else {
-		ami_show_error_message($e->getMessage());
+	ami_show_error_message($e->getMessage());
     }
 } catch (Exception $e) {
     if ($async) {
-		ami_async_response(array('error'=> 1, 'message' => $e->getMessage()), AMI_ASYNC_JSON);
+	ami_async_response(array('error'=> 1, 'message' => $e->getMessage()), AMI_ASYNC_JSON);
     } else {
-		ami_show_error($e->getMessage());
+	ami_show_error($e->getMessage());
     }
 }
 

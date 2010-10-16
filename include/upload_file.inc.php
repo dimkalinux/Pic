@@ -24,8 +24,10 @@ class Upload_file {
 
 	private $user_id;
 
+	private $_auto_shorten_service;
 
-	public function __construct($file, $multi_upload, $user_id) {
+
+	public function __construct($file, $multi_upload, $user_id, $auto_shorten_service) {
 		if (!isset($file)) {
 			throw new Exception("Файл '$file' не найден.");
 		}
@@ -42,6 +44,7 @@ class Upload_file {
 		$this->tmpName = $file['upload_path'];
 		$this->error = 0;
 		$this->user_id = $user_id;
+		$this->_auto_shorten_service = $auto_shorten_service;
 
 	}
 
@@ -63,7 +66,7 @@ class Upload_file {
 
 	public function save_in_db($location, $storage, $filename, $hashed_filename, $width, $height, $p_width, $p_height, $p_size, $key_group, $key_delete) {
 		$db = DB::singleton();
-		$image_key = $db->create_uniq_hash_key('key', 16, 'pic');
+		$image_key = $db->create_uniq_hash_key_range('key', 'pic', 4, 12);
 
 		$image_delete_key = $key_delete;
 		$image_location = $location;
@@ -74,7 +77,18 @@ class Upload_file {
 		$image_width = $width;
 		$image_height = $height;
 
-		$db->query("INSERT INTO pic VALUES ('', ?, ?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", $key_group, $image_key, $image_delete_key, $image_location, $image_storage, $image_filename, $image_hashed_filename, $image_size, $image_width, $image_height, $p_width, $p_height, $p_size, $this->user_id);
+		//
+		$image_short_url = '';
+		if ($this->_auto_shorten_service !== FALSE) {
+			try {
+				$url_short = new URL_Shortener($this->_auto_shorten_service);
+				$image_short_url = $url_short->shorten(ami_link('show_image', $image_key));
+			} catch (Exception $e) {
+				$image_short_url = '';
+			}
+		}
+
+		$db->query("INSERT INTO pic VALUES ('', ?, ?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", $key_group, $image_key, $image_delete_key, $image_location, $image_storage, $image_filename, $image_hashed_filename, $image_size, $image_width, $image_height, $p_width, $p_height, $p_size, $this->user_id, $image_short_url);
 
 		return array('key' => $image_key, 'delete_key' => $image_delete_key);
 	}

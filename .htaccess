@@ -1,16 +1,26 @@
 RewriteEngine On
 RewriteBase /
 
+RewriteRule 	^advanced/$ 									/?advanced [L]
+RewriteRule 	^link/$ 										/?link [L]
 RewriteRule 	^upload/$ 										upload.php [L]
+
 
 RewriteRule 	^delete/ok/$									delete.php?ok=1 [L]
 RewriteRule 	^delete/group/ok/$								delete_group.php?ok=1 [L]
 
+RewriteRule 	^sendmepass/ok/$								sendmepass.php?ok=1 [L]
+RewriteRule 	^sendmepass/$									sendmepass.php [L]
+
 RewriteRule 	^register/ok/$									register.php?ok=1 [L]
+RewriteRule 	^register/facebook/$							register.php?facebook=1 [L]
 RewriteRule 	^register/$										register.php [L]
 
 RewriteRule 	^login/ok/$										login.php?ok=1 [L]
+RewriteRule 	^login/facebook/$								login.php?facebook=1 [L]
 RewriteRule 	^login/$										login.php [L]
+
+RewriteRule 	^edit/([a-z0-9]+)/([a-z0-9]+)/$					edit.php?k=$1&d=$2 [L]
 
 RewriteRule 	^delete/([a-z0-9]+)/([a-z0-9]+)/$				delete.php?k=$1&d=$2 [L]
 RewriteRule 	^delete/group/([a-z0-9]+)/([a-z0-9]+)/$			delete_group.php?g=$1&d=$2 [L]
@@ -28,9 +38,15 @@ RewriteRule 	^show/group/([a-z0-9]+)/$						show_group.php?g=$1 [L]
 RewriteRule 	^show/([a-z0-9]+)/$								show.php?k=$1 [L]
 
 RewriteRule 	^about/$										about.php [L]
+RewriteRule 	^logout/facebook/$								logout.php?facebook=1 [L]
 RewriteRule 	^logout/$										logout.php [L]
 RewriteRule 	^myfiles/$										myfiles.php [L]
 RewriteRule 	^profile/$										profile.php [L]
+RewriteRule 	^settings/$										settings.php [L]
+RewriteRule 	^settings/save/$								settings.php?save=1 [L]
+RewriteRule 	^settings/ok/$									settings.php?ok=1 [L]
+
+RewriteRule 	^ajax/$											ajax.php [L]
 
 
 

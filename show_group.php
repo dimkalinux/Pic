@@ -60,8 +60,6 @@ try {
 	}
 
 
-
-
 	// BUILD GALLERY
 	$galleryBlock = '';
 	foreach ($data as $pic) {
@@ -71,7 +69,7 @@ try {
 				'*'.$pic['width'].
 				'*'.$pic['height'].
 				'*'.$pic['size'].
-				'" href="'.ami_link('show_group_image', array($pic['group_id'], $pic['id_key'])).
+				'" href="'.ami_link('show_group_image_preselect', array($pic['group_id'], $pic['id_key'])).
 				'"><img class="active" src="'.pic_getImageLink($pic['storage'], $pic['location'], $pic['hash_filename'], PIC_IMAGE_SIZE_GALLERY).
 				'" alt="'.ami_htmlencode($pic['filename']).'"/></a>';
 			continue;
@@ -82,7 +80,7 @@ try {
 				'*'.$pic['width'].
 				'*'.$pic['height'].
 				'*'.$pic['size'].
-				'" href="'.ami_link('show_group_image', array($pic['group_id'], $pic['id_key'])).
+				'" href="'.ami_link('show_group_image_preselect', array($pic['group_id'], $pic['id_key'])).
 				'"><img src="'.pic_getImageLink($pic['storage'], $pic['location'], $pic['hash_filename'], PIC_IMAGE_SIZE_GALLERY).
 				'" alt="'.ami_htmlencode($pic['filename']).'"/></a>';
 	}
@@ -120,7 +118,7 @@ FMB;
 
 
 
-ami_addOnDOMReady('PIC.ajaxify.gallery_change_image();');
+ami_addOnDOMReady('PIC.ajaxify.gallery_change_image(); PIC.utils.preload_gallery_images();');
 ami_printPage($out, 'show_page');
 exit();
 

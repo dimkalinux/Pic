@@ -10,9 +10,20 @@ if (isset($_GET['ok'])) {
 	ami_show_message('Файл удалён', 'Файл успешно удалён с сервера.');
 }
 
+
 try {
 	$key_id = isset($_GET['k']) ? ami_get_safe_string_len($_GET['k'], 32) : FALSE;
 	$key_delete = isset($_GET['d']) ? ami_get_safe_string_len($_GET['d'], 32) : FALSE;
+
+
+	// TRY FETCH KEY_DELETE if im OWNER by LOGIN
+	if ((!$key_delete || $key_delete === 0) && ($ami_User['is_guest'] === FALSE)) {
+		$db = DB::singleton();
+		$row = $db->getRow("SELECT delete_key FROM pic WHERE id_key=? AND owner_id=? LIMIT 1", $key_id, $ami_User['id']);
+		if ($row && !empty($row['delete_key'])) {
+			$key_delete = $row['delete_key'];
+		}
+	}
 
 	if (!$key_id || !$key_delete) {
 		throw new AppLevelException('Недостаточно параметров в запросе');

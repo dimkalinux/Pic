@@ -7,7 +7,7 @@ if (!defined('AMI_ROOT')) {
 require AMI_ROOT.'functions.inc.php';
 
 $images = '';
-$myfiles_page_template = '<div class="myfiles span-15 last prepend-5 body_block"><h2>Мои файлы</h2>%s</div>';
+$myfiles_page_template = '<div class="myfiles span-15 last prepend-5 body_block"><div id="trash_block"><div id="trash_status"></div></div><h2>Мои файлы</h2>%s</div>';
 
 // build info
 try {
@@ -23,9 +23,12 @@ try {
 	$data = $db->getData("SELECT * FROM pic WHERE owner_id=? ORDER BY id DESC", $ami_User['id']);
 
 	if ($data) {
+		$images .= '<p id="no_files_message" class="hide">У вас еще нет ни одного загруженного файла</p>';
 		foreach ($data as $pic) {
-			$images .= '<a href="'.ami_link('links_image_owner', array($pic['id_key'], $pic['delete_key'], PIC_IMAGE_SIZE_MIDDLE)).'" title=""><img src="'.pic_getImageLink($pic['storage'], $pic['location'], $pic['hash_filename'], PIC_IMAGE_SIZE_GALLERY).'"></a>';
+			$images .= '<a title="'.ami_htmlencode($pic['filename']).'"" href="'.ami_link('links_image_owner', array($pic['id_key'], $pic['delete_key'], PIC_IMAGE_SIZE_MIDDLE)).'"><img id="img_'.$pic['id_key'].'" rel="'.ami_link('delete_image', array($pic['id_key'], $pic['delete_key'])).'" src="'.pic_getImageLink($pic['storage'], $pic['location'], $pic['hash_filename'], PIC_IMAGE_SIZE_GALLERY).'" alt="'.ami_htmlencode($pic['filename']).'"></a>';
 		}
+	} else {
+		$images .= '<p id="no_files_message">У вас еще нет ни одного загруженного файла</p>';
 	}
 } catch (AppLevelException $e) {
 	if (isset($_POST['async'])) {
@@ -44,5 +47,9 @@ try {
 
 // SET PAGE TITLE as FILENAME
 $ami_PageTitle = 'Мои файлы';
+//
+ami_addScript("jquery-ui-1.8.5.custom.min.js");
+ami_addOnDOMReady('PIC.trash.init();');
+//
 ami_printPage(sprintf($myfiles_page_template, $images), 'myfiles_page');
 ?>

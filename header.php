@@ -2,7 +2,7 @@
 
 // Make sure no one attempts to run this script "directly"
 if (!defined('AMI')) {
-	exit;
+	exit();
 }
 
 if (empty($ami_PageTitle)) {
@@ -28,7 +28,7 @@ if ($ami_CurrentPage == 'index.php') {
 }
 
 // ABOUT PAGE
-if (in_array($ami_CurrentPage, array('index.php', 'about.php', 'login.php', 'register.php', 'myfiles.php', 'profile.php', 'links.php', 'links_group.php'))) {
+if (in_array($ami_CurrentPage, array('index.php', 'about.php', 'login.php', 'register.php', 'myfiles.php', 'profile.php', 'links.php', 'links_group.php', 'upload.php', 'settings.php'))) {
 	if ($ami_CurrentPage == 'about.php') {
 		ami_array_insert($ami_Menu, 1, '<li class="current">О проекте</li>', 'about');
 	} else {
@@ -48,23 +48,17 @@ if ($ami_User['is_guest']) {
 		// REGISTER
 		if ($ami_CurrentPage == 'register.php') {
 			$ami_Menu['register'] =  '<li class="current">Регистрация</li>';
-		}/* else {
-			$ami_Menu['register'] = '<li><a href="'.ami_link('register').'" title="Зарегистрироваться в системе">Регистрация</a></li>';
-		}*/
+		}
 	}
 } else {
-	// FILES
-	/*if ($ami_CurrentPage == 'myfiles.php') {
-		ami_array_insert($ami_Menu, 2, '<li class="current">Мои файлы</li>', 'myfiles');
+	if ($ami_CurrentPage == 'profile.php') {
+		$ami_Menu['profile'] = '<li class="current">'.ami_htmlencode($ami_User['profile_name']).'</li>';
 	} else {
-		ami_array_insert($ami_Menu, 2, '<li><a href="'.ami_link('myfiles').'" title="">Мои файлы</a></li>', 'myfiles');
-	}*/
-
-	$ami_Menu['logout'] = '<li><a href="'.ami_link('profile').'" title="Мой профиль">'.ami_htmlencode($ami_User['email']).'</a></li>';
+		$ami_Menu['profile'] = '<li><a href="'.ami_link('profile').'" title="Мой профиль">'.ami_htmlencode($ami_User['profile_name']).'</a></li>';
+	}
 }
 
-
-// Send no-cache headers
+// SEND NO-CACHE HEADERS
 header('Expires: Thu, 21 Jul 1977 07:30:00 GMT');	// When yours truly first set eyes on this world! :)
 header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
 header('Cache-Control: post-check=0, pre-check=0', false);
@@ -75,16 +69,14 @@ header('Pragma: no-cache');		// For HTTP/1.0 compability
 <head>
 	<title><?php echo $ami_PageTitle; ?></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<link rel="stylesheet" href="<?php echo AMI_CSS_BASE_URL; ?>style/blueprint/screen.css" type="text/css" media="screen, projection">
-	<link rel="stylesheet" href="<?php echo AMI_CSS_BASE_URL; ?>style/blueprint/print.css" type="text/css" media="print">
-	<!--[if lt IE 8]><link rel="stylesheet" href="<?php echo AMI_CSS_BASE_URL; ?>style/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
-	<link rel="stylesheet" href="<?php echo AMI_CSS_BASE_URL; ?>style/style_classic.css" type="text/css" media="screen, projection">
+	<link rel="stylesheet" href="<?php echo AMI_CSS_BASE_URL; echo (AMI_PRODUCTION) ? 'css' : 'css'; ?>/style.combined.css" type="text/css" media="screen, projection">
+	<!--[if lt IE 8]><link rel="stylesheet" href="<?php echo AMI_CSS_BASE_URL; echo (AMI_PRODUCTION) ? 'c' : 'css'; ?>/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
 	<link rel="shortcut icon" type="image/x-icon" href="<?php echo AMI_JS_BASE_URL; ?>favicon.ico">
 </head>
 <?php flush(); ?>
-<body id="<?php echo $ami_PageType; ?>">
+<body id="<?php echo $ami_PageType; ?>" class="kern">
 	<div class="container _showgrid">
 <?php
-	echo(sprintf($ami_MenuTemplate, implode('',$ami_Menu)));
+	echo(sprintf($ami_MenuTemplate, implode('', $ami_Menu)));
 	define('AMI_HEADER', 1);
 ?>

@@ -12,19 +12,35 @@ class Upload {
 	private $file;
 	private $upload_uid;
 	private $upload_delete_key;
+	private $_auto_shorten_service;
+	private $_auto_shorten_need;
 
-	public function __construct($files, $async, $user_id) {
+	public function __construct($files, $async, $user, $use_api, $reduce_original=0) {
 		global $pic_MaxUploadSize, $pic_BaseURL, $pic_DefaultPreviewSize;
 
 		$multi_upload = (bool)/**/(count($files) > 1);
 
 		// GENERATE UPLAOD GROUP KEY
 		$db = DB::singleton();
-		$this->upload_uid = $db->create_uniq_hash_key('group_id', 16, 'pic');
-		$this->upload_delete_key = ami_GenerateRandomHash(16);
+		$this->upload_uid = $db->create_uniq_hash_key_range('group_id', 'pic', 4, 12);
+		$this->upload_delete_key = ami_GenerateRandomHash(8);
+
+		//
+		if ($user['is_guest']) {
+			$this->_auto_shorten_need = FALSE;
+			$this->_auto_shorten_service = FALSE;
+		} else {
+			$this->_auto_shorten_need =  (AMI_User_Info::getConfigValue($user['id'], 'shortener_auto', 0) == 1) ? TRUE : FALSE;
+			if ($this->_auto_shorten_need) {
+				$this->_auto_shorten_service = AMI_User_Info::getConfigValue($user['id'], 'shortener_service', URL_SHORTENER_BITLY);
+			} else {
+				$this->_auto_shorten_service = FALSE;
+			}
+		}
+
 
 		foreach ($files as $file) {
-			$upload_file = new Upload_file($file, $multi_upload, $user_id);
+			$upload_file = new Upload_file($file, $multi_upload, $user['id'], $this->_auto_shorten_service);
 
 			// 1. CHECK SIZE
 			if ($upload_file->getSize() < 1) {
@@ -58,6 +74,11 @@ class Upload {
 			$upload_image->setFileExt();
 			$uploadHashedFilename = $upload_image->getFileName();
 			$uploadFilename = $upload_file->getFileName();
+
+			if ($reduce_original > 0) {
+				$upload_image->resizeOriginal($reduce_original);
+			}
+
 			// 6.
 			$upload_image->process_thumbs();
 
@@ -65,15 +86,33 @@ class Upload {
 			$uploaded_return_info = $upload_file->save_in_db($uploadLocation, $uploadStorage, $uploadFilename, $uploadHashedFilename, $upload_image->getWidth(), $upload_image->getHeight(), $upload_image->getPreview_Width(), $upload_image->getPreview_Height(), $upload_image->getPreview_Size(), $this->upload_uid, $this->upload_delete_key);
 		}
 
+		// CREATE LINK
 		if (is_array($files) && count($files) > 1) {
-			$view_uploaded_image_link = ami_link('links_group_image_owner', array($this->upload_uid, $uploaded_return_info['delete_key'], PIC_IMAGE_SIZE_SMALL));
+			// FOR GUEST make OWNER LINK
+			if ($user['is_guest']) {
+				$view_uploaded_image_link = ami_link('links_group_image_owner', array($this->upload_uid, $uploaded_return_info['delete_key'], PIC_IMAGE_SIZE_MIDDLE));
+			} else {
+				$view_uploaded_image_link = ami_link('links_group_image', array($this->upload_uid, PIC_IMAGE_SIZE_MIDDLE));
+			}
 		} else {
-			$view_uploaded_image_link = ami_link('links_image_owner', array($uploaded_return_info['key'], $uploaded_return_info['delete_key'], PIC_IMAGE_SIZE_SMALL));
+			// FOR GUEST make OWNER LINK
+			if ($user['is_guest']) {
+				$view_uploaded_image_link = ami_link('links_image_owner', array($uploaded_return_info['key'], $uploaded_return_info['delete_key'], PIC_IMAGE_SIZE_MIDDLE));
+			} else {
+				$view_uploaded_image_link = ami_link('links_image', array($uploaded_return_info['key'], PIC_IMAGE_SIZE_MIDDLE));
+			}
 		}
-		if ($async) {
-			ami_async_response(array('error'=> 0, 'url' => $view_uploaded_image_link), AMI_ASYNC_JSON);
+
+		// EXIT
+		if ($use_api) {
+			// RETURN UPLOADED image INFO
+			ami_async_response(array('error'=> 0, 'info' => $uploaded_image_info), AMI_ASYNC_JSON);
 		} else {
-			ami_redirect($view_uploaded_image_link);
+			if ($async) {
+				ami_async_response(array('error'=> 0, 'url' => $view_uploaded_image_link), AMI_ASYNC_JSON);
+			} else {
+				ami_redirect($view_uploaded_image_link);
+			}
 		}
 	}
 
@@ -86,13 +125,14 @@ class Upload {
 	private function get_upload_dir() {
 		global $pic_UploadBaseDir;
 
-		$storage = $this->get_storage();
-		$max_try = 10;
 
-		$uploadBaseDir = $pic_UploadBaseDir.$storage;
+		$max_try = 32;
 
 		do {
-			$image_path_hash = $this->generate_image_upload_save_path(32);
+			$storage = $this->get_storage();
+			$uploadBaseDir = $pic_UploadBaseDir.$storage;
+
+			$image_path_hash = $this->generate_image_upload_save_path(6);
 			$full_dir = $uploadBaseDir.'/'.$image_path_hash;
 
 			if (is_dir($full_dir)) {
