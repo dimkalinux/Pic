@@ -9,8 +9,14 @@ RewriteRule 	^upload/$ 										upload.php [L]
 RewriteRule 	^delete/ok/$									delete.php?ok=1 [L]
 RewriteRule 	^delete/group/ok/$								delete_group.php?ok=1 [L]
 
-RewriteRule 	^sendmepass/ok/$								sendmepass.php?ok=1 [L]
-RewriteRule 	^sendmepass/$									sendmepass.php [L]
+RewriteRule 	^password_reset/ok/$							password_reset.php?ok=1 [L]
+RewriteRule 	^password_reset/error/$							password_reset.php?ok=1 [L]
+RewriteRule 	^password_reset/$								password_reset.php [L]
+
+RewriteRule 	^password_change/ok/$							password_change.php?ok=1 [L]
+RewriteRule 	^password_change/error/$						password_change.php?ok=1 [L]
+RewriteRule 	^password_change/$								password_change.php [L]
+
 
 RewriteRule 	^register/ok/$									register.php?ok=1 [L]
 RewriteRule 	^register/facebook/$							register.php?facebook=1 [L]

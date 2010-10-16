@@ -54,6 +54,7 @@ require AMI_ROOT.'include/ami/url.inc.php';
 require AMI_ROOT.'include/ami/db.inc.php';
 require AMI_ROOT.'include/ami/logger.inc.php';
 require AMI_ROOT.'include/ami/ajax.inc.php';
+require AMI_ROOT.'include/ami/email.inc.php';
 
 // user class
 require AMI_ROOT.'include/ami/user_info.inc.php';

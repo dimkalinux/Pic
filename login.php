@@ -6,18 +6,20 @@ if (!defined('AMI_ROOT')) {
 
 require AMI_ROOT.'functions.inc.php';
 
+try {
+	$ami_PageTitle = 'Вход в систему';
 
-$ami_PageTitle = 'Вход в систему';
+	$login_facebook_form_action = ami_link('login_facebook');
 
-$login_facebook_form_action = ami_link('login_facebook');
+	$login_form_action = ami_link('login');
+	$csrf = ami_MakeFormToken($login_form_action);
+	$async = isset($_GET['async']);
+	$register_link = ami_link('register');
+	$password_reset_link = ami_link('password_reset');
 
-$login_form_action = ami_link('login');
-$csrf = ami_MakeFormToken($login_form_action);
-$async = isset($_GET['async']);
-$register_link = ami_link('register');
 
-// OLD VALUES
-$email_value = isset($_POST['e']) ? ami_htmlencode($_POST['e']) : '';
+	// OLD VALUES
+	$email_value = isset($_POST['e']) ? ami_htmlencode($_POST['e']) : '';
 
 
 // FACEBOOK PART
@@ -80,14 +82,14 @@ $form = <<<FMB
 	</form>
 
 	<div class="prepend-top">
-		<a href="$register_link">Регистрация</a>
+		<a href="$register_link">Регистрация</a><br>
+		<a href="$password_reset_link" title="">Изменение пароля</a>
 	</div>
 
 	$facebook_block
 </div>
 FMB;
 
-try {
 	if (isset($_POST['form_sent']) || isset($_GET['facebook'])) {
 		if (isset($_GET['facebook'])) {
 			// Create our Application instance (replace this with your appId and secret).
@@ -161,11 +163,25 @@ try {
 		$user_password_hash = $row['password'];
 		$user_email = $row['email'];
 		$is_admin = $row['admin'];
+		$redirect_after_login = ami_link('root');
 
 		// CHECK PASSWORD
 		$t_hasher = new PasswordHash(12, FALSE);
 		if (!$t_hasher->CheckPassword($password, $user_password_hash)) {
-			throw new InvalidInputDataException('Неправильная пара почта-пароль! Авторизоваться не удалось.');
+			// MAYBE is NEw password?
+			$row = $db->getRow('SELECT uid,password FROM users_new_password WHERE uid=? LIMIT 1', $user_id);
+			if (!$row) {
+				throw new InvalidInputDataException('Неправильная пара почта-пароль! Авторизоваться не удалось.');
+			}
+
+			$user_password_hash = $row['password'];
+			if ($t_hasher->CheckPassword($password, $user_password_hash)) {
+				// VALID new PASSWORD
+				$db->query('UPDATE users SET password=? WHERE id=?', $user_password_hash, $user_id);
+				$db->query('DELETE FROM users_new_password WHERE uid=?', $user_id);
+			} else {
+				throw new InvalidInputDataException('Неправильная пара почта-пароль! Авторизоваться не удалось.');
+			}
 		}
 
 		// LOGIN to SYSTEM
@@ -176,7 +192,7 @@ try {
 		if ($async) {
 			ami_async_response(array('error'=> 0, 'message' => ''), AMI_ASYNC_JSON);
 		} else {
-			ami_redirect(ami_link('root'));
+			ami_redirect($redirect_after_login);
 		}
 	}
 } catch (AppLevelException $e) {

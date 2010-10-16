@@ -68,6 +68,12 @@ function ami_trim($str, $charlist = " \t\n\r\x0b\xc2\xa0") {
 }
 
 
+// Convert \r\n and \r to \n
+function ami_linebreaks($str) {
+	return str_replace(array("\r\n", "\r"), "\n", $str);
+}
+
+
 // Inserts $element into $input at $offset
 // $offset can be either a numerical offset to insert at (eg: 0 inserts at the beginning of the array)
 // or a string, which is the key that the new element should be inserted before
@@ -95,6 +101,10 @@ function ami_array_insert(&$input, $offset, $element, $key = null) {
 
 function ami_link($link, $args = null) {
     global $ami_BaseURL, $ami_urls;
+
+    if (!isset($ami_urls[$link])) {
+		throw new Exception('Отсутствует идентификатор ссылки: '.ami_htmlencode($link));
+    }
 
     $gen_link = $ami_urls[$link];
     if ($args == null) {
@@ -333,6 +343,11 @@ function ami_GenerateRandomHash($maxLength=null, $strong=FALSE) {
     return $hash;
 }
 
+function ami_CreateNewPassword($maxLength=null) {
+	return ami_GenerateRandomHash($maxLength);
+}
+
+
 function ami_cleanDir($dir) {
     if (!is_dir($dir)) {
 	throw new Exception("Is not dir '$dir'");
@@ -398,13 +413,6 @@ function ami_CheckFormToken($csrf='ss11:254BINGOdaf_fd') {
 }
 
 
-function ami_IsValidEmail($email) {
-    if (utf8_strlen($email) > 128) {
-    	return FALSE;
-    }
-
-    return preg_match('/^(([^<>()[\]\\.,;:\s@"\']+(\.[^<>()[\]\\.,;:\s@"\']+)*)|("[^"\']+"))@((\[\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\])|(([a-zA-Z\d\-]+\.)+[a-zA-Z]{2,}))$/ui', $email);
-}
 
 
 function ami_SetCookie($name, $value, $expire) {
@@ -498,7 +506,6 @@ function ami_debug($x, $m = null) {
 	error_log($x . "\n", 3, AMI_DEBUG_LOG);
     }
 }
-
 
 
 ?>

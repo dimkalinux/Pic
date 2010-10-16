@@ -38,6 +38,14 @@ $ami_CSRF_Key = '05dddlaoezz:_=dd';
 // FACEBOOK
 $ami_UseFacebook = FALSE;
 
+// EMAIL
+$ami_mailUseSMTP = TRUE;
+$ami_mailSMTP_Server = 'mail.iteam.ua';
+$ami_mailSMTP_User = '';
+$ami_mailSMTP_Password = '';
+$ami_mailDefaultFromName = 'Хостинг картинок pic.lg.ua';
+$ami_mailDefaultFromEmail = 'webmaster@iteam.lg.ua';
+
 // GOOGLE ANALYTICS SECTION
 //$ami_googleAnalyticsCode = 'UA-6106025-9';
 

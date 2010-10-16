@@ -65,3 +65,16 @@ CREATE TABLE `users_config` (
     `val` varchar(128) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
+
+
+DROP TABLE IF EXISTS `users_new_password`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `users_new_password` (
+    `id` int(10) unsigned NOT NULL auto_increment,
+	`uid` int(10) unsigned NOT NULL,
+    `password` text NOT NULL,
+    `regdate` datetime NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+SET character_set_client = @saved_cs_client;

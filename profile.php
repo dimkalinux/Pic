@@ -6,24 +6,26 @@ if (!defined('AMI_ROOT')) {
 
 require AMI_ROOT.'functions.inc.php';
 
-$header = ami_htmlencode($ami_User['profile_name']);
-$logout_link = '<a href="'.ami_link("logout").'">Выйти из системы</a>';
-$settings_link = '<a href="'.ami_link("settings").'">Настройки</a>';
+try {
+	$header = ami_htmlencode($ami_User['profile_name']);
+	$logout_link = '<a href="'.ami_link("logout").'">Выйти из системы</a>';
+	$settings_link = '<a href="'.ami_link("settings").'">Настройки</a>';
+	$password_change_link = '<a href="'.ami_link("password_change").'">Изменить пароль</a>';
 
 
-//getLogoutUrl
-$ami_logout_url = '';
-if ($ami_UseFacebook && $ami_User['facebook_uid']) {
-	$facebook = new Facebook(array('appId' => '142764589077335','secret' => 'b1da5f70416eed03e55c7b2ce7190bd6','cookie' => TRUE));
-	$facebook_logout_url = $facebook->getLogoutUrl(array('next'=> ami_link('logout_facebook')));
-	$ami_logout_url = ami_link('logout_facebook');
+	//getLogoutUrl
+	$ami_logout_url = '';
+	if ($ami_UseFacebook && $ami_User['facebook_uid']) {
+		$facebook = new Facebook(array('appId' => '142764589077335','secret' => 'b1da5f70416eed03e55c7b2ce7190bd6','cookie' => TRUE));
+		$facebook_logout_url = $facebook->getLogoutUrl(array('next'=> ami_link('logout_facebook')));
+		$ami_logout_url = ami_link('logout_facebook');
 
-	$logout_link = <<<FMB
+		$logout_link = <<<FMB
 	<div>
 		<a href="$facebook_logout_url" onclick="FB.logout(); return false;">Выйти из системы</a>
 	</div>
 FMB;
-}
+	}
 
 
 // FACEBOOK
@@ -56,7 +58,6 @@ AMI;
 
 
 // build info
-try {
 	if ($ami_User['is_guest']) {
 		throw new AppLevelException('Для доступа к этой странице необходимо <a href="'.ami_link('login').'">войти в систему</a>');
 	}
@@ -117,7 +118,10 @@ $out = <<<FMB
 		$myfiles_link
 
 		<h3>Действия</h3>
-		<p>$settings_link</p>
+		<p>
+			$settings_link<br>
+			$password_change_link
+		</p>
 		<p>$logout_link</p>
 
 
