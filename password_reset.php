@@ -11,9 +11,8 @@ try {
 
 	if ($ami_User['is_guest'] === FALSE) {
 		ami_redirect(ami_link('password_change'));
+		exit();
 	}
-
-
 
 	$pass_form_action = ami_link('password_reset');
 	$csrf = ami_MakeFormToken($pass_form_action);
@@ -46,7 +45,7 @@ try {
 		</div>
 
 		<div class="formRow buttons">
-			<input type="submit" name="do" value="Далее" tabindex="2">
+			<input class="button" type="submit" name="do" value="Далее" tabindex="2">
 		</div>
 	</form>
 </div>
@@ -72,13 +71,13 @@ FMB;
 
 		// check email
 		if (!ami_IsValidEmail($email)) {
-			throw new InvalidInputDataException('Неправильный адрес почты.');
+			throw new InvalidInputDataException('Неправильный адрес почты');
 		}
 
 		$db = DB::singleton();
 		$row = $db->getRow('SELECT id,email FROM users WHERE email=? LIMIT 1', $email);
 		if (!$row) {
-			throw new InvalidInputDataException('Пользователь с таким адресом не найден.');
+			throw new InvalidInputDataException('Пользователь с таким адресом не найден');
 		}
 
 		$user_id = $row['id'];
@@ -115,6 +114,7 @@ FMB;
 	if ($async) {
 		ami_async_response(array('error'=> 1, 'message' => $e->getMessage()), AMI_ASYNC_JSON);
 	} else {
+		ami_addOnDOMReady('AMI.utils.init_form($("form[name=password_reset]"));');
 		ami_printPage(sprintf($form, '<div class="span-20"><div class="error span-10 last">'.$e->getMessage().'</div></div>'));
 		exit();
 	}
@@ -127,7 +127,7 @@ FMB;
 }
 
 
-ami_addOnDOMReady('PIC.utils.init_form($("form[name=password_reset]"));');
+ami_addOnDOMReady('AMI.utils.init_form($("form[name=password_reset]"));');
 ami_printPage(sprintf($form, ''));
 
 ?>

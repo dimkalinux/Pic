@@ -10,7 +10,6 @@ if (isset($_GET['ok'])) {
 	ami_show_message('Файл удалён', 'Файл успешно удалён с сервера.');
 }
 
-
 try {
 	$key_id = isset($_GET['k']) ? ami_get_safe_string_len($_GET['k'], 32) : FALSE;
 	$key_delete = isset($_GET['d']) ? ami_get_safe_string_len($_GET['d'], 32) : FALSE;

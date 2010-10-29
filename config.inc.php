@@ -1,8 +1,7 @@
 <?php
 
 define('AMI_DEBUG', TRUE);
-//define('AMI_DEBUG_LOG', '');
-define('AMI_PRODUCTION', FALSE);
+define('AMI_DEBUG_LOG', '/tmp/pic2.log');
 
 // DATABASE
 define('AMI_MYSQL_ADDRESS', '194.146.132.67');
@@ -25,6 +24,8 @@ define('AMI_FACEBOOK_ACTION_CONNECT', 10);
 define('AMI_FACEBOOK_ACTION_LOGOUT', 15);
 
 $ami_EnablePrintCSS = FALSE;
+
+$ami_Production = TRUE;
 
 // COOKIE SECTION
 $ami_LoginCookieName = 'pic_login';
@@ -69,6 +70,7 @@ define('PIC_IMAGE_SIZE_MIDDLE', 2);
 define('PIC_IMAGE_SIZE_PREVIEW', 3);
 define('PIC_IMAGE_SIZE_ORIGINAL', 4);
 define('PIC_IMAGE_SIZE_GALLERY', 5);
+define('PIC_IMAGE_SIZE_SLIDESHOW', 6);
 
 $ami_BaseURL = $pic_BaseURL = 'http://pic.lluga.net';
 $pic_DefaultPreviewSize = PIC_IMAGE_SIZE_MIDDLE;
@@ -98,6 +100,8 @@ $pic_image_preview_quality = 90;
 $pic_UploadBaseDir = '/var/upload/pic2/';
 $pic_MaxUploadSize = 11*1048576;
 
+// TMP
+$pic_TMPdir = '/var/upload/pic2/tmp/';
 
 $pic_UploadStorages = array('1');
 

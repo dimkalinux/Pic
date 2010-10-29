@@ -77,7 +77,7 @@ $form = <<<FMB
 		</div>
 
 		<div class="formRow buttons">
-			<input type="submit" name="do" value="Войти" tabindex="3">
+			<input class="button" type="submit" name="do" value="Войти" tabindex="3">
 		</div>
 	</form>
 
@@ -205,6 +205,7 @@ FMB;
 	if ($async) {
 		ami_async_response(array('error'=> 1, 'message' => $e->getMessage()), AMI_ASYNC_JSON);
 	} else {
+		ami_addOnDOMReady('AMI.utils.init_form($("form[name=login]"));');
 		ami_printPage(sprintf($form, '<div class="span-20"><div class="error span-10 last">'.$e->getMessage().'</div></div>'));
 		exit();
 	}
@@ -217,7 +218,7 @@ FMB;
 }
 
 
-ami_addOnDOMReady('PIC.utils.init_form($("form[name=login]"));');
+ami_addOnDOMReady('AMI.utils.init_form($("form[name=login]"));');
 ami_printPage(sprintf($form, ''));
 
 ?>

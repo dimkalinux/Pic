@@ -238,7 +238,7 @@ PIC.ajaxify = function () {
 						$(t_img).attr('src', new_img_url);
 						$(link).attr('href', img_original_url);
 						$('#header_original_link').attr('href', img_original_url);
-						$('#header_original_link').html(image_info.split('*')[2]+'&#8202;x&#8202;'+image_info.split('*')[3]+'&nbsp;'+PIC.utils.format_filesize(image_info.split('*')[4]));
+						$('#header_original_link').html(image_info.split('*')[2]+'&#8202;x&#8202;'+image_info.split('*')[3]+'&nbsp;'+AMI.utils.format_filesize(image_info.split('*')[4]));
 						// set page link
 						$(document).attr("title", $(g_image_img).attr('alt'));
 					});

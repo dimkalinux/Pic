@@ -39,11 +39,14 @@ RewriteRule 	^links/group/([a-z0-9]+)/([0-9])/$				links_group.php?g=$1&s=$2 [L]
 RewriteRule 	^links/([a-z0-9]+)/([a-z0-9]+)/([0-9])/$		links.php?k=$1&d=$2&s=$3 [L]
 RewriteRule 	^links/([a-z0-9]+)/([0-9])/$					links.php?k=$1&s=$2 [L]
 
+RewriteRule 	^show/slideshow/([a-z0-9]+)/$					show_slideshow.php?g=$1 [L]
 RewriteRule 	^show/group/([a-z0-9]+)/([a-z0-9]+)/$			show_group.php?g=$1&k=$2 [L]
 RewriteRule 	^show/group/([a-z0-9]+)/$						show_group.php?g=$1 [L]
 RewriteRule 	^show/([a-z0-9]+)/$								show.php?k=$1 [L]
 
+RewriteRule 	^about/ext/$									about_ext.php [L]
 RewriteRule 	^about/$										about.php [L]
+
 RewriteRule 	^logout/facebook/$								logout.php?facebook=1 [L]
 RewriteRule 	^logout/$										logout.php [L]
 RewriteRule 	^myfiles/$										myfiles.php [L]
@@ -53,6 +56,8 @@ RewriteRule 	^settings/save/$								settings.php?save=1 [L]
 RewriteRule 	^settings/ok/$									settings.php?ok=1 [L]
 
 RewriteRule 	^ajax/$											ajax.php [L]
+
+RewriteRule 	^upload-remote/$								upload_remote.php [L]
 
 
 

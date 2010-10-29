@@ -10,56 +10,44 @@ try {
 	$ami_PageTitle = 'Изменение пароля';
 
 	if ($ami_User['is_guest']) {
-
+		ami_redirect(ami_link('password_reset'));
+		exit();
 	}
 
 
-	$pass_form_action = ami_link('password_reset');
+	$pass_form_action = ami_link('password_change');
 	$csrf = ami_MakeFormToken($pass_form_action);
 	$async = isset($_GET['async']);
 
-	// OLD VALUES
-	$email_value = isset($_POST['e']) ? ami_htmlencode($_POST['e']) : '';
 
 	if (isset($_GET['ok'])) {
-		ami_show_message($ami_PageTitle, 'На указанный вами адрес выслан новый пароль.<br>Дождитесь письма и заходите с новым паролем.');
+		ami_show_message($ami_PageTitle, 'Пароль успешно изменён.');
 	}
-
-
 
 	$form = <<<FMB
 <div class="span-13 last prepend-5 body_block last">
 	%s
 	<h2>Изменение пароля</h2>
-	<p>Восстановить забытый пароль невозможно, потому что он&nbsp;хранится в&nbsp;зашифрованном виде.	Но&nbsp;его можно поменять.	Укажите адрес своей электронной почты, с&nbsp;которым вы&nbsp;регистрировались ранее, чтобы получить новый пароль.</p>
 
-	<form method="post" action="$pass_form_action" name="password_reset" accept-charset="utf-8">
+	<form method="post" action="$pass_form_action" name="password_change" accept-charset="utf-8" autocomplete="off">
 		<p>
 			<input type="hidden" name="form_sent" value="1">
 			<input type="hidden" name="csrf_token" value="$csrf">
 		</p>
-
 		<div class="formRow">
-			<label for="e" id="label_e">Электронная почта</label><br>
-			<input type="text" class="text" id="e" name="e" tabindex="1" maxlength="128" value="$email_value">
+			<label for="p" id="label_p">Текущий пароль</label><br>
+			<input type="text" class="text" id="p" name="p" tabindex="1" maxlength="1024">
 		</div>
-
+		<div class="formRow">
+			<label for="np" id="label_np">Новый пароль</label><br>
+			<input type="text" class="text" id="np" name="np" tabindex="2" maxlength="1024">
+		</div>
 		<div class="formRow buttons">
-			<input type="submit" name="do" value="Далее" tabindex="2">
+			<input class="button" type="submit" name="do" value="Далее" tabindex="3">
 		</div>
 	</form>
 </div>
 FMB;
-
-	$email_text = <<<FMB
-Новый пароль для входа на сайт: %s
-
-
-Pic.lg.ua — хостинг картинок
-______________________________________________________________________
-webmaster@iteam.lg.ua | http://pic.lg.ua
-FMB;
-
 
 	if (isset($_POST['form_sent'])) {
 		// 1. check csrf
@@ -67,41 +55,48 @@ FMB;
 			throw new InvalidInputDataException('Действие заблокировано системой безопасности');
 		}
 
-		$email = isset($_POST['e']) ? mb_strtolower(ami_trim($_POST['e'])) : FALSE;
+		$password_current = isset($_POST['p']) ? $_POST['p'] : FALSE;
+		$password_new = isset($_POST['np']) ? $_POST['np'] : FALSE;
 
-		// check email
-		if (!ami_IsValidEmail($email)) {
-			throw new InvalidInputDataException('Неправильный адрес почты.');
+		// CHECK CURRENT PASSWORD
+		if ((utf8_strlen($password_current) < 1) || (utf8_strlen($password_current) > 1024)) {
+			throw new InvalidInputDataException('Вы ввели некорректный текущий пароль');
 		}
 
 		$db = DB::singleton();
-		$row = $db->getRow('SELECT id,email FROM users WHERE email=? LIMIT 1', $email);
+		$row = $db->getRow('SELECT password FROM users WHERE id=? LIMIT 1', $ami_User['id']);
 		if (!$row) {
-			throw new InvalidInputDataException('Пользователь с таким адресом не найден.');
+			throw new InvalidInputDataException('Вы ввели некорректный текущий пароль');
 		}
 
-		$user_id = $row['id'];
-		$user_email = $row['email'];
+		// CHECK CURRENT PASSWORD
+		$t_hasher = new PasswordHash(12, FALSE);
+		if (!$t_hasher->CheckPassword($password_current, $row['password'])) {
+			throw new InvalidInputDataException('Вы ввели некорректный текущий пароль');
+		}
 
+		// CHECK NEW PASSWORD
+		if ((utf8_strlen($password_new) < 1) || (utf8_strlen($password_new) > 1024)) {
+			throw new InvalidInputDataException('Вы ввели некорректный новый пароль');
+		}
+
+		if ($password_new == $password_current) {
+			throw new InvalidInputDataException('Пароли не должны совпадать');
+		}
+
+		// OK - CHANGE PASSWORD in DB
 		// CREATE NEW PASSWORD
 		$t_hasher = new PasswordHash(12, FALSE);
-		$password = ami_CreateNewPassword(24);
-		$cryptPassword = $t_hasher->HashPassword($password);
-
-		// DELETE OLD new passwords FOR THIS USER
-		$db->query("DELETE FROM users_new_password WHERE uid=?", $user_id);
+		$cryptNewPassword = $t_hasher->HashPassword($password_new);
 
 		// SAVE new PASS to DB
-		$db->query("INSERT INTO users_new_password VALUES('', ?, ?, NOW())", $user_id, $cryptPassword);
-
-		// SEND E-MAIL
-		ami_SendEmail($user_email, 'Новый пароль', sprintf($email_text, $password));
+		$db->query("UPDATE users SET password=? WHERE id=? LIMIT 1", $cryptNewPassword, $ami_User['id']);
 
 		// is async request
 		if ($async) {
 			ami_async_response(array('error'=> 0, 'message' => ''), AMI_ASYNC_JSON);
 		} else {
-			ami_redirect(ami_link('password_reset_ok'));
+			ami_redirect(ami_link('password_change_ok'));
 		}
 	}
 } catch (AppLevelException $e) {
@@ -114,6 +109,7 @@ FMB;
 	if ($async) {
 		ami_async_response(array('error'=> 1, 'message' => $e->getMessage()), AMI_ASYNC_JSON);
 	} else {
+		ami_addOnDOMReady('AMI.utils.init_form($("form[name=password_change]"));');
 		ami_printPage(sprintf($form, '<div class="span-20"><div class="error span-10 last">'.$e->getMessage().'</div></div>'));
 		exit();
 	}
@@ -126,7 +122,7 @@ FMB;
 }
 
 
-ami_addOnDOMReady('PIC.utils.init_form($("form[name=password_reset]"));');
+ami_addOnDOMReady('AMI.utils.init_form($("form[name=password_change]"));');
 ami_printPage(sprintf($form, ''));
 
 ?>

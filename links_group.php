@@ -37,25 +37,32 @@ try {
 		$is_owner = ($ami_User['id'] === (int) $row['owner_id']);
 	}
 
-	//
-	$preview_link_small = '<li>200px</li>';
-	if (($preview_size == PIC_IMAGE_SIZE_MIDDLE) || ($preview_size == PIC_IMAGE_SIZE_GALLERY)) {
-		$link = $key_delete ? ami_link('links_group_image_owner', array($key_group, $key_delete, PIC_IMAGE_SIZE_SMALL)) : ami_link('links_group_image', array($key_group, PIC_IMAGE_SIZE_SMALL));
-		$preview_link_small = '<li><a href="'.$link.'" title="Маленькая картинка">200px</a></li>';
+	// SMALL
+	$link = $key_delete ? ami_link('links_group_image_owner', array($key_group, $key_delete, PIC_IMAGE_SIZE_SMALL)) : ami_link('links_group_image', array($key_group, PIC_IMAGE_SIZE_SMALL));
+	$preview_link_small = '<li><a href="'.$link.'" title="Маленькая картинка">200px</a></li>';
+	if ($preview_size == PIC_IMAGE_SIZE_SMALL) {
+		$preview_link_small = '<li>200px</li>';
 	}
 
-	//
-	$preview_link_middle = '<li>500px</li>';
-	if (($preview_size == PIC_IMAGE_SIZE_SMALL) || ($preview_size == PIC_IMAGE_SIZE_GALLERY)) {
-		$link = $key_delete ? ami_link('links_group_image_owner', array($key_group, $key_delete, PIC_IMAGE_SIZE_MIDDLE)) : ami_link('links_group_image', array($key_group, PIC_IMAGE_SIZE_MIDDLE));
-		$preview_link_middle = '<li><a href="'.$link.'" title="Большая картинка">500px</a></li>';
+	// MIDDLE
+	$link = $key_delete ? ami_link('links_group_image_owner', array($key_group, $key_delete, PIC_IMAGE_SIZE_MIDDLE)) : ami_link('links_group_image', array($key_group, PIC_IMAGE_SIZE_MIDDLE));
+	$preview_link_middle = '<li><a href="'.$link.'" title="Большая картинка">500px</a></li>';
+	if ($preview_size == PIC_IMAGE_SIZE_MIDDLE) {
+		$preview_link_middle = '<li>500px</li>';
 	}
 
-	//
-	$preview_link_gallery = '<li>Галерея</li>';
-	if (($preview_size == PIC_IMAGE_SIZE_MIDDLE) || ($preview_size == PIC_IMAGE_SIZE_SMALL)) {
-		$link = $key_delete ? ami_link('links_group_image_owner', array($key_group, $key_delete, PIC_IMAGE_SIZE_GALLERY)) : ami_link('links_group_image', array($key_group, PIC_IMAGE_SIZE_GALLERY));
-		$preview_link_gallery = '<li><a href="'.$link.'" title="Галлерея">Галлерея</a></li>';
+	// GALLERY
+	$link = $key_delete ? ami_link('links_group_image_owner', array($key_group, $key_delete, PIC_IMAGE_SIZE_GALLERY)) : ami_link('links_group_image', array($key_group, PIC_IMAGE_SIZE_GALLERY));
+	$preview_link_gallery = '<li><a href="'.$link.'" title="Галлерея">Галлерея</a></li>';
+	if ($preview_size == PIC_IMAGE_SIZE_GALLERY) {
+		$preview_link_gallery = '<li>Галерея</li>';
+	}
+
+	// SLIDESHOW
+	$link = $key_delete ? ami_link('links_group_image_owner', array($key_group, $key_delete, PIC_IMAGE_SIZE_SLIDESHOW)) : ami_link('links_group_image', array($key_group, PIC_IMAGE_SIZE_SLIDESHOW));
+	$preview_link_slideshow = '<li><a href="'.$link.'" title="Слайдшоу">Слайдшоу</a></li>';
+	if ($preview_size == PIC_IMAGE_SIZE_SLIDESHOW) {
+		$preview_link_slideshow = '<li>Слайдшоу</li>';
 	}
 
 	$twitter_link = 'http://twitter.com/home?status='.ami_link('show_group_image', array($key_group));
@@ -63,9 +70,52 @@ try {
 	$i = $tabindex_html = $tabindex_bbcode = $tabindex_show = $tabindex_original = 0;
 	$out = '';
 
+	if ($preview_size == PIC_IMAGE_SIZE_SLIDESHOW) {
+		$data = array_reverse($data);
+		foreach ($data as $row) {
+			//
+			$key_id = $row['id_key'];
+			$storage = ami_get_safe_string($row['storage']);
+			$location = ami_get_safe_string($row['location']);
+			$hash_filename = $row['hash_filename'];
+			$filename = ami_htmlencode($row['filename']);
+			$key_delete = $row['delete_key'];
 
-	// IF GALLERY
-	if ($preview_size == PIC_IMAGE_SIZE_GALLERY) {
+			$show_group_link = ami_link('show_group_image_slideshow', array($key_group));
+			$show_group_text = 'Просмотреть слайдшоу на pic.lg.ua';
+
+			// LINKS
+			$input_link_html = ami_htmlencode('<a href="'.$show_group_link.'">'.$show_group_text.'</a>');
+			$input_link_bbcode = ami_htmlencode('[url='.$show_group_link.']'.$show_group_text.'[/url]');
+
+			// $gallery_image_url = pic_getImageLink($storage, $location, $hash_filename, PIC_IMAGE_SIZE_GALLERY);
+			// $images .= '<img src="'.$gallery_image_url.'" alt="'.$filename.'">';
+		}
+		$out .= <<<AMI
+		<p class="span-14 last append-bottom">
+			Выберите необходимые ссылки на <a href="$show_group_link">страницу слайдшоу</a>.
+		</p>
+
+		<div class="span-20 last append-bottom prepend-top">
+			<div class="span-10 last">
+				<div class="links_row">
+					<label for="html_$i">для сайта</label>
+					<input tabindex="$tabindex_html" class="span-14" size="35" value="$input_link_html" readonly="readonly" type="text" id="html_$i" onclick="this.select()">
+				</div>
+				<div class="links_row">
+					<label for="bbcode_$i">для форума</label>
+					<input tabindex="$tabindex_bbcode" class="span-14" size="35" value="$input_link_bbcode" readonly="readonly" type="text" id="bbcode_$i" onclick="this.select()">
+				</div>
+				<div class="links_row">
+					<label for="show_$i">для просмотра</label>
+					<input tabindex="$tabindex_show" class="span-14" size="35" value="$show_group_link" readonly="readonly" type="text" id="show_$i" onclick="this.select()">
+				</div>
+			</div>
+		</div>
+AMI;
+
+	} else if ($preview_size == PIC_IMAGE_SIZE_GALLERY) {
+		// IF GALLERY
 		$images = '';
 
 		$data = array_reverse($data);
@@ -85,8 +135,8 @@ try {
 			$input_link_html = ami_htmlencode('<a href="'.$show_group_link.'">'.$show_group_text.'</a>');
 			$input_link_bbcode = ami_htmlencode('[url='.$show_group_link.']'.$show_group_text.'[/url]');
 
-			$gallery_image_url = pic_getImageLink($storage, $location, $hash_filename, PIC_IMAGE_SIZE_GALLERY);
-			$images .= '<img src="'.$gallery_image_url.'" alt="'.$filename.'">';
+			// $gallery_image_url = pic_getImageLink($storage, $location, $hash_filename, PIC_IMAGE_SIZE_GALLERY);
+			// $images .= '<img src="'.$gallery_image_url.'" alt="'.$filename.'">';
 		}
 
 
@@ -95,8 +145,6 @@ try {
 			Код преобразуется в текстовую ссылку, ведущую на <a href="$show_group_link">страницу просмотра</a>
 			всех загруженных картинок</a>.
 		</p>
-
-		<div class="span-14 last hide" id="gallery_preview_images_block">$images</div>
 
 		<div class="span-20 last append-bottom prepend-top">
 			<div class="span-10 last">
@@ -198,6 +246,7 @@ $page = <<<FMB
 		$preview_link_small
 		$preview_link_middle
 		$preview_link_gallery
+		$preview_link_slideshow
 	</ul>
 
 	<ul id="share_menu" class="image_menu prepend-top">

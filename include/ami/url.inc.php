@@ -31,7 +31,10 @@ $ami_urls = array(
     'show_image'				    => 'show/$1/',
     'show_group_image_preselect'    => 'show/group/$1/$2/',
     'show_group_image'			    => 'show/group/$1/',
+    'show_group_image_slideshow'    => 'show/slideshow/$1/',
     'image'					        => 'x/$1/$2/$3',
+
+	'about_ext'		    			=> 'about/ext/',
     'about'			    			=> 'about/',
 
     'feedback'			    		=> 'feedback/',

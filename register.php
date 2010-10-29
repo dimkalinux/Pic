@@ -22,7 +22,7 @@ $e_email_value = isset($_POST['e']) ? ami_htmlencode($_POST['e']) : '';
 
 
 if (isset($_GET['ok'])) {
-	ami_show_message('Спасибо', 'Вы&nbsp;успешно зарегистрировались.');
+	ami_show_message('Спасибо', 'Вы&nbsp;успешно зарегистрировались и&nbsp;вошли в&nbsp;систему');
 }
 
 
@@ -86,11 +86,11 @@ $form = <<<FMB
 
 		<div class="formRow">
 			<label for="p" id="label_p">Пароль</label><br>
-			<input type="text" class="text" id="p" name="p" tabindex="2" maxlength="128">
+			<input type="text" class="text" id="p" name="p" tabindex="2" maxlength="1024">
 		</div>
 
 		<div class="formRow buttons">
-			<input type="submit" name="do" value="Зарегистрироваться" tabindex="3">
+			<input class="button" type="submit" name="do" value="Зарегистрироваться" tabindex="3">
 		</div>
 	</form>
 	$facebook_block
@@ -199,6 +199,7 @@ try {
 	if ($async) {
 		ami_async_response(array('error'=> 1, 'message' => $e->getMessage()), AMI_ASYNC_JSON);
 	} else {
+		ami_addOnDOMReady('AMI.utils.init_form($("form[name=register]"));');
 		ami_printPage(sprintf($form, '<div class="span-20"><div class="error span-10 last">'.$e->getMessage().'</div></div>'));
 		exit();
 	}
@@ -210,7 +211,7 @@ try {
 	}
 }
 
-ami_addOnDOMReady('PIC.utils.init_form($("form[name=register]"));');
+ami_addOnDOMReady('AMI.utils.init_form($("form[name=register]"));');
 ami_printPage(sprintf($form, ''));
 
 ?>

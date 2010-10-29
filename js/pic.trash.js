@@ -36,7 +36,7 @@ PIC.trash = function () {
 
 				if (response && parseInt(response.error, 10) === 0) {
 					//
-					$trash_status.html("файл удалён").delay(800).fadeOut(300);
+					$trash_status.html("файл удалён").delay(600).fadeOut(300);
 					//
 					$(img).parent().fadeOut(400, function () {
 						$(this).remove();
@@ -66,7 +66,7 @@ PIC.trash = function () {
 		setTimeout(function () {
 			timer_reached = true;
 			check_status_end();
-		}, 1000);
+		}, 750);
 
 
 		$.ajax({

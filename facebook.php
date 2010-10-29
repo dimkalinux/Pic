@@ -4,6 +4,8 @@ if (!defined('AMI_ROOT')) {
 	define('AMI_ROOT', './');
 }
 
+
+exit();
 require AMI_ROOT.'functions.inc.php';
 
 // GET ACTION

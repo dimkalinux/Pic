@@ -69,13 +69,20 @@ header('Pragma: no-cache');		// For HTTP/1.0 compability
 <head>
 	<title><?php echo $ami_PageTitle; ?></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<link rel="stylesheet" href="<?php echo AMI_CSS_BASE_URL; echo (AMI_PRODUCTION) ? 'css' : 'css'; ?>/style.combined.css" type="text/css" media="screen, projection">
-	<!--[if lt IE 8]><link rel="stylesheet" href="<?php echo AMI_CSS_BASE_URL; echo (AMI_PRODUCTION) ? 'c' : 'css'; ?>/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
+<?php
+if ($ami_Production): ?>
+	<link rel="stylesheet" href="<?php echo AMI_CSS_BASE_URL; ?>c/style.css" type="text/css" media="screen, projection">
+	<!--[if lt IE 8]><link rel="stylesheet" href="<?php echo AMI_CSS_BASE_URL; ?>c/ie.css" type="text/css" media="screen, projection"><![endif]-->
+<?php else: ?>
+	<link rel="stylesheet" href="<?php echo AMI_CSS_BASE_URL; ?>css/blueprint/screen.css" type="text/css" media="screen, projection">
+	<link rel="stylesheet" href="<?php echo AMI_CSS_BASE_URL; ?>css/style.css" type="text/css" media="screen, projection">
+	<!--[if lt IE 8]><link rel="stylesheet" href="<?php echo AMI_CSS_BASE_URL; ?>css/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
+<?php endif; ?>
 	<link rel="shortcut icon" type="image/x-icon" href="<?php echo AMI_JS_BASE_URL; ?>favicon.ico">
 </head>
 <?php flush(); ?>
 <body id="<?php echo $ami_PageType; ?>" class="kern">
-	<div class="container _showgrid">
+	<div class="container">
 <?php
 	echo(sprintf($ami_MenuTemplate, implode('', $ami_Menu)));
 	define('AMI_HEADER', 1);

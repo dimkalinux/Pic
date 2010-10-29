@@ -121,7 +121,7 @@ FMB;
 
 $out .= <<<FMB
 			<hr class="prepend-top">
-			<input type="submit" name="do" value="Сохранить" tabindex="2">
+			<input class="button" type="submit" name="do" value="Сохранить" tabindex="2">
 		</form>
 	</div>
 FMB;

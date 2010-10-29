@@ -6,22 +6,35 @@ if (!defined('AMI')) {
 ?>
 </div>
 <?php
-if (AMI_PRODUCTION): ?>
-	<script src="<?php echo AMI_JS_BASE_URL; ?>/j/lib.js" type="text/javascript"></script>
-<?php else: ?>
-	<script src="<?php echo AMI_JS_BASE_URL; ?>/js/jquery.js" type="text/javascript"></script>
-	<script src="<?php echo AMI_JS_BASE_URL; ?>/js/ami.log.js" type="text/javascript"></script>
-	<script src="<?php echo AMI_JS_BASE_URL; ?>/js/pic.trash.js" type="text/javascript"></script>
-	<script src="<?php echo AMI_JS_BASE_URL; ?>/js/pic.upload.js" type="text/javascript"></script>
-	<script src="<?php echo AMI_JS_BASE_URL; ?>/js/pic.ajaxify.js" type="text/javascript"></script>
-<?php
+if ($ami_Production): ?>
+	<script src="<?php echo AMI_JS_BASE_URL; ?>j/lib.js" type="text/javascript"></script>
+<?php else:
+	echo ami_BuildJS_ScriptSection(array(
+		'jquery-1.4.3.min.js',
+		'jquery.form.js',
+		'jquery.easing.js',
+		'jquery.timers-1.2.js',
+		'jquery.colors.js',
+		'jquery.cookie.js',
+		'jquery.center.js',
+		'underscore.min.js',
+		'ami.env.js',
+		'ami.log.js',
+		'ami.utils.js',
+		'pic.env.js',
+		'pic.utils.js',
+		'pic.trash.js',
+		'pic.upload.js',
+		'pic.ajaxify.js',
+		'pic.slideshow.js',
+	));
 endif;
 
 // ADDON JS-SCRIPT BLOCK
 if (isset($ami_addScript) && is_array($ami_addScript) && count($ami_addScript) > 0) {
 	// remove non-uniq values
 	$ami_addScript = array_unique($ami_addScript);
-	$js_path = (AMI_PRODUCTION) ? 'j' : 'js';
+	$js_path = ($ami_Production) ? 'j' : 'js';
 
 	foreach ($ami_addScript as $script) {
 		echo '<script src="/'.$js_path.'/'.$script.'" type="text/javascript"></script>';

@@ -77,7 +77,10 @@ try {
     ami_show_error($e->getMessage());
 }
 
-
+if (isset($_GET['debug'])) {
+	$ami_Production = FALSE;
+	$ami_Debug = TRUE;
+}
 
 
 function pic_getImageLink($storage, $location, $hashed_filename, $size) {

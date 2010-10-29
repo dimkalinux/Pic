@@ -35,14 +35,31 @@ function ami_async_response($arr_response, $type=AMI_ASYNC_JSON) {
 }
 
 function ami_JSON_response($arr) {
-    header("Pragma: no-cache");
+    header('Pragma: no-cache');
+    // header('Content-type: text/x-json');
     exit(json_encode($arr));
 }
 
 function ami_XML_response($arr) {
+    require_once 'XML/Serializer.php';
+
+    header('Pragma: no-cache');
     header('Content-type: application/xml');
-    header("Pragma: no-cache");
-    exit(json_encode($arr));
+
+    $serializer_options = array(
+	'addDecl' => TRUE,
+	'encoding' => 'UTF-8',
+	'indent' => '  ',
+	'rootName' => 'ami',
+	'mode' => 'simplexml'
+    );
+
+    $serializer = &new XML_Serializer($serializer_options);
+    if ($serializer->serialize($arr)) {
+	exit($serializer->getSerializedData());
+    } else {
+	exit('<?xml version="1.0" encoding="UTF-8"?><ami><error>1</error><message>Internal XML error</message></ami>');
+    }
 }
 
 function ami_htmlencode($str) {
@@ -259,7 +276,7 @@ function ami_show_error() {
 
 
 function ami_printPage($content, $page_type='message_page') {
-    global $ami_BaseURL, $ami_PageTitle, $ami_onDOMReady, $ami_addScript, $ami_onWindowReady, $ami_User, $ami_Menu;
+    global $ami_BaseURL, $ami_PageTitle, $ami_onDOMReady, $ami_addScript, $ami_onWindowReady, $ami_User, $ami_Menu, $ami_EnablePrintCSS, $ami_Production;
 
     if (!defined('AMI_ROOT')) {
 		die('Not defined AMI_ROOT');
@@ -507,5 +524,70 @@ function ami_debug($x, $m = null) {
     }
 }
 
+
+function ami_BuildJS_ScriptSection($scripts) {
+	$block = '';
+
+	if (is_array($scripts) && count($scripts) > 0) {
+		foreach ($scripts as $script) {
+			$block .= '<script src="'.AMI_JS_BASE_URL.'js/'.$script.'" type="text/javascript"></script>';
+		}
+	}
+
+	return $block;
+}
+
+
+function ami_GetRemoteFileSize($url, $connectTimeout=5, $timeout=5) {
+    $size = 0;
+
+    $curl_options = array(
+		CURLOPT_HEADER         	=> FALSE,
+		CURLOPT_FOLLOWLOCATION 	=> FALSE,     // follow redirects
+		CURLOPT_ENCODING       	=> "UTF-8",       // handle all encodings
+		CURLOPT_USERAGENT      	=> "PIC.lg.ua", // who am i
+		CURLOPT_AUTOREFERER    	=> TRUE,     // set referer on redirect
+		CURLOPT_CONNECTTIMEOUT 	=> $connectTimeout,      // timeout on connect
+		CURLOPT_TIMEOUT        	=> $timeout,      // timeout on response
+		CURLOPT_SSL_VERIFYPEER	=> FALSE,
+		CURLOPT_MAXREDIRS      	=> 2,       // stop after 10 redirects
+		CURLOPT_NOBODY			=> TRUE,
+		CURLOPT_RETURNTRANSFER	=> FALSE,
+    );
+
+	// ON ERROR RETURN 0
+	try {
+	    $ch = curl_init($url);
+	    curl_setopt_array($ch, $curl_options);
+	    curl_exec($ch);
+	    $header = curl_getinfo($ch);
+	    curl_close($ch);
+	} catch (Exception $e) {
+		return $size;
+	}
+
+    if (isset($header['download_content_length'])) {
+		$size = intval($header['download_content_length'], 10);
+    }
+
+    return $size;
+}
+
+
+function ami_CheckIs_URL($url) {
+    return preg_match('|^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$|i', $url);
+}
+
+function ami_CheckIs_Email($url) {
+    return FALSE;
+}
+
+function ami_GetOptions($a_options, $opt_name, $default_value) {
+	if (isset($a_options[$opt_name])) {
+		return $a_options[$opt_name];
+	}
+
+	return $default_value;
+}
 
 ?>

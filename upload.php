@@ -26,6 +26,12 @@ if (isset($_POST['reduce_original'])) {
     unset($_POST['reduce_original']);
 }
 
+$return_format = AMI_ASYNC_JSON;
+if (isset($_POST['xml'])) {
+    $return_format = AMI_ASYNC_XML;
+    unset($_POST['xml']);
+}
+
 try {
     $files = $_POST;
     fixFilesArray($files);
@@ -35,16 +41,29 @@ try {
     }
 
 
-    $upload = new Upload($files, $async, $ami_User, $use_api, $reduce_original);
+    $upload = new Upload($files);
+    $upload_result = $upload->run($ami_User, $reduce_original, PIC_UPLOAD_FILE, array());
+
+    // EXIT
+	if ($use_api) {
+		// RETURN UPLOADED image INFO
+        ami_async_response(array('error' => 0, 'info' => $upload_result['info']), $return_format);
+    } else {
+		if ($async) {
+			ami_async_response(array('error' => 0, 'url' => $upload_result['url']), $return_format);
+		} else {
+			ami_redirect($upload_result['url']);
+		}
+	}
 } catch (AppLevelException $e) {
     if ($async || $use_api) {
-        ami_async_response(array('error'=> 1, 'message' => $e->getMessage()), AMI_ASYNC_JSON);
+        ami_async_response(array('error'=> 1, 'message' => $e->getMessage()), $return_format);
     } else {
         ami_show_error_message($e->getMessage());
     }
 } catch (Exception $e) {
     if ($async || $use_api) {
-        ami_async_response(array('error'=> 1, 'message' => $e->getMessage()), AMI_ASYNC_JSON);
+        ami_async_response(array('error'=> 1, 'message' => $e->getMessage()), $return_format);
     } else {
         ami_show_error($e->getMessage());
     }

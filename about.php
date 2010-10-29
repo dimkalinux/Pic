@@ -26,6 +26,9 @@ require AMI_ROOT.'header.php';
 		работоспособность	сервиса или сохранность файлов. Но&nbsp;мы&nbsp;делаем всё,
 		чтобы проблем с&nbsp;файлами не&nbsp;возникало.</p>
 
+		<h3>Дополнительные программы</h3>
+		<p><a href="<?php echo ami_link('about_ext'); ?>">Дополнения для браузеров</a></p>
+
 
 		<h3>Обратная связь</h3>
 		<p>Форум: <a href="http://forum.iteam.ua/topic/19377/">forum.iteam.ua/topic/19377/</a><br>

@@ -38,10 +38,14 @@ PIC.upload = function () {
 				type: 'post',
 				data: { async: 1 },
 				success: function (r) {
-					if (parseInt(r.error, 10) === 0) {
+					if (r && parseInt(r.error, 10) === 0) {
 						PIC.upload.finish(r.url);
 					} else {
-						PIC.upload.error(r.message);
+						if (r.message) {
+							PIC.upload.error(r.message);
+						} else {
+							PIC.upload.error('Произошел сбой при загрузке');
+						}
 					}
 				},
 				error: function (r) {
@@ -56,16 +60,10 @@ PIC.upload = function () {
 					}
 					$('#upload_status').html('Ожидайте, файл загружается на сервер&hellip;').fadeIn(200);
 				},
-				complete: function () {
-					//$('#upload_status').html("Ok");
-				},
 			};
 
 			$(form).bind("submit", function () {
-				//UP.statusMsg.clear();
-
 				$(submit).attr("disabled", "disabled");
-
 
 				$(this).ajaxSubmit(options);
 				PIC.upload.start();
@@ -96,7 +94,6 @@ PIC.upload = function () {
 		},
 
 		start: function () {
-			//UP.statusMsg.clear(); 		// clear status area
 			active = true; 	// set start
 
 			$(submit).attr("disabled", "disabled");
@@ -120,14 +117,12 @@ PIC.upload = function () {
 			return true;
 		},
 
-
 		//
 		finish: function (url) {
 			active = false;
 			$(document).oneTime(300, 'finish', function () { $('#upload_status').html('Ok. Переходим на <a href="'+url+'">к загруженной картинке</a>') });;
-			PIC.utils.makeGETRequest(url);
+			AMI.utils.makeGETRequest(url);
 		},
-
 
 		//
 		error: function (msg) {
