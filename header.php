@@ -28,7 +28,7 @@ if ($ami_CurrentPage == 'index.php') {
 }
 
 // ABOUT PAGE
-if (in_array($ami_CurrentPage, array('index.php', 'about.php', 'login.php', 'register.php', 'myfiles.php', 'profile.php', 'links.php', 'links_group.php', 'upload.php', 'settings.php'))) {
+if (in_array($ami_CurrentPage, array('index.php', 'about.php', 'about_ext.php', 'login.php', 'register.php', 'myfiles.php', 'profile.php', 'links.php', 'links_group.php', 'upload.php', 'settings.php'))) {
 	if ($ami_CurrentPage == 'about.php') {
 		ami_array_insert($ami_Menu, 1, '<li class="current">О проекте</li>', 'about');
 	} else {
@@ -37,7 +37,7 @@ if (in_array($ami_CurrentPage, array('index.php', 'about.php', 'login.php', 'reg
 }
 
 if ($ami_User['is_guest']) {
-	if (in_array($ami_CurrentPage, array('index.php', 'about.php', 'login.php', 'register.php'))) {
+	if (in_array($ami_CurrentPage, array('index.php', 'about.php', 'about_ext.php', 'login.php', 'register.php'))) {
 		// LOGIN
 		if ($ami_CurrentPage == 'login.php') {
 			$ami_Menu['login'] = '<li class="current">Вход</li>';
