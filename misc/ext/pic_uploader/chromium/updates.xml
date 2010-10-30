@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<gupdate xmlns='http://www.google.com/update2/response' protocol='2.0'>
+  <app appid='ohhgggclbdmkmfcifpelolkgmbjognhn'>
+    <updatecheck codebase='http://pic.lg.ua/misc/ext/pic_uploader/chromium/PIC_uploader_chromium_v2.0.crx' version='2.0' />
+  </app>
+</gupdate>

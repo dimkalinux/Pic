@@ -53,7 +53,7 @@ try {
 
 	// GALLERY
 	$link = $key_delete ? ami_link('links_group_image_owner', array($key_group, $key_delete, PIC_IMAGE_SIZE_GALLERY)) : ami_link('links_group_image', array($key_group, PIC_IMAGE_SIZE_GALLERY));
-	$preview_link_gallery = '<li><a href="'.$link.'" title="Галлерея">Галлерея</a></li>';
+	$preview_link_gallery = '<li><a href="'.$link.'" title="Галлерея">Галерея</a></li>';
 	if ($preview_size == PIC_IMAGE_SIZE_GALLERY) {
 		$preview_link_gallery = '<li>Галерея</li>';
 	}
