@@ -29,6 +29,7 @@ $ami_urls = array(
     'links_group_image'			    => 'links/group/$1/$2/',
 
     'show_image'				    => 'show/$1/',
+    'show_image_with_delete'	    => 'show/$1/del_key/$2/',
     'show_group_image_preselect'    => 'show/group/$1/$2/',
     'show_group_image'			    => 'show/group/$1/',
     'show_group_image_slideshow'    => 'show/slideshow/$1/',

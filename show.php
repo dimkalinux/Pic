@@ -9,6 +9,7 @@ require AMI_ROOT.'functions.inc.php';
 
 
 $key_id = isset($_GET['k']) ? ami_get_safe_string_len($_GET['k'], 32) : FALSE;
+$key_delete = isset($_GET['d']) ? ami_get_safe_string_len($_GET['d'], 32) : FALSE;
 
 // build info
 try {
@@ -44,6 +45,14 @@ try {
 	$show_link = ami_link('show_image', $key_id);
 	$preview_link = pic_getImageLink($storage, $location, $hash_filename, PIC_IMAGE_SIZE_PREVIEW);
 	$original_link = pic_getImageLink($storage, $location, $hash_filename, PIC_IMAGE_SIZE_ORIGINAL);
+
+	// LINKS
+	$links_link = ami_link('links_image', array($key_id, PIC_IMAGE_SIZE_MIDDLE));
+	if (FALSE !== $key_delete) {
+		// FULL LINK FOR OWNER
+		$links_link = ami_link('links_image_owner', array($key_id, $key_delete, PIC_IMAGE_SIZE_MIDDLE));
+	}
+
 } catch (AppLevelException $e) {
 	if (isset($_POST['async'])) {
 		exit(json_encode(array('error'=> 1, 'message' => $error_message)));
@@ -58,7 +67,7 @@ try {
 	}
 }
 
-$ami_Menu['links'] = '<li><a href="'.ami_link('links_image', array($key_id, PIC_IMAGE_SIZE_MIDDLE)).'" title="Получить ссылки на этот файл">Ссылки</a></li>';
+$ami_Menu['links'] = '<li><a href="'.$links_link.'" title="Получить ссылки на этот файл">Ссылки</a></li>';
 $ami_Menu['original'] = '<li><a href="'.$original_link.'" title="Скачать оригинал">'.$o_width.'&#8202;x&#8202;'.$o_height.'&nbsp;'.$o_size_text.'</a></li>';
 
 

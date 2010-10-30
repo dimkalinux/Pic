@@ -76,6 +76,9 @@ class Upload_url extends Upload_base {
 			if (@/**/filesize($temp_name) !== $this->size) {
 				throw new Exception('Неверный размер файла');
 			}
+		} else {
+			// JUST SET REAL SIZE
+			$this->size = @/**/filesize($temp_name);
 		}
 
 		$url_parts = parse_url($this->url);

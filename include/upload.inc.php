@@ -80,19 +80,18 @@ class Upload {
 						throw new Exception('Неизвестный тип загрузки');
 				}
 
-				if ($skip_check_size === FALSE) {
-					// 1. CHECK SIZE
-					if ($uploader->getSize() < 1) {
-						throw new AppLevelException('Получен пустой файл');
-					}
-
-					if ($uploader->getSize() > $pic_MaxUploadSize) {
-						throw new AppLevelException('Неверный размер файла');
-					}
-				}
-
 				// 2. MAKE FILE LOCAL
 				$uploader->proccess_upload();
+
+				// 1. CHECK SIZE
+				if ($uploader->getSize() < 1) {
+					throw new AppLevelException('Получен пустой файл');
+				}
+
+				if ($uploader->getSize() > $pic_MaxUploadSize) {
+					throw new AppLevelException('Неверный размер файла');
+				}
+
 
 				// 3. CHECK FORMAT
 				if (FALSE === $uploader->isImage()) {

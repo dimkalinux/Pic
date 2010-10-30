@@ -42,6 +42,7 @@ RewriteRule 	^links/([a-z0-9]+)/([0-9])/$					links.php?k=$1&s=$2 [L]
 RewriteRule 	^show/slideshow/([a-z0-9]+)/$					show_slideshow.php?g=$1 [L]
 RewriteRule 	^show/group/([a-z0-9]+)/([a-z0-9]+)/$			show_group.php?g=$1&k=$2 [L]
 RewriteRule 	^show/group/([a-z0-9]+)/$						show_group.php?g=$1 [L]
+RewriteRule 	^show/([a-z0-9]+)/del_key/([a-z0-9]+)/$			show.php?k=$1&d=$2 [L]
 RewriteRule 	^show/([a-z0-9]+)/$								show.php?k=$1 [L]
 
 RewriteRule 	^about/ext/$									about_ext.php [L]

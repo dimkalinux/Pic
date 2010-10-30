@@ -90,6 +90,12 @@ if (!empty($row['short_url'])) {
 }
 $share_link_url = rawurlencode($show_link);
 
+// SHOW link IN IMAGE
+$show_image_with_delete_link = $show_link;
+if (FALSE !== $key_delete) {
+	$show_image_with_delete_link = ami_link('show_image_with_delete', array($key_id, $key_delete));
+}
+
 //
 $input_link_html = ami_htmlencode('<a href="'.$show_link.'"><img src="'.pic_getImageLink($storage, $location, $hash_filename, $preview_size).'" alt="'.$filename.'"></a>');
 $input_link_bbcode = ami_htmlencode('[url='.$show_link.'][img]'.pic_getImageLink($storage, $location, $hash_filename, $preview_size).'[/img][/url]');
@@ -107,7 +113,7 @@ $out = <<<FMB
 
 <div class="span-16 body_block last" id="links_wrap">
 	<div id="img_block">
-		<a href="$show_link" title="Перейти к просмотру"><img class="fancy_image" src="$preview_link" alt="$filename"></a>
+		<a href="$show_image_with_delete_link" title="Перейти к просмотру"><img class="fancy_image" src="$preview_link" alt="$filename"></a>
 	</div>
 </div>
 
