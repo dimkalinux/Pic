@@ -27,12 +27,18 @@ if ($ami_CurrentPage == 'index.php') {
 	ami_array_insert($ami_Menu, 0, '<li><a href="'.ami_link('root').'" title="Вернуться на главную страницу">На главную</a></li>', 'root');
 }
 
+// LINKS
+if (in_array($ami_CurrentPage, array('links.php', 'links_group.php'))) {
+	ami_array_insert($ami_Menu, 5, '<li class="current">Ссылки</li>', 'links');
+}
+
+
 // ABOUT PAGE
 if (in_array($ami_CurrentPage, array('index.php', 'about.php', 'about_ext.php', 'login.php', 'register.php', 'myfiles.php', 'profile.php', 'links.php', 'links_group.php', 'upload.php', 'settings.php'))) {
 	if ($ami_CurrentPage == 'about.php') {
-		ami_array_insert($ami_Menu, 1, '<li class="current">О проекте</li>', 'about');
+		ami_array_insert($ami_Menu, 10, '<li class="current">О проекте</li>', 'about');
 	} else {
-		ami_array_insert($ami_Menu, 1, '<li><a href="'.ami_link('about').'" title="Зачем это всё?">О проекте</a></li>', 'about');
+		ami_array_insert($ami_Menu, 10, '<li><a href="'.ami_link('about').'" title="Зачем это всё?">О проекте</a></li>', 'about');
 	}
 }
 

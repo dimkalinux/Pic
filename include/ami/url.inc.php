@@ -28,12 +28,19 @@ $ami_urls = array(
     'links_image'					=> 'links/$1/$2/',
     'links_group_image'			    => 'links/group/$1/$2/',
 
-    'show_image'				    => 'show/$1/',
-    'show_image_with_delete'	    => 'show/$1/del_key/$2/',
-    'show_group_image_preselect'    => 'show/group/$1/$2/',
-    'show_group_image'			    => 'show/group/$1/',
-    'show_group_image_slideshow'    => 'show/slideshow/$1/',
-    'image'					        => 'x/$1/$2/$3',
+	/* SHOW */
+    'show_image'				    			=> 'show/$1/',
+    'show_image_with_delete'	    			=> 'show/$1/del_key/$2/',
+
+    'show_group_image_preselect_with_delete'    => 'show/group/$1/$2/del_key/$3/',
+    'show_group_image_preselect'    			=> 'show/group/$1/$2/',
+
+    'show_group_image_with_delete'  			=> 'show/group/$1/del_key/$2/',
+    'show_group_image'			    			=> 'show/group/$1/',
+
+    'show_group_image_slideshow'    			=> 'show/slideshow/$1/',
+    'image'					        			=> 'x/$1/$2/$3',
+
 
 	'about_ext'		    			=> 'about/ext/',
     'about'			    			=> 'about/',

@@ -70,6 +70,8 @@ try {
 	$i = $tabindex_html = $tabindex_bbcode = $tabindex_show = $tabindex_original = 0;
 	$out = '';
 
+
+	// SLIDESHOW
 	if ($preview_size == PIC_IMAGE_SIZE_SLIDESHOW) {
 		$data = array_reverse($data);
 		foreach ($data as $row) {
@@ -165,6 +167,7 @@ AMI;
 AMI;
 
 	} else {
+		// NORMAL VIEW
 		foreach ($data as $row) {
 			// INDEX
 			$i++;
@@ -181,12 +184,18 @@ AMI;
 			$location = ami_get_safe_string($row['location']);
 			$hash_filename = $row['hash_filename'];
 			$filename = ami_htmlencode($row['filename']);
-			$key_delete = $row['delete_key'];
+			//$key_delete = $row['delete_key'];
 
 			$preview_link = pic_getImageLink($storage, $location, $hash_filename, PIC_IMAGE_SIZE_SMALL);
-			$preview_link_preview = ami_link('links_image_owner', array($key_id, $key_delete, PIC_IMAGE_SIZE_PREVIEW));
+			//$preview_link_preview = ami_link('links_image_owner', array($key_id, $key_delete, PIC_IMAGE_SIZE_PREVIEW));
 			$show_link = ami_link('show_image', $key_id);
 			$show_group_link = ami_link('show_group_image_preselect', array($key_group, $key_id));
+
+			// IF KEY_DELETE - show FULL LINK
+			$show_group_with_delete_link = $show_group_link;
+			if (FALSE !== $key_delete) {
+				$show_group_with_delete_link = ami_link('show_group_image_preselect_with_delete', array($key_group, $key_id, $key_delete));
+			}
 
 			// LINKS
 			$input_link_html = ami_htmlencode('<a href="'.$show_link.'"><img src="'.pic_getImageLink($storage, $location, $hash_filename, $preview_size).'" alt="'.$filename.'"></a>');
@@ -196,7 +205,7 @@ AMI;
 			$out .= <<<FMB
 		<div class="span-20 last append-bottom">
 			<div class="span-8">
-				<a href="$show_group_link" title="Перейти к просмотру"><img class="fancy_image" src="$preview_link" alt="$filename"></a>
+				<a href="$show_group_with_delete_link" title="Перейти к просмотру"><img class="fancy_image" src="$preview_link" alt="$filename"></a>
 			</div>
 			<div class="span-10 last">
 				<div class="links_row">
