@@ -256,4 +256,63 @@ class PasswordHash {
 	}
 }
 
+
+class Random_Password {
+	private $_pool;
+
+	private $_pool_length;
+
+	public function __construct() {
+		$this->init_pool();
+	}
+
+	public function create($min_length, $max_length=0) {
+		if ($max_length === 0 || $max_length < $min_length) {
+			$max_length	= $min_length;
+		}
+
+		do {
+			$password_a = array();
+			$pass_length = mt_rand($min_length, $max_length);
+
+			echo "pass l: $pass_length ";
+
+			$n = 0;
+			while($n++ < $pass_length) {
+				array_push($password_a, $this->_pool[array_rand($this->_pool, 1)]);
+				//
+				shuffle($this->_pool);
+				shuffle($password_a);
+			}
+		} while($this->is_bad($password_a));
+
+		return implode('', $password_a);
+	}
+
+	private function init_pool() {
+		$small_letters = array('a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z');
+		$big_letters = array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');
+		$digits = array('0','1','2','3','4','5','6','7','8','9');
+		$chars = array('~','@','#','*','^','%','$','?','_',';');
+
+		$this->_pool = array_merge($small_letters, $big_letters, $digits, $chars);
+
+		$this->_pool_length = count($this->_pool);
+	}
+
+	private function check_strength($pass_a) {
+
+	}
+
+	private function is_bad($pass_a) {
+		if ((count($pass_a) - count(array_unique($pass_a))) > 2) {
+			echo "bad: ".(count($pass_a) - count(array_unique($pass_a))).' <br>';
+			return TRUE;
+		}
+
+
+		return FALSE;
+	}
+}
+
 ?>

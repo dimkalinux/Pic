@@ -121,7 +121,9 @@ class DB {
 			}
 
 			$t--;
-			$key_length = mt_rand($key_length_min, $key_length_max);
+			if ($key_length_min !== $key_length_max) {
+				$key_length = mt_rand($key_length_min, $key_length_max);
+			}
 		} while($t > 0);
 
 		throw new Exception("Не удалось создать уникальное значение для ключа '$key'");

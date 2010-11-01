@@ -7,7 +7,7 @@ if (!defined('AMI')) {
 
 
 class Upload_file extends Upload_base {
-	public function __construct($file, $multi_upload, $user_id, $auto_shorten_service, $upload_options) {
+	public function __construct($file, $multi_upload, $user_id, $auto_shorten_service, $api_key_id, $upload_options) {
 		if (!isset($file)) {
 			throw new Exception("Файл '".ami_htmlencode($file)."' не найден");
 		}
@@ -24,6 +24,7 @@ class Upload_file extends Upload_base {
 		$this->error = 0;
 		$this->user_id = $user_id;
 		$this->_auto_shorten_service = $auto_shorten_service;
+		$this->_api_key_id = $api_key_id;
 
 		$this->skip_check_size = ami_GetOptions($upload_options, UPLOAD_FLAG_SKIP_FILESIZE_CHECK, FALSE);
 

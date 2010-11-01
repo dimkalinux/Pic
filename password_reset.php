@@ -85,7 +85,8 @@ FMB;
 
 		// CREATE NEW PASSWORD
 		$t_hasher = new PasswordHash(12, FALSE);
-		$password = ami_CreateNewPassword(24);
+		$_pass = new Random_Password;
+		$password = $_pass->create(16, 22);
 		$cryptPassword = $t_hasher->HashPassword($password);
 
 		// DELETE OLD new passwords FOR THIS USER

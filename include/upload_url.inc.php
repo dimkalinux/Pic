@@ -6,7 +6,7 @@ if (!defined('AMI')) {
 }
 
 class Upload_url extends Upload_base {
-	public function __construct($url, $multi_upload, $user_id, $auto_shorten_service, $upload_options) {
+	public function __construct($url, $multi_upload, $user_id, $auto_shorten_service, $api_key_id, $upload_options) {
 		if (!isset($url)) {
 			throw new Exception("Файл '".ami_htmlencode($url)."' не найден");
 		}
@@ -23,6 +23,7 @@ class Upload_url extends Upload_base {
 		$this->error = 0;
 		$this->user_id = $user_id;
 		$this->_auto_shorten_service = $auto_shorten_service;
+		$this->_api_key_id = $api_key_id;
 	}
 
 

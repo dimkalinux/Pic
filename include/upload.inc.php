@@ -30,7 +30,7 @@ class Upload {
 	}
 
 
-	public function run($user, $reduce_original=0, $upload_type, $upload_options) {
+	public function run($user, $reduce_original=0, $upload_type, $api_key_uid, $upload_options) {
 		global $pic_MaxUploadSize, $pic_BaseURL, $pic_DefaultPreviewSize;
 
 		$uploaded_return_info = '';
@@ -61,6 +61,15 @@ class Upload {
 		// NEED CHECK SIZE?
 		$skip_check_size = ami_GetOptions($upload_options, UPLOAD_FLAG_SKIP_FILESIZE_CHECK, FALSE);
 
+		// GET API_KEY_ID
+		$api_key_id = API_KEY_ID_UNKNOWN;
+		if (!empty($api_key_uid)) {
+			$api_key = new API_Key;
+			$api_key_id = $api_key->get_id_by_key_uid($api_key_uid);
+			if (FALSE === $api_key_id) {
+				$api_key_id = API_KEY_ID_UNKNOWN;
+			}
+		}
 
 		// ITERATE upload list
 		foreach ($this->_upload_items as $upload_item) {
@@ -69,11 +78,11 @@ class Upload {
 
 				switch ($upload_type) {
 					case PIC_UPLOAD_FILE:
-						$uploader = new Upload_file($upload_item, $multi_upload, $user['id'], $this->_auto_shorten_service, $upload_options);
+						$uploader = new Upload_file($upload_item, $multi_upload, $user['id'], $this->_auto_shorten_service, $api_key_id, $upload_options);
 						break;
 
 					case PIC_UPLOAD_URL:
-						$uploader = new Upload_url($upload_item, $multi_upload, $user['id'], $this->_auto_shorten_service, $upload_options);
+						$uploader = new Upload_url($upload_item, $multi_upload, $user['id'], $this->_auto_shorten_service, $api_key_id, $upload_options);
 						break;
 
 					default:

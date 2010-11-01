@@ -32,12 +32,17 @@ $ami_LoginCookieName = 'pic_login';
 $ami_LoginCookieDomain = '';
 $ami_LoginCookiePath = '/';
 $ami_LoginCookieSecure = 0;
+// ************** WARNING! PLEASE CHANGE THIS VALUE *****************
 $ami_LoginCookieSalt = 'zzjdIof(df*f;ad';
-//
+
+
+// ************** WARNING! PLEASE CHANGE THIS VALUE *****************
 $ami_CSRF_Key = '05dddlaoezz:_=dd';
+
 
 // FACEBOOK
 $ami_UseFacebook = FALSE;
+
 
 // EMAIL
 $ami_mailUseSMTP = TRUE;
@@ -105,5 +110,9 @@ $pic_TMPdir = '/var/upload/pic2/tmp/';
 
 $pic_UploadStorages = array('1');
 
+// API KEYS
+define('API_KEY_ID_UNKNOWN', 0);
+
+// LAST, BUT NOT LEAST
 define('AMI', 1);
 ?>

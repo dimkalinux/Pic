@@ -38,6 +38,8 @@ class Upload_base {
 	//
 	protected $skip_check_size;
 
+	protected $_api_key_id;
+
 
 	public function __destruct() {
 		// RM TMP files
@@ -79,7 +81,7 @@ class Upload_base {
 			}
 		}
 
-		$db->query("INSERT INTO pic VALUES ('', ?, ?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", $key_group, $image_key, $image_delete_key, $image_location, $image_storage, $image_filename, $image_hashed_filename, $image_size, $image_width, $image_height, $p_width, $p_height, $p_size, $this->user_id, $image_short_url);
+		$db->query("INSERT INTO pic VALUES ('', ?, ?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", $key_group, $image_key, $image_delete_key, $image_location, $image_storage, $image_filename, $image_hashed_filename, $image_size, $image_width, $image_height, $p_width, $p_height, $p_size, $this->user_id, $image_short_url, $this->_api_key_id);
 
 		return array('key' => $image_key, 'delete_key' => $image_delete_key);
 	}

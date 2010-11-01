@@ -60,7 +60,7 @@ try {
     $upload_options = array(UPLOAD_FLAG_SKIP_FILESIZE_CHECK => TRUE);
 
     $upload = new Upload($a_urls);
-    $upload_result = $upload->run($ami_User, $reduce_original, PIC_UPLOAD_URL, $upload_options);
+    $upload_result = $upload->run($ami_User, $reduce_original, PIC_UPLOAD_URL, $api_key, $upload_options);
 
      // EXIT
 	if ($use_api) {

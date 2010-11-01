@@ -20,6 +20,12 @@ if (isset($_POST['api'])) {
     unset($_POST['api']);
 }
 
+$api_key = FALSE;
+if (isset($_POST['api_key'])) {
+	$api_key = ami_trim($_POST['api_key']);
+    unset($_POST['api_key']);
+}
+
 $reduce_original = 0;
 if (isset($_POST['reduce_original'])) {
     $reduce_original = intval($_POST['reduce_original'], 10);
@@ -42,7 +48,7 @@ try {
 
 
     $upload = new Upload($files);
-    $upload_result = $upload->run($ami_User, $reduce_original, PIC_UPLOAD_FILE, array());
+    $upload_result = $upload->run($ami_User, $reduce_original, PIC_UPLOAD_FILE, $api_key, array());
 
     // EXIT
 	if ($use_api) {

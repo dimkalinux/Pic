@@ -78,3 +78,23 @@ CREATE TABLE `users_new_password` (
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
+
+
+
+/* VERSION 5.5 */
+DROP TABLE IF EXISTS `api_keys`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `api_keys` (
+    `id` int(10) unsigned NOT NULL auto_increment,
+	`key_id` varchar(64) NOT NULL,
+    `key_name` varchar(256) NOT NULL,
+    `key_desc` text,
+    `disabled` bool NOT NULL default false,
+    `regdate` datetime NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+SET character_set_client = @saved_cs_client;
+
+
+ALTER TABLE pic ADD COLUMN api_key_id INT(10) unsigned NOT NULL AFTER short_url;

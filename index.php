@@ -12,6 +12,7 @@ require AMI_ROOT.'header.php';
 	<div class="span-15 last prepend-5 body_block">
 		<h3>Загрузить картинки на вечное хранение</h3>
 		<form method="post" action="/upload/" name="upload" enctype="multipart/form-data" accept-charset="utf-8">
+			<input type="hidden" name="api_key" value="9c0bd1dd6c88765017378c8a">
 			<div class="formRow">
 			<?php
 				if (isset($_GET['link'])) {
