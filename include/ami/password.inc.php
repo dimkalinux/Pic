@@ -296,17 +296,11 @@ class Random_Password {
 		$chars = array('~','@','#','*','^','%','$','?','_',';');
 
 		$this->_pool = array_merge($small_letters, $big_letters, $digits, $chars);
-
 		$this->_pool_length = count($this->_pool);
-	}
-
-	private function check_strength($pass_a) {
-
 	}
 
 	private function is_bad($pass_a) {
 		if ((count($pass_a) - count(array_unique($pass_a))) > 2) {
-			echo "bad: ".(count($pass_a) - count(array_unique($pass_a))).' <br>';
 			return TRUE;
 		}
 

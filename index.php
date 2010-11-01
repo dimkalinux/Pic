@@ -34,8 +34,10 @@ require AMI_ROOT.'header.php';
 			<div id="advanced_options" class="<?php if (isset($_GET['advanced'])) { echo ' '; } else { echo 'hide'; } ?>">
 				<div class="formRow">
 					<label for="reduce_original">уменьшить оригинал до</label><br>
-					<input id="reduce_original" name="reduce_original" type="text" class="span-1_5" size="4">
-					<span style="margin: .5em 0 0 .7em;">пикселей</span>
+					<div>
+						<input id="reduce_original" name="reduce_original" type="text" class="span-1_5" size="4">
+						<div id="input_label_desc">пикселей</div>
+					</div>
 				</div>
 			</div>
 		</form>

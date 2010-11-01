@@ -25,7 +25,7 @@ define('AMI_FACEBOOK_ACTION_LOGOUT', 15);
 
 $ami_EnablePrintCSS = FALSE;
 
-$ami_Production = TRUE;
+$ami_Production = FALSE;
 
 // COOKIE SECTION
 $ami_LoginCookieName = 'pic_login';

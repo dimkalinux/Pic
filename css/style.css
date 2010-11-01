@@ -472,3 +472,9 @@ body#slide_show #menu {
 	color: #666;
 	font-size: 2em;
 }
+
+#input_label_desc {
+	margin: .4em 0 0 .6em;
+	float: left;
+}
+
