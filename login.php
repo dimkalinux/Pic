@@ -6,6 +6,7 @@ if (!defined('AMI_ROOT')) {
 
 require AMI_ROOT.'functions.inc.php';
 
+
 try {
 	$ami_PageTitle = 'Вход в систему';
 
@@ -17,9 +18,32 @@ try {
 	$register_link = ami_link('register');
 	$password_reset_link = ami_link('password_reset');
 
-
 	// OLD VALUES
 	$email_value = isset($_POST['e']) ? ami_htmlencode($_POST['e']) : '';
+	$dont_check_ip = isset($_POST['i']) ? TRUE : FALSE;
+
+	$check_ip_input = 'value="0"';
+	if ($dont_check_ip) {
+		$check_ip_input = 'checked="checked" value="1"';
+	}
+
+
+	// MAYBE ALREADY LOGGED IN?
+	if ($ami_User['is_guest'] === FALSE) {
+		$logout_link = ami_link('logout');
+		$profile_link = '<a href="'.ami_link('profile').'" title="Мой профиль">'.ami_htmlencode($ami_User['profile_name']).'</a>';
+
+		$page = <<<FMB
+		<div class="span-16 last prepend-5 body_block last">
+			<h2>Вход в систему</h2>
+
+			<p>Вы сейчас залогинены в системе под акаунтом $profile_link</p>
+			<p><a href="$logout_link">Выйти из системы</a></p>
+		</idv>
+FMB;
+		ami_printPage($page);
+		exit();
+	}
 
 
 // FACEBOOK PART
@@ -55,6 +79,7 @@ if ($ami_UseFacebook) {
 FMB;
 }
 
+
 $form = <<<FMB
 <div class="span-10 last prepend-5 body_block last">
 	%s
@@ -75,6 +100,14 @@ $form = <<<FMB
 			<label for="p" id="label_p">Пароль</label><br>
 			<input type="password" class="text" id="p" name="p" tabindex="2" maxlength="128">
 		</div>
+
+		<div class="formRow">
+			<label for="i" id="label_i" class="unbold">
+				<input type="checkbox" id="i" name="i" tabindex="3" $check_ip_input>
+				Не привязываться к айпи-адресу
+			</label>
+		</div>
+
 
 		<div class="formRow buttons">
 			<input class="button" type="submit" name="do" value="Войти" tabindex="3">
@@ -186,7 +219,7 @@ FMB;
 
 		// LOGIN to SYSTEM
 		$o_ami_user = new AMI_User();
-		$o_ami_user->login($user_id, $user_email, $is_admin);
+		$o_ami_user->login($user_id, $user_email, $is_admin, !/**/$dont_check_ip);
 
 		// is async request
 		if ($async) {

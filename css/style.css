@@ -69,6 +69,12 @@ img.as_js_link,
 	margin: 2.5em 0 6em;
 }
 
+#menu,
+#image_menu {
+/*
+	font-family: "andale mono",courier new,courier,mono-spaced;
+*/
+}
 
 /* FOOTER */
 #footer ul {
@@ -119,7 +125,11 @@ img.as_js_link,
 }
 
 #menu li {
-	color: #222; display: inline; padding-right: 1em; padding-bottom: .4em; margin-right: 1.7em;
+	color: #222;
+	display: inline;
+	padding-right: 1em;
+	padding-bottom: .4em;
+	margin-right: 1.85em;
 	border-bottom: solid 1px #ddd;
 }
 
@@ -350,7 +360,10 @@ a.loading, a.loading:hover {
 	height: 120px;
 	border: solid 2px #fff;
 	opacity: 1.0;
-	background: transparent url("/img/trash.png") 50% 50% no-repeat;
+	background-image: url(/img/trash_sprite.png);
+	background-color: transparent;
+	background-repeat: no-repeat;
+	background-position  : 5px -0px;
 	position: fixed;
 	left: 10px;
 	bottom: 20px;
@@ -358,7 +371,7 @@ a.loading, a.loading:hover {
 }
 
 .drophover {
-	background: transparent url("/img/trash1.png") 50% 50% no-repeat !important;
+	background-position: -91px -0px !important;
 }
 
 #trash_status {
@@ -369,6 +382,7 @@ a.loading, a.loading:hover {
 	overflow: visible;
 }
 
+/*
 .button {
 	background-color: #FFFFFF;
 	border: 1px solid #888888;
@@ -392,9 +406,11 @@ a.loading, a.loading:hover {
 	color: #222222;
 	outline: none;
 }
+*/
 
 input[type=text],
-input[type=password] {
+input[type=password],
+textarea {
 	border: solid 1px #c8c8c8;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
@@ -402,8 +418,11 @@ input[type=password] {
 }
 
 input[type=text]:hover,
-input[type=password]:hover {
+input[type=password]:hover,
+textarea:hover {
 	-moz-box-shadow: 1px 1px 5px #A7D5F8;
+	-webkit-box-shadow: 1px 1px 5px #A7D5F8;
+	box-shadow: 1px 1px 5px #A7D5F8;
 	border: 1px solid #71B3E6;
 }
 
@@ -478,3 +497,44 @@ body#slide_show #menu {
 	float: left;
 }
 
+
+#twitter_post_text {
+	height: auto !important;
+}
+
+#twitter_post_counter {
+	color: #999;
+	font-size: 1.5em;
+	position: absolute;
+	right: -5px;
+	top: 0;
+	line-height: 1em;
+}
+
+.twiiter_main_message_text {
+	font-family: Georgia, Times New Roman, Serif;
+	font-size: 1.5em;
+	color: #000;
+}
+
+.twiiter_main_message_owner {
+	line-height: 2.2em;
+	margin-right: 1em;
+	color: #969696;
+}
+
+.twiiter_main_message_owner a,
+.twiiter_main_message_date a
+ {
+	color: #969696;
+}
+
+.twiiter_main_message_owner a:hover,
+.twiiter_main_message_date a:hover {
+	color: #222;
+	text-decoration: none;
+}
+
+label.unbold {
+	font-weight: normal !important;
+}

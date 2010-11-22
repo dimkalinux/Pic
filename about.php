@@ -4,6 +4,7 @@ if (!defined('AMI_ROOT')) {
 	define('AMI_ROOT', './');
 }
 
+
 $ami_PageTitle = 'Зачем это всё?';
 
 require AMI_ROOT.'functions.inc.php';

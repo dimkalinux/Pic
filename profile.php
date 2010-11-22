@@ -27,6 +27,53 @@ try {
 FMB;
 	}
 
+	// LOGIN BLOCK
+	$session_info_block = '';
+	$db = DB::singleton();
+	$row = $db->getRow('SELECT sid,INET_NTOA(ip) AS ip,check_ip FROM session WHERE sid=? AND uid=? LIMIT 1', $ami_User['sid'], $ami_User['id']);
+	if ($row) {
+		if (intval($row['check_ip'], 10) === 1) {
+			$session_info_block = 'Вход в систему с айпи-адреса '.$row['ip'].' (c привязкой)';
+		} else {
+			$session_info_block = 'Вход в систему с айпи-адреса '.$row['ip'].' (без привязки)';
+		}
+	}
+	// NUM SESSIONS
+	$num_active_sessions = $db->numRows('SELECT sid FROM session WHERE uid=?', $ami_User['id']);
+	$session_info_block .= '<br>'.$num_active_sessions.' '.ami_Pon($num_active_sessions, 'активная сессия', 'активных сессии', 'активных сессий');
+
+
+
+
+	// TIWTTER
+	$twitter_block = '';
+	$twitter_status = '<a href="'.ami_link('twitter').'">Присоединиться к твитеру</a>';
+	$mytwits_link = '';
+	try {
+		$twitter_user = new AMI_User_Twitter($ami_User['id']);
+		if ($twitter_user->connected()) {
+			$twitter_user_tokens = $twitter_user->get_oauth_tokens();
+
+			/* Create a TwitterOauth object with consumer/user tokens. */
+			$connection = new TwitterOAuth(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET, $twitter_user_tokens['oauth_token'], $twitter_user_tokens['oauth_token_secret']);
+
+			/* If method is set change API call made. Test is called by default. */
+			$twitter_user_info = $connection->get('account/verify_credentials');
+			if (200 === $connection->http_code) {
+				$twitter_status = 'Используется акаунт @<a href="http://twitter.com/'.ami_htmlencode($twitter_user_info->screen_name).'">'.ami_htmlencode($twitter_user_info->screen_name).'</a><br><a href="'.ami_link('twitter_disconnect').'">Отключить твитер</a>';
+			}
+
+			$mytwits_link = '<br><a href="'.ami_link('mytwits').'">Все мои твиты</a>';
+		}
+
+		$twitter_block = <<<FMB
+		<h3>Твитер</h3>
+		<p>$twitter_status</p>
+FMB;
+	} catch (Exception $e) {
+
+	}
+
 
 // FACEBOOK
 $facebook_block = '';
@@ -73,7 +120,7 @@ AMI;
 
 	$myfiles_link = '';
 	if ($num_files > 0) {
-		$myfiles_link = '<p><a href="'.ami_link('myfiles').'">Просмотреть все мои файлы</a></p>';
+		$myfiles_link = '<a href="'.ami_link('myfiles').'">Все мои файлы</a>';
 	}
 
 
@@ -115,20 +162,27 @@ $out = <<<FMB
 			Используется: $num_bytes<br>
 		</p>
 
-		$myfiles_link
+		<p>
+			$myfiles_link
+			$mytwits_link
+		</p>
+
+		<!-- FACEBOOK PART -->
+		$facebook_connect_block
+		$facebook_block
+
+		<!-- TWITTER PART -->
+		$twitter_block
 
 		<h3>Действия</h3>
 		<p>
 			$settings_link<br>
 			$password_change_link
 		</p>
+
+		<h3>Сессия</h3>
+		$session_info_block
 		<p>$logout_link</p>
-
-
-		<!-- FACEBOOK PART -->
-		$facebook_connect_block
-
-		$facebook_block
 	</div>
 FMB;
 

@@ -96,6 +96,16 @@ if (FALSE !== $key_delete) {
 	$show_image_with_delete_link = ami_link('show_image_with_delete', array($key_id, $key_delete));
 }
 
+// TWITTER LINK
+$twitter_link = 'http://twitter.com/home?status='.$show_link_short;
+if ($is_owner && FALSE === $ami_User['is_guest']) {
+	$twitter_user = new AMI_User_Twitter($ami_User['id']);
+	if ($twitter_user->connected()) {
+		$twitter_link = ami_link('twitter_post', $key_id);
+	}
+}
+
+
 //
 $input_link_html = ami_htmlencode('<a href="'.$show_link.'"><img src="'.pic_getImageLink($storage, $location, $hash_filename, $preview_size).'" alt="'.$filename.'"></a>');
 $input_link_bbcode = ami_htmlencode('[url='.$show_link.'][img]'.pic_getImageLink($storage, $location, $hash_filename, $preview_size).'[/img][/url]');
@@ -141,7 +151,7 @@ $out = <<<FMB
 		<ul id="share_menu" class="inline_list">
 			<li class="first"><a href="http://facebook.com/sharer.php?u=$show_link_short" title="Опубликовать картинку в Фейсбуке">Фейсбук</a></li>
 			<li><a href="http://vkontakte.ru/share.php?url=$show_link_short" title="Опубликовать картинку ВКонтакте">ВКонтакте</a></li>
-			<li><a href="http://twitter.com/home?status=$show_link_short" title="Опубликовать картинку в Твитере">Твитер</a></li>
+			<li><a href="$twitter_link" title="Опубликовать картинку в Твитере">Твитер</a></li>
 		</ul>
 	</div>
 </div>

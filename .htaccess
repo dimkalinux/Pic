@@ -61,5 +61,13 @@ RewriteRule 	^ajax/$											ajax.php [L]
 
 RewriteRule 	^upload-remote/$								upload_remote.php [L]
 
+RewriteRule 	^twitter/callback/$						twitter_callback.php [L]
+RewriteRule 	^twitter/clearsession/$					twitter_clearsession.php [L]
+RewriteRule 	^twitter/connect/$						twitter_connect.php [L]
+RewriteRule 	^twitter/disconnect/$					twitter_disconnect.php [L]
+RewriteRule 	^twitter/post/ok/(.+)$					twitter_post.php?ok=1&l=$1 [L]
+RewriteRule 	^twitter/post/([a-z0-9]+)/$				twitter_post.php?k=$1 [L]
+RewriteRule 	^twitter/$								twitter_index.php [L]
+
 
 

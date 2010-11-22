@@ -204,7 +204,7 @@ class DB {
 			}
 			// free query results
 			$this->freeResult();
-			return $num;
+			return intval($num, 10);
 		} else {
 			return FALSE;
 		}

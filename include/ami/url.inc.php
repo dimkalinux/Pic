@@ -67,11 +67,21 @@ $ami_urls = array(
     'logout_facebook'	        	=> 'logout/facebook/',
 
     'myfiles'			        	=> 'myfiles/',
+    'mytwits'			        	=> 'mytwits/',
     'profile'			        	=> 'profile/',
     'settings'			        	=> 'settings/',
     'settings_save'			    	=> 'settings/save/',
     'settings_ok'			    	=> 'settings/ok/',
-    'ajax'                      	=> 'ajax/'
+    'ajax'                      	=> 'ajax/',
+
+	'twitter'                      	=> 'twitter/',
+	'twitter_connect'              	=> 'twitter/connect/',
+	'twitter_disconnect'          	=> 'twitter/disconnect/',
+	'twitter_clear'              	=> 'twitter/clearsession/',
+	'twitter_callback'             	=> 'twitter/callback/',
+	'twitter_post'             		=> 'twitter/post/$1/',
+	'twitter_post_ok'          		=> 'twitter/post/ok/$1',
+	'twitter_message'				=> 'https://twitter.com/$1/status/$2',
 );
 
 ?>

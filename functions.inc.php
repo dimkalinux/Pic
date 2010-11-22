@@ -48,6 +48,7 @@ require AMI_ROOT.'include/ami/utf8/trim.php';
 // LOAD ALL AMI LIBS
 require AMI_ROOT.'include/ami/functions.inc.php';
 require AMI_ROOT.'include/ami/password.inc.php';
+require AMI_ROOT.'include/ami/cache.inc.php';
 require AMI_ROOT.'include/ami/exceptions.inc.php';
 require AMI_ROOT.'include/ami/user.inc.php';
 require AMI_ROOT.'include/ami/url.inc.php';
@@ -66,6 +67,9 @@ require AMI_ROOT.'include/url_shortener.inc.php';
 // FACEBOOK
 require AMI_ROOT.'include/facebook/facebook.inc.php';
 
+// TWITTER
+require AMI_ROOT.'include/twitteroauth/twitteroauth.php';
+require AMI_ROOT.'include/ami/user_twitter.inc.php';
 
 // Reverse the effect of register_globals
 ami_unregister_globals();

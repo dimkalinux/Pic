@@ -10,6 +10,10 @@ define('AMI_MYSQL_LOGIN', 'picDB_User');
 define('AMI_MYSQL_PASSWORD', '_stB17ZfKs15:-)dddsDFa1d');
 define('AMI_MYSQL_CHARSET', 'utf8');
 
+// MEMCACHE
+define('MEMCACHE_HOST', '194.146.132.67');
+define('MEMCACHE_PORT', '11211');
+define('MEMCACHE_PERSISTENT_CONNECT', TRUE);
 
 // BASE URL aka CDN
 define('AMI_CSS_BASE_URL', 'http://pic.lluga.net/');
@@ -112,6 +116,11 @@ $pic_UploadStorages = array('1');
 
 // API KEYS
 define('API_KEY_ID_UNKNOWN', 0);
+
+// TWITTER
+define('TWITTER_CONSUMER_KEY', '37n7sBQ0xZz5wSshUWRewQ');
+define('TWITTER_CONSUMER_SECRET', 'gLMXgsT99jrD0DfbPaHhStCmrkl1O5m19GTpOTznA');
+define('TWITTER_OAUTH_CALLBACK', 'http://pic.lluga.net/twitter_callback.php');
 
 // LAST, BUT NOT LEAST
 define('AMI', 1);

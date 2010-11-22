@@ -10,13 +10,14 @@ if (!defined('AMI')) {
 class AMI_User {
 	public function get_CurrentUser() {
 		$user = array(
-			'email' => '',
-			'ip' => '',
-			'id' => 0,
-			'login' => '',
-			'is_admin' => FALSE,
-			'is_guest' => TRUE,
-			'geo' => 'world',
+			'email' 	=> '',
+			'sid'		=> FALSE,
+			'ip' 		=> '',
+			'id' 		=> 0,
+			'login' 	=> '',
+			'is_admin' 	=> FALSE,
+			'is_guest' 	=> TRUE,
+			'geo' 		=> 'world',
 			'profile_name' => '',
 			'facebook_uid' => FALSE);
 
@@ -26,6 +27,7 @@ class AMI_User {
 			// GET USERINFO from SESSIOn BY SID
 			$userinfo = $this->getUserInfo($is_logged);
 			//
+			$user['sid'] = $is_logged;
 			$user['id'] = $userinfo['uid'];
 			$user['is_guest'] = FALSE;
 			$user['email'] = $userinfo['email'];
@@ -68,23 +70,22 @@ class AMI_User {
 
 
 
-	public function login($uid, $email, $is_admin) {
+	public function login($uid, $email, $is_admin, $check_ip) {
 		global $ami_LoginCookieName, $ami_LoginCookieSalt;
 
 		if ($uid == AMI_GUEST_UID) {
 			throw new InvalidInputDataException('Попытка входа с гостевым UID');
 		}
 
-		$sid = ami_GenerateRandomHash(32);
-		$ip = ami_GetIP();
+		$db = DB::singleton();
+		$sid = $db->create_uniq_hash_key_range('sid', 'session', 32, 32);
 
 		// expires
 		$expire = time() + 1209600;
 		$dbExpire = 'NOW() + INTERVAL 14 DAY';
 
-		$db = DB::singleton();
   		$db->query("DELETE FROM session WHERE sid=? AND uid=?", $sid, $uid);
-	   	$db->query("INSERT INTO session VALUES(?, ?, INET_ATON(?), $dbExpire, ?, ?, '', ?)", $sid, $uid, $ip, $email, $is_admin, $email);
+	   	$db->query("INSERT INTO session VALUES(?, ?, INET_ATON(?), $dbExpire, ?, ?, '', ?, ?)", $sid, $uid, ami_GetIP(), $email, $is_admin, $email, $check_ip);
 
 		// set login cookie
 		ami_SetCookie($ami_LoginCookieName, base64_encode($uid.'|'.$sid.'|'.$expire.'|'.sha1($ami_LoginCookieSalt.$uid.$sid.$expire)), $expire);
@@ -122,7 +123,6 @@ class AMI_User {
 			return FALSE;
 		}
 
-		$ip = ami_GetIP();
 		list($uid, $sid, $expire, $checksum) = explode('|', base64_decode($_COOKIE[$ami_LoginCookieName]), 4);
 
 		$uid = intval($uid, 10);
@@ -144,14 +144,14 @@ class AMI_User {
 		$db->query('DELETE FROM session WHERE expire < NOW()');
 
 		// check sid
-		$result = $db->numRows('SELECT sid FROM session WHERE sid=? AND uid=? AND ip=INET_ATON(?) LIMIT 1', $sid, $uid, $ip);
+		$result = $db->numRows('SELECT sid FROM session WHERE sid=? AND uid=? LIMIT 1', $sid, $uid);
 		if ($result !== 1) {
 			return FALSE;
 		}
 
 		// all OK
 		// 1. delete from session DB
-		$db->query('DELETE FROM session WHERE sid=? AND uid=? AND ip=INET_ATON(?) LIMIT 1', $sid, $uid, $ip);
+		$db->query('DELETE FROM session WHERE sid=? AND uid=? LIMIT 1', $sid, $uid);
 
 		// 2. set logouted cookie
 		$expire += 1209600;
@@ -206,10 +206,17 @@ class AMI_User {
 			$db->query('DELETE FROM session WHERE expire < NOW()');
 
 			// check sid
-			$result = $db->numRows('SELECT sid FROM session WHERE sid=? AND uid=? AND ip=INET_ATON(?) LIMIT 1', $sid, $uid, $ip);
-			if ($result !== 1) {
+			$row = $db->getRow('SELECT sid,INET_NTOA(ip) AS ip,check_ip FROM session WHERE sid=? AND uid=? LIMIT 1', $sid, $uid);
+			if (!$row) {
 				break;
 			}
+			// CHECK IP?
+			if (intval($row['check_ip'], 10) === 1) {
+				if ($row['ip'] != $ip) {
+					break;
+				}
+			}
+
 
 			// all OK
 			// 1. update expire on DB and Cookie

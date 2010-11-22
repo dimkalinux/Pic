@@ -42,12 +42,15 @@ DROP TABLE IF EXISTS `session`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 CREATE TABLE `session` (
-  `sid` varchar(40) NOT NULL,
-  `uid` int(10) unsigned NOT NULL,
-  `ip` int(10) unsigned NOT NULL,
-  `expire` datetime NOT NULL,
-  `email` varchar(129) default NULL,
-  `admin` tinyint(1) default '0',
+	`sid` varchar(40) NOT NULL,
+	`uid` int(10) unsigned NOT NULL,
+	`ip` int(10) unsigned NOT NULL,
+	`expire` datetime NOT NULL,
+	`email` varchar(129) default NULL,
+	`admin` tinyint(1) default '0',
+	`facebook_uid` varchar(32) default NULL,
+	`profile_link` varchar(128) default NULL,
+	`check_ip` bool default true,
   KEY `sid` (`sid`,`uid`,`ip`)
 ) ENGINE=MEMORY DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
@@ -98,3 +101,31 @@ SET character_set_client = @saved_cs_client;
 
 
 ALTER TABLE pic ADD COLUMN api_key_id INT(10) unsigned NOT NULL AFTER short_url;
+
+
+DROP TABLE IF EXISTS `twitter_oauth`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `twitter_oauth` (
+	`pic_user_id` int(10) unsigned NOT NULL,
+	`twitter_user_id` int(10) unsigned NOT NULL,
+    `oauth_token` varchar(256) NOT NULL,
+    `oauth_token_secret` varchar(256) NOT NULL,
+    `screen_name` varchar(256) NOT NULL,
+    `regdate` datetime NOT NULL,
+  PRIMARY KEY  (`pic_user_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+SET character_set_client = @saved_cs_client;
+
+DROP TABLE IF EXISTS `twitter_posts`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `twitter_posts` (
+    `id` int(10) unsigned NOT NULL auto_increment,
+	`pic_id` int(10) unsigned NOT NULL,
+	`twitter_user_id` BIGINT unsigned NOT NULL,
+    `twitter_post_id` BIGINT unsigned NOT NULL,
+    `twitter_post_time` int(10) unsigned NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+SET character_set_client = @saved_cs_client;
