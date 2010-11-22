@@ -21,11 +21,6 @@ define('AMI_JS_BASE_URL', 'http://pic.lluga.net/');
 //
 define('AMI_CONFIG_TIMEZONE', "Europe/Zaporozhye");
 
-// FACEBOOK ACTIONS
-define('AMI_FACEBOOK_ACTION_LOGIN', 1);
-define('AMI_FACEBOOK_ACTION_REGISTER', 5);
-define('AMI_FACEBOOK_ACTION_CONNECT', 10);
-define('AMI_FACEBOOK_ACTION_LOGOUT', 15);
 
 $ami_EnablePrintCSS = FALSE;
 
@@ -42,10 +37,6 @@ $ami_LoginCookieSalt = 'zzjdIof(df*f;ad';
 
 // ************** WARNING! PLEASE CHANGE THIS VALUE *****************
 $ami_CSRF_Key = '05dddlaoezz:_=dd';
-
-
-// FACEBOOK
-$ami_UseFacebook = FALSE;
 
 
 // EMAIL
@@ -116,11 +107,6 @@ $pic_UploadStorages = array('1');
 
 // API KEYS
 define('API_KEY_ID_UNKNOWN', 0);
-
-// TWITTER
-define('TWITTER_CONSUMER_KEY', '37n7sBQ0xZz5wSshUWRewQ');
-define('TWITTER_CONSUMER_SECRET', 'gLMXgsT99jrD0DfbPaHhStCmrkl1O5m19GTpOTznA');
-define('TWITTER_OAUTH_CALLBACK', 'http://pic.lluga.net/twitter_callback.php');
 
 // LAST, BUT NOT LEAST
 define('AMI', 1);

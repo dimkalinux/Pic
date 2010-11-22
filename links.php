@@ -98,12 +98,6 @@ if (FALSE !== $key_delete) {
 
 // TWITTER LINK
 $twitter_link = 'http://twitter.com/home?status='.$show_link_short;
-if ($is_owner && FALSE === $ami_User['is_guest']) {
-	$twitter_user = new AMI_User_Twitter($ami_User['id']);
-	if ($twitter_user->connected()) {
-		$twitter_link = ami_link('twitter_post', $key_id);
-	}
-}
 
 
 //

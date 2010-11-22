@@ -64,13 +64,6 @@ require AMI_ROOT.'include/ami/user_info.inc.php';
 //
 require AMI_ROOT.'include/url_shortener.inc.php';
 
-// FACEBOOK
-require AMI_ROOT.'include/facebook/facebook.inc.php';
-
-// TWITTER
-require AMI_ROOT.'include/twitteroauth/twitteroauth.php';
-require AMI_ROOT.'include/ami/user_twitter.inc.php';
-
 // Reverse the effect of register_globals
 ami_unregister_globals();
 

@@ -19,7 +19,7 @@ class AMI_User {
 			'is_guest' 	=> TRUE,
 			'geo' 		=> 'world',
 			'profile_name' => '',
-			'facebook_uid' => FALSE);
+		);
 
 		$is_logged = $this->logged();
 
@@ -31,7 +31,6 @@ class AMI_User {
 			$user['id'] = $userinfo['uid'];
 			$user['is_guest'] = FALSE;
 			$user['email'] = $userinfo['email'];
-			$user['facebook_uid'] = $userinfo['facebook_uid'];
 			$user['is_admin'] = (bool) $userinfo['is_admin'];
 			$user['profile_name'] = $userinfo['profile_name'];
 		} else {
@@ -56,11 +55,10 @@ class AMI_User {
 		$userinfo = FALSE;
 		$db = DB::singleton();
 
-		$row = $db->getRow("SELECT uid,email,admin,facebook_uid,profile_link FROM session WHERE sid=? LIMIT 1", $sid);
+		$row = $db->getRow("SELECT uid,email,admin,profile_link FROM session WHERE sid=? LIMIT 1", $sid);
 		if ($row) {
 			$userinfo['email'] = $row['email'];
 			$userinfo['is_admin'] = $row['admin'];
-			$userinfo['facebook_uid'] = $row['facebook_uid'];
 			$userinfo['uid'] = intval($row['uid'], 10);
 			$userinfo['profile_name'] = $row['profile_link'];
 		}
@@ -85,35 +83,11 @@ class AMI_User {
 		$dbExpire = 'NOW() + INTERVAL 14 DAY';
 
   		$db->query("DELETE FROM session WHERE sid=? AND uid=?", $sid, $uid);
-	   	$db->query("INSERT INTO session VALUES(?, ?, INET_ATON(?), $dbExpire, ?, ?, '', ?, ?)", $sid, $uid, ami_GetIP(), $email, $is_admin, $email, $check_ip);
+	   	$db->query("INSERT INTO session VALUES(?, ?, INET_ATON(?), $dbExpire, ?, ?, ?, ?)", $sid, $uid, ami_GetIP(), $email, $is_admin, $email, $check_ip);
 
 		// set login cookie
 		ami_SetCookie($ami_LoginCookieName, base64_encode($uid.'|'.$sid.'|'.$expire.'|'.sha1($ami_LoginCookieSalt.$uid.$sid.$expire)), $expire);
 	}
-
-
-
-	public function facebook_login($uid, $email, $is_admin, $sid, $facebook_uid, $facebook_name) {
-		global $ami_LoginCookieName, $ami_LoginCookieSalt;
-
-		if ($uid == AMI_GUEST_UID) {
-			throw new InvalidInputDataException('Попытка входа с гостевым UID');
-		}
-
-		// LOGOUT as EMAIL USER
-		self::logout();
-
-		$ip = ami_GetIP();
-
-		// expires
-		$expire = time() + 1209600;
-		$dbExpire = 'NOW() + INTERVAL 14 DAY';
-
-		$db = DB::singleton();
-  		$db->query("DELETE FROM session WHERE sid=? AND uid=?", $sid, $uid);
-	   	$db->query("INSERT INTO session VALUES(?, ?, INET_ATON(?), $dbExpire, ?, ?, ?, ?)", $sid, $uid, $ip, $email, $is_admin, $facebook_uid, $facebook_name);
-	}
-
 
 
 	public function logout() {
@@ -158,17 +132,6 @@ class AMI_User {
 		$randomSID = ami_GenerateRandomHash(32);
 		ami_SetCookie($ami_LoginCookieName, base64_encode('0|'.$randomSID.'|'.$expire.'|'.sha1($ami_LoginCookieSalt.'0'.$randomSID.$expire)), $expire);
 	}
-
-
-
-	public function logout_facebook() {
-		try {
-			setcookie('fbs_142764589077335', 0, (time() - 99999));
-		} catch(FacebookApiException $e) {
-			throw new Exception($e->getMessage());
-		}
-	}
-
 
 
 	public function logged() {
@@ -227,47 +190,6 @@ class AMI_User {
 			// 2. return SID
 			return $sid;
 		} while(0);
-
-
-		// FACEBOOK?
-		if (!$ami_UseFacebook) {
-			return FALSE;
-		}
-
-		// MAYBE LOGGED as FACEBOOK?
-		try {
-			$facebook = new Facebook(array('appId' => '142764589077335','secret' => 'b1da5f70416eed03e55c7b2ce7190bd6','cookie' => TRUE));
-			$fb_session = $facebook->getSession();
-
-			// Session based API call.
-			if ($fb_session) {
-				$fb_uid = $facebook->getUser();
-				//$facebook->api('/me');
-				$fb_sid = md5($fb_session['session_key']);
-
-				$db = DB::singleton();
-
-				// delete all expires from session DB
-				$db->query('DELETE FROM session WHERE expire < NOW()');
-
-				// check sid
-				$result = $db->numRows('SELECT sid FROM session WHERE facebook_uid=? AND ip=INET_ATON(?) LIMIT 1', $fb_uid, $ip);
-				if ($result !== 1) {
-					return FALSE;
-				}
-
-				// all OK
-				// 1. update expire on DB
-				$db->query('UPDATE session SET expire=(NOW() + INTERVAL 14 DAY),sid=? WHERE facebook_uid=? AND ip=INET_ATON(?) LIMIT 1', $fb_sid, $fb_uid, $ip);
-
-				// GET sid
-				return $fb_sid;
-			} else {
-				return FALSE;
-			}
-		} catch (FacebookApiException $e) {
-			return FALSE;
-		}
 
 		return FALSE;
 	}
