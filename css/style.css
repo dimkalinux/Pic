@@ -538,3 +538,7 @@ body#slide_show #menu {
 label.unbold {
 	font-weight: normal !important;
 }
+
+.ilovebots {
+	display: none;
+}

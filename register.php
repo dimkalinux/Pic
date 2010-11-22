@@ -50,6 +50,11 @@ $form = <<<FMB
 			<input type="text" class="text" id="p" name="p" tabindex="2" maxlength="1024">
 		</div>
 
+		<div class="formRow ilovebots">
+			<label for="pilb" id="label_pilb">Повторите пароль</label><br>
+			<input type="text" class="text" id="pilb" name="pilb" maxlength="1024">
+		</div>
+
 		<div class="formRow buttons">
 			<input class="button" type="submit" name="do" value="Зарегистрироваться" tabindex="3">
 		</div>
@@ -63,6 +68,11 @@ try {
 		if (!ami_CheckFormToken($csrf)) {
 			throw new InvalidInputDataException('Действие заблокировано системой безопасности');
 		}
+
+		if (isset($_POST['pilb']) && !empty($_POST['pilb'])) {
+			throw new InvalidInputDataException('Боты - мы вас любим');
+		}
+
 
 		$email = isset($_POST['e']) ? mb_strtolower(ami_trim($_POST['e'])) : FALSE;
 		$password = isset($_POST['p']) ? $_POST['p'] : FALSE;
