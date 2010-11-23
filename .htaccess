@@ -47,6 +47,7 @@ RewriteRule 	^show/([a-z0-9]+)/del_key/([a-z0-9]+)/$							show.php?k=$1&d=$2 [L
 RewriteRule 	^show/([a-z0-9]+)/$												show.php?k=$1 [L]
 
 RewriteRule 	^about/ext/$									about_ext.php [L]
+RewriteRule 	^about/updates/$								about_updates.php [L]
 RewriteRule 	^about/$										about.php [L]
 
 RewriteRule 	^logout/facebook/$								logout.php?facebook=1 [L]

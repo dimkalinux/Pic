@@ -43,6 +43,7 @@ $ami_urls = array(
 
 
 	'about_ext'		    			=> 'about/ext/',
+	'about_updates'	    			=> 'about/updates/',
     'about'			    			=> 'about/',
 
     'feedback'			    		=> 'feedback/',

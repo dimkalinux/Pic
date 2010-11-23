@@ -108,6 +108,9 @@ $pic_UploadStorages = array('1');
 // API KEYS
 define('API_KEY_ID_UNKNOWN', 0);
 
+//
+define('PIC_VERSION', '5.5');
+
 // LAST, BUT NOT LEAST
 define('AMI', 1);
 ?>

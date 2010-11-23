@@ -44,7 +44,7 @@ require AMI_ROOT.'header.php';
 		<div id="upload_status">&nbsp;</div>
 		<div id="footer" class="clear prepend-top">
 			<ul id="sitenav">
-				<li class="copyright">©&nbsp;<a href="http://iteam.ua/">Айтим</a></li>
+				<li class="copyright">©&nbsp;<a href="http://iteam.ua/">Пик</a> v<?php echo PIC_VERSION; ?></li>
 				<li class="first"><a href="http://portal.iteam.ua/" title="Портал сети Айтим">Портал</a></li>
 				<li><a href="http://forum.iteam.ua/" title="Форум сети Айтим">Форум</a></li>
 				<li><a href="http://up.iteam.ua/" title="Файлообменный сервис">АП</a></li>

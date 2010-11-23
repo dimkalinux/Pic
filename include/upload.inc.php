@@ -21,6 +21,7 @@ class Upload {
 	private $_auto_shorten_need;
 	private $_upload_items;
 
+
 	public function __construct($upload_items) {
 		if (empty($upload_items) || !is_array($upload_items)) {
 			throw new Exception('Получен пустой список загрузки');

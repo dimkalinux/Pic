@@ -30,6 +30,9 @@ require AMI_ROOT.'header.php';
 		<h3>Дополнительные программы</h3>
 		<p><a href="<?php echo ami_link('about_ext'); ?>">Дополнения для браузеров</a></p>
 
+		<h3>Обновление</h3>
+		<p><a href="<?php echo ami_link('about_updates'); ?>">Список изменений</a></p>
+
 
 		<h3>Обратная связь</h3>
 		<p>Форум: <a href="http://forum.iteam.ua/topic/19377/">forum.iteam.ua/topic/19377/</a><br>
