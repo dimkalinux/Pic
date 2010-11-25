@@ -524,6 +524,11 @@ function ami_debug($x, $m = null) {
     }
 }
 
+function ami_getmicrotime() {
+	list($usec, $sec) = explode(" ",microtime());
+	return ((float)$usec + (float)$sec);
+}
+
 
 function ami_BuildJS_ScriptSection($scripts) {
 	$block = '';

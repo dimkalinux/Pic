@@ -33,8 +33,6 @@ if (isset($_POST['reduce_original'])) {
 }
 
 
-ami_debug($_REQUEST);
-
 $return_format = AMI_ASYNC_JSON;
 if (isset($_POST['xml'])) {
     $return_format = AMI_ASYNC_XML;

@@ -95,6 +95,9 @@ $pic_image_preview_height = 600;
 $pic_image_preview_width = 875;
 $pic_image_preview_quality = 90;
 
+// USE PREVIEW IMAGE FOR CREATING THUMBS
+$pic_useImageThumbsOptimize = TRUE;
+
 
 // UPLOAD
 $pic_UploadBaseDir = '/var/upload/pic2/';
