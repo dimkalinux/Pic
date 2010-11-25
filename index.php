@@ -5,6 +5,7 @@ if (!defined('AMI_ROOT')) {
 }
 
 $ami_PageTitle = 'Загрузка картинок';
+define('AMI_PAGE_TYPE', 'upload_page');
 
 require AMI_ROOT.'functions.inc.php';
 require AMI_ROOT.'header.php';
@@ -42,7 +43,9 @@ require AMI_ROOT.'header.php';
 					</div>
 				</div>
 			</form>
+
 			<div id="upload_status">&nbsp;</div>
+
 			<div id="footer" class="clear prepend-top">
 				<ul id="sitenav">
 					<li class="copyright">©&nbsp;<a href="http://iteam.ua/">Пик</a> v<?php echo PIC_VERSION; ?></li>

@@ -545,16 +545,15 @@ label.unbold {
 	display: none;
 }
 
-/*
-#upload_block {
-	border: dashed 2px green;
+#upload_page {
+	min-height: 1500px;
+	overflow: hidden;
 }
 
-#upload_block .hov {
-	border: dashed 2px red;
+.dnd_upload {
+	font-size: 1.5em;
 }
 
-#upload_block .act {
-	border: dashed 2px blue;
+#link_abort_upload {
+	margin-left: 1em;
 }
-*/

@@ -1,19 +1,24 @@
 // class for upload process
-PIC.upload.formdata = function () {
+PIC.upload.dnd_formdata = function () {
 	// private
 	var form = PIC.upload.base.get_form_el(),
 		submit = PIC.upload.base.get_submit_el(),
 		status = PIC.upload.base.get_status_el(),
 		__input = PIC.upload.base.get_input_file_el(),
 		__xhr = null,
-		__forced_abort = false;
+		__forced_abort = false,
+		__dropzone = null;
 
 
 	// START UPLOADING PROCESS
-	function start() {
-		var files = document.getElementById("file_input").files,
-			total_files = files.length,
+	function start_upload(files) {
+		var total_files = files.length,
 			cur_file = 0;
+
+		if (PIC.upload.base.get_status()) {
+			AMI.log.debug('uploading active');
+			return;
+		}
 
 		AMI.log.debug('files: '+total_files);
 
@@ -23,8 +28,6 @@ PIC.upload.formdata = function () {
 		}
 
 		var formData = new FormData();
-
-		//xhr = new XMLHttpRequest();
 
 		// APPEND FILES
 		while (cur_file < total_files) {
@@ -36,7 +39,6 @@ PIC.upload.formdata = function () {
 		}
 
 		formData.append("async", 1);
-
 
 		//
 		ajax_settings = {
@@ -61,6 +63,10 @@ PIC.upload.formdata = function () {
 				//
 				__forced_abort = false;
 
+				// HIDE FORM
+				$("#footer,#form_upload").fadeTo(300, 0.01);
+				$(status).addClass("dnd_upload");
+
 				//
 				xhr.upload.addEventListener("progress", on_progress, false);
 				xhr.addEventListener("abort", on_abort, false);
@@ -83,7 +89,7 @@ PIC.upload.formdata = function () {
 				$(status)
 					.removeClass('error')
 					.html('<div>'+wait_message+'<a href="/" title="Прервать загрузку" id="link_abort_upload">отменить</a></div><div><span id="progress_str"></span></div>')
-					.fadeTo(350, 1.0);
+					.fadeTo(250, 1.0);
 
 				$('#link_abort_upload').addClass('as_js_link');
 
@@ -96,12 +102,16 @@ PIC.upload.formdata = function () {
 					PIC.upload.base.error('Произошел сбой при загрузке: '+textStatus);
 				}
 
+				// SHOW FORM
+				$("#footer,#form_upload").fadeTo(500, 1.0);
+				$(status).removeClass("dnd_upload");
+
 				// FORM check
 				$(__input).trigger('change');
 			}
   		};
 
-		// SEND
+  		// SEND
 		__xhr = PIC.upload.base.html5_ajax(ajax_settings, formData);
 	}
 
@@ -130,17 +140,71 @@ PIC.upload.formdata = function () {
 		return false;
 	}
 
+	function dragenter(e) {
+    	//__dropzone.setAttribute("dragenter", true);
+	}
+
+	function dragleave(e) {
+    	//__dropzone.removeAttribute("dragenter");
+	}
+
+	/**
+	 * Filters file list and leaves image files only
+	 * @param {File[]} files
+	 */
+	function filterFileList(files) {
+		var allowed_types = {png: 1, jpeg: 1, jpg: 1, gif: 1},
+			result = [];
+
+		for (var i = 0, il = files.length; i < il; i++) {
+			var item = (typeof(files[i]) == 'string') ? files[i] : files[i].fileName;
+			var m = (item || '').match(/\.(\w+)$/);
+			if (m && m[1].toLowerCase() in allowed_types)
+				result.push(files[i]);
+		}
+
+		return result;
+	}
+
+
+	function drop(e) {
+		AMI.log.debug('drop');
+
+    	var dt = e.dataTransfer
+    		files = dt.files;
+
+		e.preventDefault();
+
+		if (dt && files) {
+			files = filterFileList(files);
+
+       		start_upload(files);
+       	}
+	}
+
+	function stop_event(evt) {
+		evt.stopPropagation();
+		evt.preventDefault();
+	}
+
 
 	//public
 	return {
 		init: function () {
-			AMI.log.debug('Init upload.formdata module');
+			AMI.log.debug('Init upload.dnd.formdata module');
 
-			$(form).bind("submit", function () {
-				start();
-				return false;
-			});
+			// SETUP EVENTS
+			__dropzone = document.getElementById("upload_block");
 
+		    window.addEventListener("dragenter", dragenter, true);
+    		window.addEventListener("dragleave", dragleave, true);
+
+    		document.body.addEventListener("dragover", stop_event, true);
+    		document.body.addEventListener("drop", drop, true);
+
+
+
+			//
 			$('#link_abort_upload').live('click', abort);
 		}
 	};

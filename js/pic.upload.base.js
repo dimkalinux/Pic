@@ -64,6 +64,9 @@ PIC.upload.base = function () {
 			if (typeof FormData === 'function') {
 				//
 				PIC.upload.formdata.init();
+
+				// DRAG N DROP INIT
+				PIC.upload.dnd_formdata.init();
 			} else {
 				//
 				PIC.upload.ajax.init();
@@ -108,7 +111,7 @@ PIC.upload.base = function () {
 			active = false;
 
 			$(document).oneTime(300, 'finish', function () {
-				$(status).html('Ok. Переходим на <a href="'+url+'">к загруженной картинке</a>')
+				$(status).html('Ok. <a href="'+url+'">Переходим к загруженной картинке</a>')
 			});
 
 			AMI.utils.makeGETRequest(url);
@@ -163,6 +166,24 @@ PIC.upload.base = function () {
 			}
 
 			$('#progress_str').html(str);
+		},
+
+		html5_ajax: function (ajax_settings, formData) {
+			ajax_settings.processData = false;
+
+			// Prevent jQuery from overwrite automatically generated xhr content-Type header
+			// by unsetting the default contentType and inject data only right before xhr.send()
+			ajax_settings.contentType = null;
+			ajax_settings.__beforeSend = ajax_settings.beforeSend;
+			ajax_settings.beforeSend = function (xhr, s) {
+				s.data = formData;
+				if (s.__beforeSend) {
+					return s.__beforeSend.call(this, xhr, s);
+				}
+			}
+
+			// SEND
+			return $.ajax(ajax_settings);
 		}
 	};
 }();
