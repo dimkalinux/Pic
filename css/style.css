@@ -409,6 +409,7 @@ a.loading, a.loading:hover {
 */
 
 input[type=text],
+input[type=email],
 input[type=password],
 textarea {
 	border: solid 1px #c8c8c8;
@@ -418,6 +419,7 @@ textarea {
 }
 
 input[type=text]:hover,
+input[type=email],
 input[type=password]:hover,
 textarea:hover {
 	-moz-box-shadow: 1px 1px 5px #A7D5F8;
@@ -542,3 +544,17 @@ label.unbold {
 .ilovebots {
 	display: none;
 }
+
+/*
+#upload_block {
+	border: dashed 2px green;
+}
+
+#upload_block .hov {
+	border: dashed 2px red;
+}
+
+#upload_block .act {
+	border: dashed 2px blue;
+}
+*/

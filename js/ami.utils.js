@@ -73,13 +73,13 @@ AMI.utils = function () {
 			if (b < 1024) {
 			    return b+'&nbsp;'+span_start+'б</span>';
 		    } else if (b < 1048576) {
-				return (Math.round((b / 1024) * 10) / 10) + '&nbsp;'+span_start+'КБ</span>';
+				return (Math.round((b / 1024) * 10) / 10) + '&thinsp;'+span_start+'КБ</span>';
 		    } else if (b < 1073741824) {
-				return (Math.round((b / 1048576) * 10) / 10) + '&nbsp;'+span_start+'МБ</span>';
+				return (Math.round((b / 1048576) * 10) / 10) + '&thinsp;'+span_start+'МБ</span>';
 		    } else if (b < 1099511627776) {
-				return (Math.round((b / 1073741824) * 10) / 10) + '&nbsp;'+span_start+'ГБ</span>';
+				return (Math.round((b / 1073741824) * 10) / 10) + '&thinsp;'+span_start+'ГБ</span>';
 		    } else {
-				return (Math.round((b / 1099511627776) * 10) / 10) + '&nbsp;'+span_start+'ТБ</span>';
+				return (Math.round((b / 1099511627776) * 10) / 10) + '&thinsp;'+span_start+'ТБ</span>';
 		    }
 		},
 

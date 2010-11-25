@@ -25,6 +25,8 @@ if ($ami_Production): ?>
 		'pic.utils.js',
 		'pic.trash.js',
 		'pic.upload.js',
+		'pic.upload.ajax.js',
+		'pic.upload.formdata.js',
 		'pic.ajaxify.js',
 		'pic.slideshow.js',
 	));

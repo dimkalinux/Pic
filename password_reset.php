@@ -41,7 +41,7 @@ try {
 
 		<div class="formRow">
 			<label for="e" id="label_e">Электронная почта</label><br>
-			<input type="text" class="text" id="e" name="e" tabindex="1" maxlength="128" value="$email_value">
+			<input type="email" class="text" id="e" name="e" tabindex="1" maxlength="128" value="$email_value">
 		</div>
 
 		<div class="formRow buttons">

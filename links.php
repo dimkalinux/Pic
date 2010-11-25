@@ -79,6 +79,7 @@ $url_shortener_link = ami_link('ajax');
 
 //
 $preview_link_preview = ami_link('links_image_owner', array($key_id, $key_delete, PIC_IMAGE_SIZE_PREVIEW));
+$preview_prefetch_link = pic_getImageLink($storage, $location, $hash_filename, PIC_IMAGE_SIZE_PREVIEW);
 
 //
 $show_link = $show_link_short = ami_link('show_image', $key_id);
@@ -118,6 +119,7 @@ $out = <<<FMB
 <div class="span-16 body_block last" id="links_wrap">
 	<div id="img_block">
 		<a href="$show_image_with_delete_link" title="Перейти к просмотру"><img class="fancy_image" src="$preview_link" alt="$filename"></a>
+		<link rel="prefetch" href="$preview_prefetch_link"/>
 	</div>
 </div>
 
