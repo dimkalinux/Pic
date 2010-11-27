@@ -29,8 +29,6 @@ PIC.upload.ajax = function () {
 	return {
 		//
 		init: function () {
-			AMI.log.debug('Init upload.ajax module');
-
 			// form
 			var options = {
 				dataType: 'json',

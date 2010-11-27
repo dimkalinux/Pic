@@ -285,8 +285,8 @@ img.as_js_link,
 }
 
 .myfiles a {
-	width: 70px;
-	height: 80px;
+	/* width: 70px;
+	height: 80px; */
 }
 
 .myfiles img {
@@ -366,7 +366,7 @@ a.loading, a.loading:hover {
 	background-position  : 5px -0px;
 	position: fixed;
 	left: 10px;
-	bottom: 20px;
+	bottom: 25px;
 	display: none;
 }
 
@@ -555,5 +555,54 @@ label.unbold {
 }
 
 #link_abort_upload {
-	margin-left: 1em;
+	margin-left: .8em;
 }
+
+
+#pg {
+	position: fixed;
+	bottom: 15px;
+	clear: both;
+	color: rgb(54, 102, 212);
+	height: 2em;
+	margin: 2em 0pt 2em 12px;
+}
+
+#pg a, #pg strong, #pg span {
+	border: 1px solid rgb(204, 219, 228);
+	display: block;
+	color: rgb(54, 102, 212);
+	float: left;
+	margin: 0pt 5px 0pt 0pt;
+	padding: 2px 8px;
+	text-align: center;
+	text-decoration: none;
+}
+
+
+#pg a:hover {
+	background: none repeat scroll 0% 0% rgb(54, 102, 212);
+	border-color: rgb(43, 85, 175);
+	color: rgb(255, 255, 255);
+}
+
+#pg strong, #pg span {
+	border: 0pt none;
+	color: rgb(0, 0, 0);
+	font-size: 108%;
+	font-weight: bold;
+	padding: 2px 6px;
+}
+
+#pg-next, #pg-prev {
+	border-width: 2px;
+	margin-top: -2px;
+	padding-bottom: 1px;
+	padding-top: 1px;
+}
+
+#pg-next {
+	margin-left: 9px;
+}
+
+

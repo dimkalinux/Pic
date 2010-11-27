@@ -100,11 +100,6 @@ FMB;
 			throw new InvalidInputDataException('Неправильная пара почта-пароль! Авторизоваться не удалось.');
 		}
 
-		// check password twice for FACEBOOked
-		if ('-' == $password) {
-			throw new InvalidInputDataException('Вы не можете войти с паролем. Используйте вход с Фейсбука ');
-		}
-
 		$db = DB::singleton();
 		$row = $db->getRow('SELECT id,password,email,admin FROM users WHERE email=? LIMIT 1', $email);
 		if (!$row) {
@@ -120,7 +115,7 @@ FMB;
 		// CHECK PASSWORD
 		$t_hasher = new PasswordHash(12, FALSE);
 		if (!$t_hasher->CheckPassword($password, $user_password_hash)) {
-			// MAYBE is NEw password?
+			// MAYBE is NEW password?
 			$row = $db->getRow('SELECT uid,password FROM users_new_password WHERE uid=? LIMIT 1', $user_id);
 			if (!$row) {
 				throw new InvalidInputDataException('Неправильная пара почта-пароль! Авторизоваться не удалось.');
@@ -131,6 +126,9 @@ FMB;
 				// VALID new PASSWORD
 				$db->query('UPDATE users SET password=? WHERE id=?', $user_password_hash, $user_id);
 				$db->query('DELETE FROM users_new_password WHERE uid=?', $user_id);
+
+				//
+				$redirect_after_login = ami_link('password_loged_with_new');
 			} else {
 				throw new InvalidInputDataException('Неправильная пара почта-пароль! Авторизоваться не удалось.');
 			}

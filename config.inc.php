@@ -24,7 +24,7 @@ define('AMI_CONFIG_TIMEZONE', "Europe/Zaporozhye");
 
 $ami_EnablePrintCSS = FALSE;
 
-$ami_Production = TRUE;
+$ami_Production = FALSE;
 
 // COOKIE SECTION
 $ami_LoginCookieName = 'pic_login';
@@ -112,7 +112,7 @@ $pic_UploadStorages = array('1');
 define('API_KEY_ID_UNKNOWN', 0);
 
 //
-define('PIC_VERSION', '5.5');
+define('PIC_VERSION', '6');
 
 // LAST, BUT NOT LEAST
 define('AMI', 1);

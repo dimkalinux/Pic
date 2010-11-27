@@ -15,22 +15,16 @@ PIC.upload.formdata = function () {
 			total_files = files.length,
 			cur_file = 0;
 
-		AMI.log.debug('files: '+total_files);
-
 		if (total_files < 1) {
-			AMI.log.debug('0 files');
 			return;
 		}
 
 		var formData = new FormData();
 
-		//xhr = new XMLHttpRequest();
 
 		// APPEND FILES
 		while (cur_file < total_files) {
 			var current_file = files[cur_file];
-			AMI.log.debug('file: '+current_file.name);
-
 			formData.append("upload", current_file);
 			cur_file++;
 		}
@@ -134,8 +128,6 @@ PIC.upload.formdata = function () {
 	//public
 	return {
 		init: function () {
-			AMI.log.debug('Init upload.formdata module');
-
 			$(form).bind("submit", function () {
 				start();
 				return false;

@@ -1,4 +1,3 @@
-// class for upload process
 PIC.upload.dnd_formdata = function () {
 	// private
 	var form = PIC.upload.base.get_form_el(),
@@ -6,8 +5,7 @@ PIC.upload.dnd_formdata = function () {
 		status = PIC.upload.base.get_status_el(),
 		__input = PIC.upload.base.get_input_file_el(),
 		__xhr = null,
-		__forced_abort = false,
-		__dropzone = null;
+		__forced_abort = false;
 
 
 	// START UPLOADING PROCESS
@@ -16,14 +14,10 @@ PIC.upload.dnd_formdata = function () {
 			cur_file = 0;
 
 		if (PIC.upload.base.get_status()) {
-			AMI.log.debug('uploading active');
 			return;
 		}
 
-		AMI.log.debug('files: '+total_files);
-
 		if (total_files < 1) {
-			AMI.log.debug('0 files');
 			return;
 		}
 
@@ -32,8 +26,6 @@ PIC.upload.dnd_formdata = function () {
 		// APPEND FILES
 		while (cur_file < total_files) {
 			var current_file = files[cur_file];
-			AMI.log.debug('file: '+current_file.name);
-
 			formData.append("upload", current_file);
 			cur_file++;
 		}
@@ -69,6 +61,7 @@ PIC.upload.dnd_formdata = function () {
 
 				//
 				xhr.upload.addEventListener("progress", on_progress, false);
+				xhr.upload.addEventListener("load", on_loaded, false);
 				xhr.addEventListener("abort", on_abort, false);
 
 				PIC.upload.base.set_status(true); 	// set start
@@ -122,6 +115,10 @@ PIC.upload.dnd_formdata = function () {
 		}
 	}
 
+	function on_loaded(aEvt) {
+		$(status).html("Обрабатываются картинки&hellip;");
+	}
+
 	//
 	function on_abort() {
 		PIC.upload.base.set_status(false);
@@ -141,11 +138,11 @@ PIC.upload.dnd_formdata = function () {
 	}
 
 	function dragenter(e) {
-    	//__dropzone.setAttribute("dragenter", true);
+    	stop_event(e);
 	}
 
 	function dragleave(e) {
-    	//__dropzone.removeAttribute("dragenter");
+    	stop_event(e);
 	}
 
 	/**
@@ -153,14 +150,15 @@ PIC.upload.dnd_formdata = function () {
 	 * @param {File[]} files
 	 */
 	function filterFileList(files) {
-		var allowed_types = {png: 1, jpeg: 1, jpg: 1, gif: 1},
+		var allowed_types = {png: 1, jpeg: 1, jpg: 1, gif: 1, bmp: 1, tiff: 1, tiff: 1},
 			result = [];
 
 		for (var i = 0, il = files.length; i < il; i++) {
 			var item = (typeof(files[i]) == 'string') ? files[i] : files[i].fileName;
 			var m = (item || '').match(/\.(\w+)$/);
-			if (m && m[1].toLowerCase() in allowed_types)
+			if (m && m[1].toLowerCase() in allowed_types) {
 				result.push(files[i]);
+			}
 		}
 
 		return result;
@@ -168,8 +166,6 @@ PIC.upload.dnd_formdata = function () {
 
 
 	function drop(e) {
-		AMI.log.debug('drop');
-
     	var dt = e.dataTransfer
     		files = dt.files;
 
@@ -191,18 +187,12 @@ PIC.upload.dnd_formdata = function () {
 	//public
 	return {
 		init: function () {
-			AMI.log.debug('Init upload.dnd.formdata module');
-
 			// SETUP EVENTS
-			__dropzone = document.getElementById("upload_block");
-
-		    window.addEventListener("dragenter", dragenter, true);
-    		window.addEventListener("dragleave", dragleave, true);
+		    window.addEventListener("dragenter", dragenter, false);
+    		window.addEventListener("dragleave", dragleave, false);
 
     		document.body.addEventListener("dragover", stop_event, true);
     		document.body.addEventListener("drop", drop, true);
-
-
 
 			//
 			$('#link_abort_upload').live('click', abort);

@@ -89,7 +89,7 @@ AMI.utils = function () {
 
 		init_form: function (form) {
 			if (form) {
-				$(form).find("input:password[value=''], input:text[value='']").filter(':first').focus();
+				$(form).find("input:password[value=''], input:text[value=''], input[type='email'][value='']").filter(':first').focus();
 			}
 		}
 	};

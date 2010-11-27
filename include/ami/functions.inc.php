@@ -595,6 +595,51 @@ function ami_GetOptions($a_options, $opt_name, $default_value) {
 	return $default_value;
 }
 
+// Generate a string with numbered links (for multipage scripts)
+function ami_paginate($num_pages, $cur_page, $link_func, $separator, $args = null) {
+	$max_pages = 10;
+	$pages = array();
+
+	// If $cur_page == -1, we link to all pages (used in viewforum.php)
+	if ($cur_page == -1) {
+		$cur_page = 1;
+	}
+
+	$start_page = 1;
+
+	if ($cur_page > 6) {
+		$start_page = $cur_page - 5;
+	}
+
+	$end_page = $start_page + ($max_pages);
+
+	if ($num_pages <= 1) {
+		$pages = array('<strong class="first-item">1</strong>');
+	} else {
+		// Add a previous page link
+		if ($num_pages > 1 && $cur_page > $max_pages) {
+			$pages[] = '<a'.(empty($pages) ? ' class="first-item"' : '').' href="'.call_user_func($link_func, ($start_page - 1)).'">&larr; Предыдущая</a>';
+		}
+
+		for ($current = $start_page; $current < $end_page; ++$current) {
+			if ($current < 1 || $current > $num_pages) {
+				continue;
+			} else if ($current != $cur_page) {
+					$pages[] = '<a'.(empty($pages) ? ' class="first-item" ' : '').' href="'.call_user_func($link_func, $current).'" title="">'.($current).'</a>';
+			} else {
+				$pages[] = '<strong'.(empty($pages) ? ' class="first-item"' : '').'>'.$current.'</strong>';
+			}
+		}
+
+		// Add a next page link
+		if ($num_pages > 1 && $cur_page < $num_pages && $end_page < $num_pages) {
+			$pages[] = '<a'.(empty($pages) ? ' class="first-item" ' : '').' href="'.call_user_func($link_func, $end_page).'">Следующая &rarr;</a>';
+		}
+	}
+
+	return '<div id="pg">'.implode($separator, $pages).'</div>';
+}
+
 
 /*
 

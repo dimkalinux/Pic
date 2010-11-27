@@ -10,7 +10,7 @@ if ($ami_Production): ?>
 	<script src="<?php echo AMI_JS_BASE_URL; ?>j/lib.js" type="text/javascript"></script>
 <?php else:
 	echo ami_BuildJS_ScriptSection(array(
-		'jquery-1.4.3.min.js',
+		'jquery-1.4.4.min.js',
 		'jquery.form.js',
 		'jquery.easing.js',
 		'jquery.timers-1.2.js',

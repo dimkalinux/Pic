@@ -49,24 +49,23 @@ $ami_urls = array(
     'feedback'			    		=> 'feedback/',
     'feedback_ok'		    		=> 'feedback/ok/',
 
-    'password_reset'			   	=> 'password_reset/',
-    'password_reset_ok'		   		=> 'password_reset/ok/',
-    'password_reset_error'	   		=> 'password_reset/error/$1/',
+    'password_reset'			   	=> 'password/reset/',
+    'password_reset_ok'		   		=> 'password/reset/ok/',
+    'password_reset_error'	   		=> 'password/reset/error/$1/',
 
-    'password_change'	   			=> 'password_change/',
-    'password_change_ok'   			=> 'password_change/ok/',
+	'password_loged_with_new'		=> 'password/changed/',
+    'password_change'	   			=> 'password/change/',
+    'password_change_ok'   			=> 'password/change/ok/',
 
     'register'			    		=> 'register/',
     'register_ok'		    		=> 'register/ok/',
-    'register_facebook'		   		=> 'register/facebook/',
 
     'login'			    	    	=> 'login/',
-    'login_facebook'    	    	=> 'login/facebook/',
     'login_ok'		     	    	=> 'login/ok/',
 
     'logout'			        	=> 'logout/',
-    'logout_facebook'	        	=> 'logout/facebook/',
 
+	'myfiles_page'			       	=> 'myfiles/page/$1',
     'myfiles'			        	=> 'myfiles/',
     'mytwits'			        	=> 'mytwits/',
     'profile'			        	=> 'profile/',

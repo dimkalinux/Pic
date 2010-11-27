@@ -9,21 +9,20 @@ RewriteRule 	^upload/$ 										upload.php [L]
 RewriteRule 	^delete/ok/$									delete.php?ok=1 [L]
 RewriteRule 	^delete/group/ok/$								delete_group.php?ok=1 [L]
 
-RewriteRule 	^password_reset/ok/$							password_reset.php?ok=1 [L]
-RewriteRule 	^password_reset/error/$							password_reset.php?ok=1 [L]
-RewriteRule 	^password_reset/$								password_reset.php [L]
+RewriteRule 	^password/reset/ok/$							password_reset.php?ok=1 [L]
+RewriteRule 	^password/reset/error/$							password_reset.php?ok=1 [L]
+RewriteRule 	^password/reset/$								password_reset.php [L]
 
-RewriteRule 	^password_change/ok/$							password_change.php?ok=1 [L]
-RewriteRule 	^password_change/error/$						password_change.php?ok=1 [L]
-RewriteRule 	^password_change/$								password_change.php [L]
+RewriteRule 	^password/changed/$								password_changed.php [L]
+RewriteRule 	^password/change/ok/$							password_change.php?ok=1 [L]
+RewriteRule 	^password/change/error/$						password_change.php?ok=1 [L]
+RewriteRule 	^password/change/$								password_change.php [L]
 
 
 RewriteRule 	^register/ok/$									register.php?ok=1 [L]
-RewriteRule 	^register/facebook/$							register.php?facebook=1 [L]
 RewriteRule 	^register/$										register.php [L]
 
 RewriteRule 	^login/ok/$										login.php?ok=1 [L]
-RewriteRule 	^login/facebook/$								login.php?facebook=1 [L]
 RewriteRule 	^login/$										login.php [L]
 
 RewriteRule 	^edit/([a-z0-9]+)/([a-z0-9]+)/$					edit.php?k=$1&d=$2 [L]
@@ -50,8 +49,8 @@ RewriteRule 	^about/ext/$									about_ext.php [L]
 RewriteRule 	^about/updates/$								about_updates.php [L]
 RewriteRule 	^about/$										about.php [L]
 
-RewriteRule 	^logout/facebook/$								logout.php?facebook=1 [L]
 RewriteRule 	^logout/$										logout.php [L]
+RewriteRule 	^myfiles/page/(\d)$								myfiles.php?p=$1 [L]
 RewriteRule 	^myfiles/$										myfiles.php [L]
 RewriteRule 	^profile/$										profile.php [L]
 RewriteRule 	^settings/$										settings.php [L]
@@ -62,13 +61,6 @@ RewriteRule 	^ajax/$											ajax.php [L]
 
 RewriteRule 	^upload-remote/$								upload_remote.php [L]
 
-RewriteRule 	^twitter/callback/$						twitter_callback.php [L]
-RewriteRule 	^twitter/clearsession/$					twitter_clearsession.php [L]
-RewriteRule 	^twitter/connect/$						twitter_connect.php [L]
-RewriteRule 	^twitter/disconnect/$					twitter_disconnect.php [L]
-RewriteRule 	^twitter/post/ok/(.+)$					twitter_post.php?ok=1&l=$1 [L]
-RewriteRule 	^twitter/post/([a-z0-9]+)/$				twitter_post.php?k=$1 [L]
-RewriteRule 	^twitter/$								twitter_index.php [L]
 
 
 

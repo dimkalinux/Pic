@@ -66,7 +66,7 @@ PIC.trash = function () {
 		setTimeout(function () {
 			timer_reached = true;
 			check_status_end();
-		}, 750);
+		}, 500);
 
 
 		$.ajax({
@@ -121,7 +121,7 @@ PIC.trash = function () {
 
 			$trash_status.html("Корзина");
 
-			$trash.show(400);
+			$trash.show();
 		}
 	};
 }();
