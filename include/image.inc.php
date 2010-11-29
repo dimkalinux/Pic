@@ -5,8 +5,9 @@ if (!defined('AMI')) {
 	exit;
 }
 
-require AMI_ROOT.'include/phpThumb/phpthumb.class.php';
-
+require AMI_ROOT.'include/image.resize.inc.php';
+require AMI_ROOT.'include/image.resize.gm.inc.php';
+require AMI_ROOT.'include/image.resize.im.inc.php';
 
 class Image {
 	const JPEG = IMAGETYPE_JPEG;
@@ -59,13 +60,12 @@ class Image {
 				$this->format = self::TIFF_MM;
 				break;
 
-
 			case self::BMP:
 				$this->format = self::BMP;
 				break;
 
 			default:
-				throw new Exception("Неизвестный формат файла.");
+				throw new Exception("неизвестный формат файла");
 				break;
 		}
 
@@ -143,13 +143,17 @@ class Image {
 				break;
 
 			default:
-				throw new Exception("Неизвестный формат файла.");
+				throw new Exception("неизвестный формат файла.");
 				break;
 		}
 
-		$newImage = $this->image.'.'.$ext;
+		$newImage = ami_change_filename_ext($this->image, $ext);
+		if ($newImage == $this->image) {
+			$newImage = $this->image.'.'.$ext;
+		}
+
 		if (!rename($this->image, $newImage)) {
-			throw new Exception("Can not set image ext.");
+			throw new Exception("невозможно изменить расширение файла");
 		} else {
 			$this->image = $newImage;
 		}
@@ -223,7 +227,7 @@ class Image {
 			$just_make_link = TRUE;
 		}
 
-		$this->create_thumbs($pic_image_gallery_width, $pic_image_gallery_height, $pic_image_gallery_quality, $this->get_prefixed_name_for_thumbs('gl', $this->image), $just_make_link, $src_file);
+		$this->create_thumbs($pic_image_gallery_width, $pic_image_gallery_height, $pic_image_gallery_quality, $this->get_prefixed_name_for_thumbs('gl', $this->image), $just_make_link, $src_file, FALSE);
 	}
 
 	private function create_small_thumbs($src_file) {
@@ -234,7 +238,7 @@ class Image {
 			$just_make_link = TRUE;
 		}
 
-		$this->create_thumbs($pic_image_small_width, $pic_image_small_height, $pic_image_small_quality, $this->get_prefixed_name_for_thumbs('sm', $this->image), $just_make_link, $src_file);
+		$this->create_thumbs($pic_image_small_width, $pic_image_small_height, $pic_image_small_quality, $this->get_prefixed_name_for_thumbs('sm', $this->image), $just_make_link, $src_file, FALSE);
 	}
 
 	private function create_medium_thumbs($src_file) {
@@ -245,7 +249,7 @@ class Image {
 			$just_make_link = TRUE;
 		}
 
-		$this->create_thumbs($pic_image_medium_width, $pic_image_medium_height, $pic_image_medium_quality, $this->get_prefixed_name_for_thumbs('md', $this->image), $just_make_link, $src_file);
+		$this->create_thumbs($pic_image_medium_width, $pic_image_medium_height, $pic_image_medium_quality, $this->get_prefixed_name_for_thumbs('md', $this->image), $just_make_link, $src_file, FALSE);
 	}
 
 	private function create_preview() {
@@ -256,7 +260,14 @@ class Image {
 			$just_make_link = TRUE;
 		}
 
-		$result_file = $this->create_thumbs($pic_image_preview_width, $pic_image_preview_height, $pic_image_preview_quality, $this->get_prefixed_name_for_thumbs('pv', $this->image), $just_make_link, FALSE);
+		$prefer_speed = FALSE;
+		$original_d = $this->height * $this->width;
+		$result_d = $pic_image_preview_height * $pic_image_preview_width;
+		if (($original_d > $result_d) && intval(($original_d / $result_d), 10) > 4) {
+			$prefer_speed = TRUE;
+		}
+
+		$result_file = $this->create_thumbs($pic_image_preview_width, $pic_image_preview_height, $pic_image_preview_quality, $this->get_prefixed_name_for_thumbs('pv', $this->image), $just_make_link, FALSE, $prefer_speed);
 
 		// UPDATE preview INFO
 		$preview_image = $this->get_prefixed_name_for_thumbs('pv', $this->image);
@@ -290,12 +301,13 @@ class Image {
 	}
 
 
-	private function create_thumbs($width, $height, $quality, $file, $just_make_link=FALSE, $src_file=FALSE) {
+	private function create_thumbs($width, $height, $quality, $file, $just_make_link=FALSE, $src_file=FALSE, $prefer_speed) {
 		global $pic_image_autorotate;
 
 		// MAKE link EXCEPT TIFF & BMP
 		if (($just_make_link === TRUE) && ($this->format != self::TIFF_II) && ($this->format != self::TIFF_MM) && ($this->format != self::BMP)) {
 			if (!link($this->image, $file)) {
+				// BUG
 				throw new Exception('Ошибка при создании превью');
 			}
 			return $this->image;
@@ -306,37 +318,21 @@ class Image {
 			$src_file = $this->image;
 		}
 
-		$phpThumb = new phpThumb();
-		//
-		$phpThumb->setSourceFilename($src_file);
-		//
-		$phpThumb->w = $width;
-		$phpThumb->h = $height;
-		$phpThumb->q = $quality;
+		$ir = new Image_Resizer_GM;
 
-		if ($pic_image_autorotate) {
-			$phpThumb->ar = 'x';
-		}
-		//
-		$phpThumb->config_output_format = $this->phpThumbFormat;
-		//
-		$phpThumb->config_error_die_on_error = FALSE;
-		//
-		$phpThumb->config_allow_src_above_docroot = TRUE;
+		$ir->set_SourceFilename($src_file);
+		$ir->set_DestFilename($file);
+		$ir->set_OutputFormat($this->phpThumbFormat);
+		$ir->set_OutputDimensions($width, $height);
+		$ir->set_OutputQuality($quality);
 
-		if (!$phpThumb->GenerateThumbnail()) {
-			throw new Exception('Ошибка при генерации превью');
-		}
-
-		if (!$phpThumb->RenderToFile($file)) {
-			throw new Exception('Ошибка при сохранении превью');
+		if ($prefer_speed) {
+			$ir->thumbs();
+		} else {
+			$ir->resize();
 		}
 
 		return $file;
-	}
-
-	private function rotate($files, $degree) {
-
 	}
 }
 

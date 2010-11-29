@@ -587,6 +587,10 @@ function ami_CheckIs_Email($url) {
     return FALSE;
 }
 
+function ami_change_filename_ext($filename, $new_ext) {
+  return preg_replace('/\..+$/', '.' . $new_ext, $filename);
+}
+
 function ami_GetOptions($a_options, $opt_name, $default_value) {
 	if (isset($a_options[$opt_name])) {
 		return $a_options[$opt_name];
