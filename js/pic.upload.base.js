@@ -11,21 +11,23 @@ PIC.upload.base = function () {
 
 	var active = false;
 
+
 	//
 	function ui_advanced_block_init() {
 		// ADVANCED BLOCK INIT
 		$('#advanced_link').click(function () {
-			if ($('#advanced_options').is(':visible')) {
+			var $ao = $('#advanced_options');
+
+			if ($ao.is(':visible')) {
 				$('#reduce_original').val('');
-				$('#advanced_options').fadeTo(200, 0.01, function () {
-					$('#advanced_options').css('opacity', 0);
-					$('#advanced_options').slideUp(200);
+				$ao.fadeTo(200, 0.01, function () {
+					$ao.css('opacity', 0).slideUp(200);
 					$('body').focus();
 				});
 			} else {
-				$('#advanced_options').css('opacity', 0);
-				$('#advanced_options').slideDown(200, function () {
-					$('#advanced_options').fadeTo(200, 1.0);
+				$ao.css('opacity', 0);
+				$ao.slideDown(200, function () {
+					$ao.fadeTo(200, 1.0);
 					$('#reduce_original:visible').focus();
 				});
 			}
@@ -33,6 +35,7 @@ PIC.upload.base = function () {
 			return false;
 		}).addClass("as_js_link");
 	}
+
 
 	//
 	function ui_upload_form_check() {
@@ -45,6 +48,7 @@ PIC.upload.base = function () {
 		}
 	}
 
+
 	//
 	function form_check_init() {
 		$(input_file).bind("change keyup", ui_upload_form_check);
@@ -53,7 +57,7 @@ PIC.upload.base = function () {
 
 	//
 	function confirmExit() {
-		if (active === true) {
+		if (active) {
 			return 'Прервать загрузку?';
 		}
 	}
@@ -120,7 +124,11 @@ PIC.upload.base = function () {
 		//
 		error: function (msg) {
 			active = false;
-			$(status).html('Ошибка: '+msg).addClass('error');
+			$(status).html('');
+			alert('Во время загрузки файла произошла ошибка.\nТекст ошибки: "'+msg+'"\n\nПопробуйте загрузить файл ещё раз.')
+
+			// ACTIVATE FORM
+			ui_upload_form_check();
 		},
 
 		init_unload: function () {
@@ -160,13 +168,16 @@ PIC.upload.base = function () {
 
 
 			if (!isNaN(uploaded) && !isNaN(total)) {
-				str = AMI.utils.format_filesize(uploaded) +'&nbsp;из&nbsp;' +AMI.utils.format_filesize(total) + '&nbsp;[' + percents + '&thinsp;%]';
-			} else {
-				str = '';
+				str = AMI.utils.format_filesize(uploaded) +'&nbsp;из&nbsp;' +AMI.utils.format_filesize(total);
 			}
 
-			$('#progress_str').html(str);
+			$('#progress_str').html(str).attr('title', 'Загружено '+percents+'%');
+
+			$("#progressbar").progressbar({
+				value: percents
+			});
 		},
+
 
 		html5_ajax: function (ajax_settings, formData) {
 			ajax_settings.processData = false;

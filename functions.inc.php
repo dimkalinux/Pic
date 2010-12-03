@@ -38,7 +38,7 @@ if (AMI_DEBUG === TRUE) {
 }
 
 // GLOBAL VARIABLES
-$ami_addScript = $ami_onWindowReady = $ami_onDOMReady = $ami_Menu = array();
+$ami_JS_Scripts = $ami_addScript = $ami_onWindowReady = $ami_onDOMReady = $ami_Menu = array();
 
 // LOAD UTF-8 FUNCTIONS
 require AMI_ROOT.'include/ami/utf8/utf8.php';

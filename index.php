@@ -12,7 +12,6 @@ require AMI_ROOT.'header.php';
 ?>
 	<div class="span-15 last prepend-5 body_block">
 		<h3>Загрузить картинки на вечное хранение</h3>
-		<div id="upload_block">
 			<form id="form_upload" method="post" action="/upload/" name="upload" enctype="multipart/form-data" accept-charset="utf-8">
 				<input type="hidden" name="api_key" value="9c0bd1dd6c88765017378c8a">
 				<div class="formRow">
@@ -52,14 +51,13 @@ require AMI_ROOT.'header.php';
 					<li class="first"><a href="http://portal.iteam.ua/" title="Портал сети Айтим">Портал</a></li>
 					<li><a href="http://forum.iteam.ua/" title="Форум сети Айтим">Форум</a></li>
 					<li><a href="http://up.iteam.ua/" title="Файлообменный сервис">АП</a></li>
-	<?php if ($ami_User['geo'] != 'world'): ?>
-					<li><a href="http://film.lg.ua/" title="">Фильмы</a></li>
+				<?php if ($ami_User['geo'] != 'world'): ?>
+					<li><a href="http://film.lg.ua/" title="Фильмотека">Фильмы</a></li>
 					<li><a href="http://serial.iteam.ua/" title="Сайт популярных сериалов">Сериалы</a></li>
-	<?php endif; ?>
-					<li><a href="http://hosting.iteam.lg.ua/" title="">Хостинг</a></li>
+				<?php endif; ?>
+					<li><a href="http://hosting.iteam.lg.ua/" title="Айтим хостинг">Хостинг</a></li>
 				</ul>
 			</div>
-		</div> <!-- UPLOAD_BLOCK -->
 	</div>
 <?php
 

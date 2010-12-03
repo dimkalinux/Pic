@@ -76,10 +76,16 @@ PIC.upload.formdata = function () {
 				// SET STATUS
 				$(status)
 					.removeClass('error')
-					.html('<div>'+wait_message+'<a href="/" title="Прервать загрузку" id="link_abort_upload">отменить</a></div><div><span id="progress_str"></span></div>')
+					.html('<div>'+wait_message+'<a href="/" title="Прервать загрузку" id="link_abort_upload">отменить</a></div><div id="progress"><div id="progressbar"></div><span id="progress_str"></span></div>')
 					.fadeTo(350, 1.0);
 
 				$('#link_abort_upload').addClass('as_js_link');
+
+				// INIT PROGRESSBAR
+				$( "#progressbar" ).progressbar({
+					value: 0
+				});
+
 
 				// UNLOAD HANDLER
 				PIC.upload.base.init_unload();

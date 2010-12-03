@@ -4,6 +4,7 @@ if (!defined('AMI_ROOT')) {
 	define('AMI_ROOT', './');
 }
 
+define('PAGE_WITHOUT_JS', 1);
 require AMI_ROOT.'functions.inc.php';
 
 

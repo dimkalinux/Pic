@@ -605,4 +605,13 @@ label.unbold {
 	margin-left: 9px;
 }
 
+#progress {
+	margin-top: .8em;
+}
 
+#progressbar {
+	width: 12em;
+	height: 1em;
+	float: left;
+	margin: .15em .5em 0 0;
+}

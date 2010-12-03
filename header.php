@@ -82,6 +82,7 @@ if ($ami_Production): ?>
 <?php else: ?>
 	<link rel="stylesheet" href="<?php echo AMI_CSS_BASE_URL; ?>css/blueprint/screen.css" type="text/css" media="screen, projection">
 	<link rel="stylesheet" href="<?php echo AMI_CSS_BASE_URL; ?>css/style.css" type="text/css" media="screen, projection">
+	<link rel="stylesheet" href="<?php echo AMI_CSS_BASE_URL; ?>css/jquery-ui-1.8.6.custom.css" type="text/css" media="screen, projection">
 	<!--[if lt IE 8]><link rel="stylesheet" href="<?php echo AMI_CSS_BASE_URL; ?>css/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
 <?php endif; ?>
 	<link rel="shortcut icon" type="image/x-icon" href="<?php echo AMI_JS_BASE_URL; ?>favicon.ico">

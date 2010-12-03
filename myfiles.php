@@ -37,7 +37,6 @@ try {
 // SET PAGE TITLE as FILENAME
 $ami_PageTitle = 'Мои файлы';
 //
-ami_addScript('jquery-ui-1.8.5.custom.min.js');
 ami_addOnDOMReady('PIC.trash.init();');
 //
 ami_printPage(sprintf($myfiles_page_template, $images), 'myfiles_page');

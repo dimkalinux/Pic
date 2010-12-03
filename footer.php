@@ -6,11 +6,12 @@ if (!defined('AMI')) {
 ?>
 </div>
 <?php
-if ($ami_Production): ?>
-	<script src="<?php echo AMI_JS_BASE_URL; ?>j/lib.js" type="text/javascript"></script>
-<?php else:
-	echo ami_BuildJS_ScriptSection(array(
+if ($ami_Production):
+	$scripts = array('lib.js');
+else:
+	$scripts = array(
 		'jquery-1.4.4.min.js',
+		'jquery-ui-1.8.6.custom.min.js',
 		'jquery.form.js',
 		'jquery.easing.js',
 		'jquery.timers-1.2.js',
@@ -30,8 +31,12 @@ if ($ami_Production): ?>
 		'pic.upload.dnd_formdata.js',
 		'pic.ajaxify.js',
 		'pic.slideshow.js',
-	));
+	);
 endif;
+
+if (!defined('PAGE_WITHOUT_JS')) {
+	echo ami_BuildJS_ScriptSection($scripts);
+}
 
 // ADDON JS-SCRIPT BLOCK
 if (isset($ami_addScript) && is_array($ami_addScript) && count($ami_addScript) > 0) {

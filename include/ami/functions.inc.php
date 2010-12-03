@@ -36,7 +36,7 @@ function ami_async_response($arr_response, $type=AMI_ASYNC_JSON) {
 
 function ami_JSON_response($arr) {
     header('Pragma: no-cache');
-    // header('Content-type: text/x-json');
+   	//header('Content-type: text/plain');
     exit(json_encode($arr));
 }
 
@@ -56,9 +56,9 @@ function ami_XML_response($arr) {
 
     $serializer = &new XML_Serializer($serializer_options);
     if ($serializer->serialize($arr)) {
-	exit($serializer->getSerializedData());
+		exit($serializer->getSerializedData());
     } else {
-	exit('<?xml version="1.0" encoding="UTF-8"?><ami><error>1</error><message>Internal XML error</message></ami>');
+		exit('<?xml version="1.0" encoding="UTF-8"?><ami><error>1</error><message>Internal XML error</message></ami>');
     }
 }
 
@@ -531,11 +531,14 @@ function ami_getmicrotime() {
 
 
 function ami_BuildJS_ScriptSection($scripts) {
+	global $ami_Production;
 	$block = '';
+
+	$script_dir = $ami_Production ? 'j' : 'js';
 
 	if (is_array($scripts) && count($scripts) > 0) {
 		foreach ($scripts as $script) {
-			$block .= '<script src="'.AMI_JS_BASE_URL.'js/'.$script.'" type="text/javascript"></script>';
+			$block .= '<script src="'.AMI_JS_BASE_URL.$script_dir.'/'.$script.'" type="text/javascript"></script>';
 		}
 	}
 

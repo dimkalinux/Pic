@@ -81,7 +81,7 @@ PIC.upload.dnd_formdata = function () {
 				// SET STATUS
 				$(status)
 					.removeClass('error')
-					.html('<div>'+wait_message+'<a href="/" title="Прервать загрузку" id="link_abort_upload">отменить</a></div><div><span id="progress_str"></span></div>')
+					.html('<div>'+wait_message+'<a href="/" title="Прервать загрузку" id="link_abort_upload">отменить</a></div><div id="progress"><div id="progressbar"></div><span id="progress_str"></span></div>')
 					.fadeTo(250, 1.0);
 
 				$('#link_abort_upload').addClass('as_js_link');

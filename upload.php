@@ -44,7 +44,7 @@ try {
     fixFilesArray($files);
 
     if (empty($files)) {
-        throw new AppLevelException("Получен запрос без файла.");
+        throw new AppLevelException("Получен запрос без файла");
     }
 
 
