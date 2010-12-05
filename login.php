@@ -10,6 +10,7 @@ require AMI_ROOT.'functions.inc.php';
 try {
 	$ami_PageTitle = 'Вход в систему';
 
+	$login_facebook_form_action = ami_link('login_facebook');
 	$login_form_action = ami_link('login');
 	$csrf = ami_MakeFormToken($login_form_action);
 	$async = isset($_GET['async']);
@@ -27,24 +28,61 @@ try {
 
 
 	// MAYBE ALREADY LOGGED IN?
-	if ($ami_User['is_guest'] === FALSE) {
-		$logout_link = ami_link('logout');
-		$profile_link = '<a href="'.ami_link('profile').'" title="Мой профиль">'.ami_htmlencode($ami_User['profile_name']).'</a>';
-
-		$page = <<<FMB
-		<div class="span-16 last prepend-5 body_block last">
-			<h2>Вход в систему</h2>
-
-			<p>Вы сейчас залогинены в системе под акаунтом $profile_link</p>
-			<p><a href="$logout_link">Выйти из системы</a></p>
-		</idv>
-FMB;
-		ami_printPage($page);
-		exit();
+	if (!$ami_User['is_guest']) {
+		ami_redirect(ami_link('root'));
 	}
 
+	$facebook_app_id = FACEBOOK_APP_ID;
+	$facebook_block = <<<FMB
+	<div class="span-12 append-6 last prepend-top">
+		<hr>
+		<p>Если вы пользователь сервиса Фейсбук, используйте его для входа или регистрации на сайте<br/>
+		<fb:login-button perms="email" autologoutlink="true" size="medium" background="white" length="short">Войти через Фейсбук</fb:login-button>
+		</p>
+	</div>
 
-$form = <<<FMB
+	<div id="fb-root"></div>
+
+	<script>
+		window.fbAsyncInit = function() {
+			var already = false;
+
+			// Init
+			FB.init({ appId: '$facebook_app_id', status: true, cookie: true, xfbml: true });
+
+			// Event
+			FB.Event.subscribe('auth.login', function(response) {
+				if (!already) {
+					already = true;
+					document.location = '$login_facebook_form_action';
+					return;
+				}
+			});
+
+			// Event
+			FB.Event.subscribe('auth.statusChange', function(response) {
+				if (response.status == 'connected') {
+					if (!already) {
+						already = true;
+						document.location = '$login_facebook_form_action';
+						return;
+					}
+				}
+			});
+		};
+
+		// LOAD
+		(function () {
+			var e = document.createElement('script');
+			e.src = document.location.protocol + '//connect.facebook.net/ru_RU/all.js';
+			e.async = true;
+			document.getElementById('fb-root').appendChild(e);
+		}());
+	</script>
+FMB;
+
+
+	$form = <<<FMB
 <div class="span-10 last prepend-5 body_block last">
 	%s
 	<h2>Вход в систему</h2>
@@ -77,6 +115,8 @@ $form = <<<FMB
 			<input class="button" type="submit" name="do" value="Войти" tabindex="3">
 		</div>
 	</form>
+
+	$facebook_block
 
 	<div class="prepend-top">
 		<a href="$register_link">Регистрация</a><br>
@@ -143,6 +183,43 @@ FMB;
 			ami_async_response(array('error'=> 0, 'message' => ''), AMI_ASYNC_JSON);
 		} else {
 			ami_redirect($redirect_after_login);
+		}
+	} else 	if (isset($_GET['facebook'])) {
+		$fb_me = null;
+		$facebook = new Facebook(array('appId' => FACEBOOK_APP_ID,'secret' => FACEBOOK_APP_SECRET,'cookie' => TRUE));
+		$fb_session = $facebook->getSession();
+
+		// Session based API call.
+		if ($fb_session) {
+			try {
+				// GET INFO
+				$fb_uid = $facebook->getUser();
+				$fb_me = $facebook->api('/me');
+			} catch (FacebookApiException $e) {
+				throw new AppLevelException('Ошибка Фейсбука: '.$e->getMessage());
+			}
+
+			if ($fb_me) {
+				$db = DB::singleton();
+
+				// CHECK FB_UID
+				$row = $db->getRow('SELECT id,email FROM users WHERE fb_uid=? LIMIT 1', $fb_uid);
+				if ($row) {
+					// LOGIN as FACEBOOK USER
+					$o_ami_user = new AMI_User();
+					$o_ami_user->login($row['id'], $row['email'], 0, FALSE);
+
+					// EXIT
+					if ($async) {
+						ami_async_response(array('error'=> 0, 'message' => ''), AMI_ASYNC_JSON);
+					} else {
+						ami_redirect(ami_link('root'));
+					}
+				} else {
+					// USER NOT REGISTERED
+					ami_redirect(ami_link('register_facebook'));
+				}
+			}
 		}
 	}
 } catch (AppLevelException $e) {

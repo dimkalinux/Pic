@@ -59,29 +59,24 @@ $ami_urls = array(
 
     'register'			    		=> 'register/',
     'register_ok'		    		=> 'register/ok/',
+    'register_facebook'	    		=> 'register/facebook/',
 
     'login'			    	    	=> 'login/',
     'login_ok'		     	    	=> 'login/ok/',
+    'login_facebook'	   	    	=> 'login/facebook/',
 
     'logout'			        	=> 'logout/',
 
 	'myfiles_page'			       	=> 'myfiles/page/$1',
     'myfiles'			        	=> 'myfiles/',
-    'mytwits'			        	=> 'mytwits/',
+    'profile_facebook'				=> 'profile/facebook/',
+    'profile_facebook_connect'		=> 'profile/facebook/connect/',
+    'profile_facebook_disconnect'	=> 'profile/facebook/disconnect/',
     'profile'			        	=> 'profile/',
     'settings'			        	=> 'settings/',
     'settings_save'			    	=> 'settings/save/',
     'settings_ok'			    	=> 'settings/ok/',
     'ajax'                      	=> 'ajax/',
-
-	'twitter'                      	=> 'twitter/',
-	'twitter_connect'              	=> 'twitter/connect/',
-	'twitter_disconnect'          	=> 'twitter/disconnect/',
-	'twitter_clear'              	=> 'twitter/clearsession/',
-	'twitter_callback'             	=> 'twitter/callback/',
-	'twitter_post'             		=> 'twitter/post/$1/',
-	'twitter_post_ok'          		=> 'twitter/post/ok/$1',
-	'twitter_message'				=> 'https://twitter.com/$1/status/$2',
 );
 
 ?>

@@ -91,6 +91,21 @@ class AMI_User_Info {
 			throw new Exception($e->getMessage());
 		}
 	}
+
+	public static function getUserFB_uid($uid) {
+		try {
+			$db = DB::singleton();
+
+			$row = $db->getRow("SELECT fb_uid FROM users WHERE id=? LIMIT 1", $uid);
+			if ($row) {
+				return empty($row['fb_uid']) ? FALSE : $row['fb_uid'];
+			}
+
+			return FALSE;
+		} catch(Exception $e) {
+			throw new Exception($e->getMessage());
+		}
+	}
 }
 
 ?>

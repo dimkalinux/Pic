@@ -13,8 +13,8 @@ class Logger {
     private static $instance;
 
 
-    public function __construct() {
-	$this->db = DB::singleton();
+    private function __construct() {
+		$this->db = DB::singleton();
     }
 
     public function __destruct() {
@@ -37,33 +37,33 @@ class Logger {
     }
 
     public function info($message) {
-	$this->log('info', $message);
+		$this->log('info', $message);
     }
 
     public function debug($message) {
-	if (AMI_DEBUG === TRUE) {
-	    $this->log('debug', $message);
-	}
+		if (AMI_DEBUG === TRUE) {
+			$this->log('debug', $message);
+		}
     }
 
     public function warn($message) {
-	$this->log('warn', $message);
+		$this->log('warn', $message);
     }
 
     public function error($message) {
-	$this->log('error', $message);
+		$this->log('error', $message);
     }
 
 
     private function log($type, $message) {
-	if (!$this->db) {
-	    return;
-	}
+		if (!$this->db) {
+			return;
+		}
 
-	if (!empty($message)) {
-	    $message = utf8_substr($message, 0, 2048);
-	    $this->db->silentQuery("INSERT INTO `logs` VALUES('', NOW(), '$type', ?)", $message);
-	}
+		if (!empty($message)) {
+			$message = utf8_substr($message, 0, 2048);
+			$this->db->silentQuery("INSERT INTO `logs` VALUES('', NOW(), '$type', ?)", $message);
+		}
     }
 }
 

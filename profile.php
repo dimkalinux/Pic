@@ -25,6 +25,37 @@ try {
 		}
 	}
 
+	// FACEBOOK
+	try {
+		$facebook_connect_link = '';
+		$fb_uid = AMI_User_Info::getUserFB_uid($ami_User['id']);
+		if (!$fb_uid) {
+			$facebook_profile_block = '<a href="'.ami_link('profile_facebook').'">Привязать акаунт к Фейсбуку</a><br/>';
+		} else {
+			// FACEBOOK LOGOUT LINK
+			$facebook = new Facebook(array('appId' => FACEBOOK_APP_ID,'secret' => FACEBOOK_APP_SECRET,'cookie' => TRUE));
+			$fb_session = $facebook->getSession();
+
+			// Session based API call.
+			if ($fb_session) {
+				$fb_me = $facebook->api('/me');
+
+				if ($fb_me) {
+					$facebook_logout_url = $facebook->getLogoutUrl(array('next'=> ami_link('logout')));
+					$logout_link = '<a href="'.$facebook_logout_url.'" onclick="FB.logout(); return false;">Выйти из системы и Фейсбука</a>';
+					$facebook_profile_block = 'Используется акаунт <a title="Перейти в Фейсбук" href="'.ami_htmlencode($fb_me['link']).'">'.ami_htmlencode($fb_me['name']).'</a>';
+				} else {
+					$facebook_profile_block = 'Не удалось получить информацию от Фейсбука';
+				}
+			} else {
+				$facebook_profile_block = 'Отсутствует сесия Фейсбука';
+			}
+		}
+	} catch (FacebookApiException $e) {
+		$facebook_profile_block = 'Ошибка: '.$e->getMessage();
+	}
+
+
 	// NUM SESSIONS
 	$num_active_sessions = $db->numRows('SELECT sid FROM session WHERE uid=?', $ami_User['id']);
 	$session_info_block .= '<br>'.$num_active_sessions.' '.ami_Pon($num_active_sessions, 'активная сессия', 'активных сессии', 'активных сессий');
@@ -71,7 +102,7 @@ $out = <<<FMB
 
 		<p>
 			Загруженных файлов: $num_files<br>
-			Используется: $num_bytes<br>
+			Используется: $num_bytes
 		</p>
 
 		<p>
@@ -84,9 +115,14 @@ $out = <<<FMB
 			$password_change_link
 		</p>
 
+		<h3>Фейсбук</h3>
+		<p>
+			$facebook_profile_block
+		</p>
+
 		<h3>Сессия</h3>
 		$session_info_block
-		<p>$logout_link</p>
+		<p><br/>$logout_link</p>
 	</div>
 FMB;
 

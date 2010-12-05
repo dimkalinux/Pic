@@ -15,6 +15,7 @@ if (isset($_GET['async'])) {
 try {
     $o_ami_user = new AMI_User();
   	$o_ami_user->logout();
+
     ami_redirect(ami_link('root'));
 }  catch (AppLevelException $e) {
     if ($async) {

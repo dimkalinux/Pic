@@ -19,9 +19,11 @@ RewriteRule 	^password/change/error/$						password_change.php?ok=1 [L]
 RewriteRule 	^password/change/$								password_change.php [L]
 
 
+RewriteRule 	^register/facebook/$							register.php?facebook=1 [L]
 RewriteRule 	^register/ok/$									register.php?ok=1 [L]
 RewriteRule 	^register/$										register.php [L]
 
+RewriteRule 	^login/facebook/$								login.php?facebook=1 [L]
 RewriteRule 	^login/ok/$										login.php?ok=1 [L]
 RewriteRule 	^login/$										login.php [L]
 
@@ -52,7 +54,12 @@ RewriteRule 	^about/$										about.php [L]
 RewriteRule 	^logout/$										logout.php [L]
 RewriteRule 	^myfiles/page/(\d)$								myfiles.php?p=$1 [L]
 RewriteRule 	^myfiles/$										myfiles.php [L]
+
+RewriteRule 	^profile/facebook/connect/						profile_facebook.php?c=1 [L]
+RewriteRule 	^profile/facebook/disconnect/					profile_facebook.php?d=1 [L]
+RewriteRule 	^profile/facebook/								profile_facebook.php? [L]
 RewriteRule 	^profile/$										profile.php [L]
+
 RewriteRule 	^settings/$										settings.php [L]
 RewriteRule 	^settings/save/$								settings.php?save=1 [L]
 RewriteRule 	^settings/ok/$									settings.php?ok=1 [L]

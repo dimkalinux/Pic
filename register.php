@@ -9,6 +9,11 @@ require AMI_ROOT.'functions.inc.php';
 
 $ami_PageTitle = 'Регистратура';
 
+// FACEBOOK
+$facebook_app_id = FACEBOOK_APP_ID;
+$register_facebook_form_action = ami_link('register_facebook');
+$csrf_facebook = ami_MakeFormToken($register_facebook_form_action);
+
 //
 $register_form_action = ami_link('register');
 $csrf = ami_MakeFormToken($register_form_action);
@@ -22,6 +27,40 @@ if (isset($_GET['ok'])) {
 	ami_show_message('Спасибо', 'Вы&nbsp;успешно зарегистрировались и&nbsp;вошли в&nbsp;систему');
 }
 
+$facebook_block = <<<FMB
+	<div class="span-12 append-6 last prepend-top">
+		<hr>
+		<p>Если вы пользователь сервиса Фейсбук, используйте его для регистрации &mdash это займет у вас всего несколько&nbsp;секунд!<br/>
+		<fb:login-button perms="email" autologoutlink="true" size="medium" background="white" length="short">Войти через Фейсбук</fb:login-button>
+		</p>
+	</div>
+
+	<div id="fb-root"></div>
+	<script>
+		window.fbAsyncInit = function() {
+			// Init
+			FB.init({ appId: '$facebook_app_id', status: true, cookie: true, xfbml: true });
+
+			// Event
+			FB.Event.subscribe('auth.statusChange', function(response) {
+				if (response.status == 'connected') {
+					document.location = '$register_facebook_form_action';
+				}
+			});
+		};
+
+		// LOAD
+		(function () {
+			var e = document.createElement('script');
+			e.src = document.location.protocol + '//connect.facebook.net/ru_RU/all.js';
+			e.async = true;
+			document.getElementById('fb-root').appendChild(e);
+		}());
+	</script>
+FMB;
+
+
+// MAIN FORM
 $form = <<<FMB
 <div class="span-15 last prepend-5 body_block">
 	%s
@@ -59,11 +98,65 @@ $form = <<<FMB
 			<input class="button" type="submit" name="do" value="Зарегистрироваться" tabindex="3">
 		</div>
 	</form>
+
+	$facebook_block
+
 </div>
 FMB;
 
 try {
-	if (isset($_POST['form_sent'])) {
+	if (isset($_POST['form_sent']) || isset($_GET['facebook'])) {
+		// FACEBOOK PART
+		if (isset($_GET['facebook'])) {
+			$fb_me = null;
+			$facebook = new Facebook(array('appId' => FACEBOOK_APP_ID,'secret' => FACEBOOK_APP_SECRET,'cookie' => TRUE));
+			$fb_session = $facebook->getSession();
+
+			if (!$fb_session) {
+				throw new InvalidInputDataException('Ошибка на стороне Фейсбука');
+			}
+
+			try {
+				// GET INFO
+				$fb_uid = $facebook->getUser();
+				$fb_me = $facebook->api('/me');
+			} catch (FacebookApiException $e) {
+				throw new InvalidInputDataException('Ошибка Фейсбука: '.$e->getMessage());
+			}
+
+			// GET INFO
+			if (!$fb_me) {
+				throw new InvalidInputDataException('Ошибка на стороне Фейсбука');
+			}
+
+			// REGISTER new USER
+			$db = DB::singleton();
+
+			// CHECK FB_UID
+			$result = $db->numRows('SELECT id FROM users WHERE fb_uid=? LIMIT 1', $fb_uid);
+			if ($result !== 0) {
+				throw new AppLevelException('Пользователь с таким идентификатором Фейсбука уже существует.<br/><a href="'.ami_link('login').'">Перейти к форме входа на&nbsp;сайт</a>');
+			}
+
+			// CHECk EMAIL
+			$result = $db->numRows('SELECT email FROM users WHERE email=? LIMIT 1', $fb_me['email']);
+			if ($result === 0) {
+				// ADD NEW USER
+				$db->query("INSERT INTO users VALUES('', ?, ?, NOW(), 0, ?)", $fb_me['email'], '-', $fb_uid);
+			} else {
+				throw new AppLevelException('Пользователь с таким адресом электронной почты уже существует.<br/><a href="'.ami_link('login').'">Войдите</a>
+				на&nbsp;сайт с&nbsp;помощью логина и&nbsp;пароля, и в&nbsp;профиле привяжите свой акаунт к&nbsp;Фейсбуку.');
+			}
+
+			// EXIT
+			if ($async) {
+				ami_async_response(array('error'=> 0, 'message' => ''), AMI_ASYNC_JSON);
+			} else {
+				ami_redirect(ami_link('login_facebook'));
+			}
+		}
+
+
 		// 1. check csrf
 		if (!ami_CheckFormToken($csrf)) {
 			throw new InvalidInputDataException('Действие заблокировано системой безопасности');
@@ -98,7 +191,7 @@ try {
 		$t_hasher = new PasswordHash(12, FALSE);
 		$cryptPassword = $t_hasher->HashPassword($password);
 
-		$db->query("INSERT INTO users VALUES('', ?, ?, NOW(), 0)", $email, $cryptPassword);
+		$db->query("INSERT INTO users VALUES('', ?, ?, NOW(), 0, '')", $email, $cryptPassword);
 		$user_id = $db->lastID();
 
 		// MAKE LOGIN

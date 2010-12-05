@@ -21,7 +21,7 @@ class AMI_User {
 			'profile_name' => '',
 		);
 
-		$is_logged = $this->logged();
+		$is_logged = $this->logged(FALSE, TRUE);
 
 		if ($is_logged !== FALSE) {
 			// GET USERINFO from SESSIOn BY SID
@@ -86,7 +86,10 @@ class AMI_User {
 	   	$db->query("INSERT INTO session VALUES(?, ?, INET_ATON(?), $dbExpire, ?, ?, ?, ?)", $sid, $uid, ami_GetIP(), $email, $is_admin, $email, $check_ip);
 
 		// set login cookie
-		ami_SetCookie($ami_LoginCookieName, base64_encode($uid.'|'.$sid.'|'.$expire.'|'.sha1($ami_LoginCookieSalt.$uid.$sid.$expire)), $expire);
+		$login_hash = base64_encode($uid.'|'.$sid.'|'.$expire.'|'.sha1($ami_LoginCookieSalt.$uid.$sid.$expire));
+		ami_SetCookie($ami_LoginCookieName, $login_hash, $expire);
+
+		return $login_hash;
 	}
 
 
@@ -130,22 +133,30 @@ class AMI_User {
 		// 2. set logouted cookie
 		$expire += 1209600;
 		$randomSID = ami_GenerateRandomHash(32);
-		ami_SetCookie($ami_LoginCookieName, base64_encode('0|'.$randomSID.'|'.$expire.'|'.sha1($ami_LoginCookieSalt.'0'.$randomSID.$expire)), $expire);
+
+		//
+		$login_hash = base64_encode('0|'.$randomSID.'|'.$expire.'|'.sha1($ami_LoginCookieSalt.'0'.$randomSID.$expire));
+		ami_SetCookie($ami_LoginCookieName, $login_hash, $expire);
 	}
 
 
-	public function logged() {
+	public function logged($login_hash=FALSE, $try_facebook=TRUE) {
 		global $ami_LoginCookieName, $ami_LoginCookieSalt, $ami_UseFacebook;
 
 		$ip = ami_GetIP();
 
 		//
 		do {
-			if (!isset($_COOKIE[$ami_LoginCookieName])) {
+			if (!$login_hash && !isset($_COOKIE[$ami_LoginCookieName])) {
 				break;
 			}
 
-			list($uid, $sid, $expire, $checksum) = explode('|', base64_decode($_COOKIE[$ami_LoginCookieName]), 4);
+			// HASH FROM PARAM or COOKIE?
+			if ($login_hash) {
+				list($uid, $sid, $expire, $checksum) = explode('|', base64_decode($login_hash), 4);
+			} else {
+				list($uid, $sid, $expire, $checksum) = explode('|', base64_decode($_COOKIE[$ami_LoginCookieName]), 4);
+			}
 
 			// safe data
 			$uid = intval($uid, 10);
@@ -158,8 +169,8 @@ class AMI_User {
 
 			// check checksum
 			if ($checksum != sha1($ami_LoginCookieSalt.$uid.$sid.$expire)) {
-				$log = new Logger;
-				$log->info('Invalid cookie checksum: logged '.$uid);
+				$log = Logger::singleton();
+				$log->info('logged(). Invalid cookie checksum');
 				break;
 			}
 
@@ -173,6 +184,7 @@ class AMI_User {
 			if (!$row) {
 				break;
 			}
+
 			// CHECK IP?
 			if (intval($row['check_ip'], 10) === 1) {
 				if ($row['ip'] != $ip) {
@@ -180,16 +192,51 @@ class AMI_User {
 				}
 			}
 
-
 			// all OK
 			// 1. update expire on DB and Cookie
 			$db->query('UPDATE session SET expire=(NOW() + INTERVAL 14 DAY) WHERE sid=? AND uid=? AND ip=INET_ATON(?) LIMIT 1', $sid, $uid, $ip);
-			$expire = time() + 1209600;
-			ami_SetCookie($ami_LoginCookieName, base64_encode($uid.'|'.$sid.'|'.$expire.'|'.sha1($ami_LoginCookieSalt.$uid.$sid.$expire)), $expire);
+			if (!$login_hash) {
+				$expire = time() + 1209600;
+				ami_SetCookie($ami_LoginCookieName, base64_encode($uid.'|'.$sid.'|'.$expire.'|'.sha1($ami_LoginCookieSalt.$uid.$sid.$expire)), $expire);
+			}
 
 			// 2. return SID
 			return $sid;
 		} while(0);
+
+
+		// NOT LOGGED - try facebook
+		if ($try_facebook) {
+			try {
+				$fb_me = null;
+				$facebook = new Facebook(array('appId' => FACEBOOK_APP_ID,'secret' => FACEBOOK_APP_SECRET,'cookie' => TRUE));
+				$fb_session = $facebook->getSession();
+
+				// GET INFO
+				if ($fb_session) {
+					$fb_uid = $facebook->getUser();
+					$fb_me = $facebook->api('/me');
+
+					// LOGGED ON FACEBOOK
+					if ($fb_me) {
+						// CHECK IS OUR USER
+						$db = DB::singleton();
+						$row = $db->getRow('SELECT id,email FROM users WHERE fb_uid=? LIMIT 1', $fb_uid);
+						if ($row) {
+							// IS OUR USER - try login
+							$login_hash = self::login($row['id'], $row['email'], 0, FALSE);
+
+							// CALL LOGGED AGAIN
+							return self::logged($login_hash, FALSE);
+						}
+					}
+				}
+			} catch (FacebookApiException $e) {
+				$log = Logger::singleton();
+				$log->error('Logged(). Фейсбук вернул ошибку: '.$e->getMessage());
+				return FALSE;
+			}
+		}
 
 		return FALSE;
 	}
