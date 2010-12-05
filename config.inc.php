@@ -112,7 +112,7 @@ $pic_UploadStorages = array('1');
 define('API_KEY_ID_UNKNOWN', 0);
 
 //
-define('PIC_VERSION', '6');
+define('PIC_VERSION', '7a2');
 
 define('FACEBOOK_APP_ID', '142764589077335');
 define('FACEBOOK_APP_SECRET', 'b1da5f70416eed03e55c7b2ce7190bd6');

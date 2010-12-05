@@ -114,6 +114,9 @@ PIC.upload.base = function () {
 		finish: function (url) {
 			active = false;
 
+			// UPDATE PAGE/TAB title
+			$('title').text('Готово');
+
 			$(document).oneTime(300, 'finish', function () {
 				$(status).html('Ok. <a href="'+url+'">Переходим к загруженной картинке</a>')
 			});
@@ -129,6 +132,9 @@ PIC.upload.base = function () {
 
 			// ACTIVATE FORM
 			ui_upload_form_check();
+
+			// UPDATE PAGE/TAB title
+			$('title').text('Ошибка');
 		},
 
 		init_unload: function () {
@@ -176,6 +182,9 @@ PIC.upload.base = function () {
 			$("#progressbar").progressbar({
 				value: percents
 			});
+
+			// UPDATE PAGE/TAB title
+			$('title').text('Загружаю: '+percents+'%');
 		},
 
 

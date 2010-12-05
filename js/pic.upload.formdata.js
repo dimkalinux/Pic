@@ -127,6 +127,9 @@ PIC.upload.formdata = function () {
 			__xhr.abort();
 		}
 
+		// UPDATE PAGE/TAB title
+		$('title').text('Загрузка картинок');
+
 		return false;
 	}
 
