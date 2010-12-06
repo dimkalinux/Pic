@@ -142,7 +142,7 @@ try {
 			$result = $db->numRows('SELECT email FROM users WHERE email=? LIMIT 1', $fb_me['email']);
 			if ($result === 0) {
 				// ADD NEW USER
-				$db->query("INSERT INTO users VALUES('', ?, ?, NOW(), 0, ?)", $fb_me['email'], '-', $fb_uid);
+				$db->query("INSERT INTO users VALUES('', ?, ?, NOW(), 0, ?, ?, ?)", $fb_me['email'], '-', $fb_uid, $fb_me['link'], $fb_me['name']);
 			} else {
 				throw new AppLevelException('Пользователь с таким адресом электронной почты уже существует.<br/><a href="'.ami_link('login').'">Войдите</a>
 				на&nbsp;сайт с&nbsp;помощью логина и&nbsp;пароля, и в&nbsp;профиле привяжите свой акаунт к&nbsp;Фейсбуку.');
@@ -191,12 +191,12 @@ try {
 		$t_hasher = new PasswordHash(12, FALSE);
 		$cryptPassword = $t_hasher->HashPassword($password);
 
-		$db->query("INSERT INTO users VALUES('', ?, ?, NOW(), 0, '')", $email, $cryptPassword);
+		$db->query("INSERT INTO users VALUES('', ?, ?, NOW(), 0, '', '', '')", $email, $cryptPassword);
 		$user_id = $db->lastID();
 
 		// MAKE LOGIN
 		$o_ami_user = new AMI_User();
-		$o_ami_user->login($user_id, $email, 0, TRUE);
+		$o_ami_user->login($user_id, $email, 0, TRUE, ami_link('logout'));
 
 		// is async request
 		if ($async) {

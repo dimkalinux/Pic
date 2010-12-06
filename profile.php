@@ -7,8 +7,13 @@ if (!defined('AMI_ROOT')) {
 require AMI_ROOT.'functions.inc.php';
 
 try {
+	if ($ami_User['is_guest']) {
+		throw new AppLevelException('Для доступа к этой странице необходимо <a href="'.ami_link('login').'">войти в систему</a>');
+	}
+
+
 	$header = ami_htmlencode($ami_User['profile_name']);
-	$logout_link = '<a href="'.ami_link("logout").'">Выйти из системы</a>';
+	$logout_link = '<a href="'.$ami_User['logout_link'].'">Выйти из системы</a>';
 	$settings_link = '<a href="'.ami_link("settings").'">Настройки</a>';
 	$password_change_link = '<a href="'.ami_link("password_change").'">Изменить пароль</a>';
 
@@ -26,33 +31,14 @@ try {
 	}
 
 	// FACEBOOK
-	try {
-		$facebook_connect_link = '';
-		$fb_uid = AMI_User_Info::getUserFB_uid($ami_User['id']);
-		if (!$fb_uid) {
-			$facebook_profile_block = '<a href="'.ami_link('profile_facebook').'">Привязать акаунт к Фейсбуку</a><br/>';
-		} else {
-			// FACEBOOK LOGOUT LINK
-			$facebook = new Facebook(array('appId' => FACEBOOK_APP_ID,'secret' => FACEBOOK_APP_SECRET,'cookie' => TRUE));
-			$fb_session = $facebook->getSession();
+	$facebook_connect_link = '';
+	$fb_info = AMI_User_Info::getUserFB_info($ami_User['id']);
 
-			// Session based API call.
-			if ($fb_session) {
-				$fb_me = $facebook->api('/me');
-
-				if ($fb_me) {
-					$facebook_logout_url = $facebook->getLogoutUrl(array('next'=> ami_link('logout')));
-					$logout_link = '<a href="'.$facebook_logout_url.'" onclick="FB.logout(); return false;">Выйти из системы и Фейсбука</a>';
-					$facebook_profile_block = 'Используется акаунт <a title="Перейти в Фейсбук" href="'.ami_htmlencode($fb_me['link']).'">'.ami_htmlencode($fb_me['name']).'</a>';
-				} else {
-					$facebook_profile_block = 'Не удалось получить информацию от Фейсбука';
-				}
-			} else {
-				$facebook_profile_block = 'Отсутствует сесия Фейсбука';
-			}
-		}
-	} catch (FacebookApiException $e) {
-		$facebook_profile_block = 'Ошибка: '.$e->getMessage();
+	if (!$fb_info) {
+		$facebook_profile_block = '<a href="'.ami_link('profile_facebook').'">Привязать акаунт к Фейсбуку</a><br/>';
+	} else {
+		// FACEBOOK LOGOUT LINK
+		$facebook_profile_block = 'Используется акаунт <a title="Перейти в Фейсбук" href="'.ami_htmlencode($fb_info['link']).'">'.ami_htmlencode($fb_info['name']).'</a>';
 	}
 
 
@@ -61,10 +47,6 @@ try {
 	$session_info_block .= '<br>'.$num_active_sessions.' '.ami_Pon($num_active_sessions, 'активная сессия', 'активных сессии', 'активных сессий');
 
 
-	// build info
-	if ($ami_User['is_guest']) {
-		throw new AppLevelException('Для доступа к этой странице необходимо <a href="'.ami_link('login').'">войти в систему</a>');
-	}
 
 	$db = DB::singleton();
 	$row = $db->getRow("SELECT COUNT(*) AS n, SUM(size) AS s FROM pic WHERE owner_id=?", $ami_User['id']);

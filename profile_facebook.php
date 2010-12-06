@@ -63,6 +63,7 @@ try {
 				// GET INFO
 				$fb_uid = $facebook->getUser();
 				$fb_me = $facebook->api('/me');
+				$fb_logout_url = $facebook->getLogoutUrl(array('next'=> ami_link('logout')));
 			} catch (FacebookApiException $e) {
 				throw new AppLevelException('Фейсбук вернул ошибку: '.$e->getMessage());
 			}
@@ -71,7 +72,7 @@ try {
 				$db = DB::singleton();
 
 				// CHECK FB_UID
-				$db->query('UPDATE users SET fb_uid=? WHERE id=? LIMIT 1', $fb_uid, $ami_User['id']);
+				$db->query('UPDATE users SET fb_uid=?, fb_link=?, fb_name=? WHERE id=? LIMIT 1', $fb_uid, $fb_me['link'], $fb_me['name'], $ami_User['id']);
 
 				// EXIT
 				if ($async) {
@@ -92,6 +93,7 @@ try {
 				// GET INFO
 				$fb_uid = $facebook->getUser();
 				$fb_me = $facebook->api('/me');
+				$fb_logout_url = $facebook->getLogoutUrl(array('next'=> ami_link('logout')));
 			} catch (FacebookApiException $e) {
 				throw new AppLevelException('Фейсбук вернул ошибку: '.$e->getMessage());
 			}
@@ -100,7 +102,7 @@ try {
 				$db = DB::singleton();
 
 				// CHECK FB_UID
-				$db->query('UPDATE users SET fb_uid=? WHERE id=? LIMIT 1', $fb_uid, $ami_User['id']);
+				$db->query('UPDATE users SET fb_uid=?, fb_link=?, fb_name=? WHERE id=? LIMIT 1', $fb_uid, $fb_me['link'], $fb_me['name'], $ami_User['id']);
 
 				// EXIT
 				if ($async) {

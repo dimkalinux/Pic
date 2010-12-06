@@ -176,7 +176,7 @@ FMB;
 
 		// LOGIN to SYSTEM
 		$o_ami_user = new AMI_User();
-		$o_ami_user->login($user_id, $user_email, $is_admin, !/**/$dont_check_ip);
+		$o_ami_user->login($user_id, $user_email, $is_admin, !/**/$dont_check_ip, ami_link('logout'));
 
 		// is async request
 		if ($async) {
@@ -195,6 +195,7 @@ FMB;
 				// GET INFO
 				$fb_uid = $facebook->getUser();
 				$fb_me = $facebook->api('/me');
+				$fb_logout_url = $facebook->getLogoutUrl(array('next'=> ami_link('logout')));
 			} catch (FacebookApiException $e) {
 				throw new AppLevelException('Ошибка Фейсбука: '.$e->getMessage());
 			}
@@ -207,7 +208,7 @@ FMB;
 				if ($row) {
 					// LOGIN as FACEBOOK USER
 					$o_ami_user = new AMI_User();
-					$o_ami_user->login($row['id'], $row['email'], 0, FALSE);
+					$o_ami_user->login($row['id'], $row['email'], 0, FALSE, $fb_logout_url);
 
 					// EXIT
 					if ($async) {

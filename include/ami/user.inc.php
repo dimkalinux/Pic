@@ -10,15 +10,16 @@ if (!defined('AMI')) {
 class AMI_User {
 	public function get_CurrentUser() {
 		$user = array(
-			'email' 	=> '',
-			'sid'		=> FALSE,
-			'ip' 		=> '',
-			'id' 		=> 0,
-			'login' 	=> '',
-			'is_admin' 	=> FALSE,
-			'is_guest' 	=> TRUE,
-			'geo' 		=> 'world',
-			'profile_name' => '',
+			'email' 		=> '',
+			'sid'			=> FALSE,
+			'ip' 			=> '',
+			'id' 			=> 0,
+			'login' 		=> '',
+			'is_admin' 		=> FALSE,
+			'is_guest' 		=> TRUE,
+			'geo' 			=> 'world',
+			'profile_name' 	=> '',
+			'logout_link'	=> '',
 		);
 
 		$is_logged = $this->logged(FALSE, TRUE);
@@ -33,6 +34,7 @@ class AMI_User {
 			$user['email'] = $userinfo['email'];
 			$user['is_admin'] = (bool) $userinfo['is_admin'];
 			$user['profile_name'] = $userinfo['profile_name'];
+			$user['logout_link'] = $userinfo['logout_link'];
 		} else {
 			// is guest
 			$user['id'] = AMI_GUEST_UID;
@@ -55,12 +57,13 @@ class AMI_User {
 		$userinfo = FALSE;
 		$db = DB::singleton();
 
-		$row = $db->getRow("SELECT uid,email,admin,profile_link FROM session WHERE sid=? LIMIT 1", $sid);
+		$row = $db->getRow("SELECT uid,email,admin,profile_link,logout_link FROM session WHERE sid=? LIMIT 1", $sid);
 		if ($row) {
 			$userinfo['email'] = $row['email'];
 			$userinfo['is_admin'] = $row['admin'];
 			$userinfo['uid'] = intval($row['uid'], 10);
 			$userinfo['profile_name'] = $row['profile_link'];
+			$userinfo['logout_link'] = $row['logout_link'];
 		}
 
 		return $userinfo;
@@ -68,7 +71,7 @@ class AMI_User {
 
 
 
-	public function login($uid, $email, $is_admin, $check_ip) {
+	public function login($uid, $email, $is_admin, $check_ip, $logout_url) {
 		global $ami_LoginCookieName, $ami_LoginCookieSalt;
 
 		if ($uid == AMI_GUEST_UID) {
@@ -83,7 +86,7 @@ class AMI_User {
 		$dbExpire = 'NOW() + INTERVAL 14 DAY';
 
   		$db->query("DELETE FROM session WHERE sid=? AND uid=?", $sid, $uid);
-	   	$db->query("INSERT INTO session VALUES(?, ?, INET_ATON(?), $dbExpire, ?, ?, ?, ?)", $sid, $uid, ami_GetIP(), $email, $is_admin, $email, $check_ip);
+	   	$db->query("INSERT INTO session VALUES(?, ?, INET_ATON(?), $dbExpire, ?, ?, ?, ?, ?)", $sid, $uid, ami_GetIP(), $email, $is_admin, $email, $check_ip, $logout_url);
 
 		// set login cookie
 		$login_hash = base64_encode($uid.'|'.$sid.'|'.$expire.'|'.sha1($ami_LoginCookieSalt.$uid.$sid.$expire));
@@ -216,6 +219,7 @@ class AMI_User {
 				if ($fb_session) {
 					$fb_uid = $facebook->getUser();
 					$fb_me = $facebook->api('/me');
+					$fb_logout_url = $facebook->getLogoutUrl(array('next'=> ami_link('logout')));
 
 					// LOGGED ON FACEBOOK
 					if ($fb_me) {
@@ -224,7 +228,7 @@ class AMI_User {
 						$row = $db->getRow('SELECT id,email FROM users WHERE fb_uid=? LIMIT 1', $fb_uid);
 						if ($row) {
 							// IS OUR USER - try login
-							$login_hash = self::login($row['id'], $row['email'], 0, FALSE);
+							$login_hash = self::login($row['id'], $row['email'], 0, FALSE, $fb_logout_url);
 
 							// CALL LOGGED AGAIN
 							return self::logged($login_hash, FALSE);

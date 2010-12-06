@@ -106,6 +106,31 @@ class AMI_User_Info {
 			throw new Exception($e->getMessage());
 		}
 	}
+
+	public static function getUserFB_info($uid) {
+		$info = array();
+
+		try {
+			$db = DB::singleton();
+
+			$row = $db->getRow("SELECT fb_uid,fb_link,fb_name FROM users WHERE id=? LIMIT 1", $uid);
+			if ($row) {
+				if (empty($row['fb_uid']) ||  empty($row['fb_link']) || empty($row['fb_name'])) {
+					return FALSE;
+				}
+
+				$info['uid'] = $row['fb_uid'];
+				$info['link'] = $row['fb_link'];
+				$info['name'] = $row['fb_name'];
+
+				return empty($info) ? FALSE : $info;
+			}
+
+			return FALSE;
+		} catch(Exception $e) {
+			throw new Exception($e->getMessage());
+		}
+	}
 }
 
 ?>
