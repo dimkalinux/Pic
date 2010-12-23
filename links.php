@@ -119,7 +119,7 @@ $out = <<<FMB
 <div class="span-16 body_block last" id="links_wrap">
 	<div id="img_block">
 		<a href="$show_image_with_delete_link" title="Перейти к просмотру"><img class="fancy_image" src="$preview_link" alt="$filename"></a>
-		<link rel="prefetch" href="$preview_prefetch_link"/>
+		<!--<link rel="prefetch" href="$preview_prefetch_link"/>-->
 	</div>
 </div>
 

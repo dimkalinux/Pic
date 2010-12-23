@@ -81,22 +81,26 @@ $pic_image_autorotate = TRUE;
 //
 $pic_image_gallery_height = 70;
 $pic_image_gallery_width = 70;
-$pic_image_gallery_quality = 95;
+$pic_image_gallery_quality = 90;
 //
 $pic_image_small_height = 250;
 $pic_image_small_width = 250;
-$pic_image_small_quality = 90;
+$pic_image_small_quality = 92;
 //
 $pic_image_medium_height = 350;
 $pic_image_medium_width = 500;
-$pic_image_medium_quality = 90;
+$pic_image_medium_quality = 92;
 //
-$pic_image_preview_height = 600;
+$pic_image_preview_height = 650;
 $pic_image_preview_width = 875;
-$pic_image_preview_quality = 90;
+$pic_image_preview_quality = 93;
+//
+define('PIC_IMAGE_RESIZE_ORIGINAL_QUALITY', 95);
 
 // USE PREVIEW IMAGE FOR CREATING THUMBS
 $pic_useImageThumbsOptimize = TRUE;
+
+$pic_useImageThumbsGammaCorrection = TRUE;
 
 
 // UPLOAD

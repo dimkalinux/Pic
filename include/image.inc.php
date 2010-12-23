@@ -163,26 +163,15 @@ class Image {
 		$path_parts = pathinfo($this->image);
 		$tmp_filename = $path_parts['dirname'].'/tmp_'.$path_parts['basename'];
 
-		$phpThumb = new phpThumb();
-		//
-		$phpThumb->setSourceFilename($this->image);
-		//
-		$phpThumb->w = $size;
-		$phpThumb->h = $size;
-		$phpThumb->q = 95;
+		$ir = new Image_Resizer_IM;
 
-		$phpThumb->config_output_format = $this->phpThumbOriginalFormat;
-		//
-		$phpThumb->config_error_die_on_error = FALSE;
-		$phpThumb->config_allow_src_above_docroot = TRUE;
+		$ir->set_SourceFilename($this->image);
+		$ir->set_DestFilename($tmp_filename);
+		$ir->set_OutputFormat($this->phpThumbOriginalFormat);
+		$ir->set_OutputDimensions($size, $size);
+		$ir->set_OutputQuality(PIC_IMAGE_RESIZE_ORIGINAL_QUALITY);
 
-		if (!$phpThumb->GenerateThumbnail()) {
-			throw new Exception('Ошибка при изменении размера оригинала');
-		}
-
-		if (!$phpThumb->RenderToFile($tmp_filename)) {
-			throw new Exception('Ошибка при сохранении оригинала');
-		}
+		$ir->resize();
 
 		// rm original
 		ami_safeFileUnlink($this->image);
@@ -318,7 +307,7 @@ class Image {
 			$src_file = $this->image;
 		}
 
-		$ir = new Image_Resizer_GM;
+		$ir = new Image_Resizer_IM;
 
 		$ir->set_SourceFilename($src_file);
 		$ir->set_DestFilename($file);

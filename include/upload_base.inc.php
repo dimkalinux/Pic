@@ -59,7 +59,7 @@ class Upload_base {
 
 	public function save_in_db($location, $storage, $filename, $hashed_filename, $width, $height, $p_width, $p_height, $p_size, $key_group, $key_delete) {
 		$db = DB::singleton();
-		$image_key = $db->create_uniq_hash_key_range('key', 'pic', 4, 12);
+		$image_key = $db->create_uniq_hash_key_range('id_key', 'pic', 4, 12);
 
 		$image_delete_key = $key_delete;
 		$image_location = $location;

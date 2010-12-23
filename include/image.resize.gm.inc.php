@@ -5,12 +5,11 @@ if (!defined('AMI')) {
 	exit;
 }
 
-require AMI_ROOT.'include/phpThumb/phpthumb.class.php';
-
-
 class Image_Resizer_GM extends Image_Resizer {
 
 	public function resize() {
+		global $pic_useImageThumbsGammaCorrection;
+
 		$this->createTempFile('/tmp/1/');
 
 		$dimensions = $this->width.'x'.$this->height;
@@ -20,7 +19,14 @@ class Image_Resizer_GM extends Image_Resizer {
 			$quality_cmd_part = '-quality '.$this->quality;
 		}
 
-		$cmd_line = sprintf('/usr/bin/gm convert -resize %s '.$quality_cmd_part.' +profile "*" %s %s', $dimensions, escapeshellarg($this->src_file), escapeshellarg($this->tmp_file));
+		// with gamma correction
+		if ($pic_useImageThumbsGammaCorrection) {
+			$cmd_line = sprintf('/usr/bin/gm convert -depth 16 -gamma 0.454545 -filter lanczos -resize %s -gamma 2.2 '.$quality_cmd_part.' -sampling-factor 1x1 +profile "*" %s %s', $dimensions, escapeshellarg($this->src_file), escapeshellarg($this->tmp_file));
+		} else {
+			// without gamma correction
+			$cmd_line = sprintf('/usr/bin/gm convert -resize %s '.$quality_cmd_part.' +profile "*" %s %s', $dimensions, escapeshellarg($this->src_file), escapeshellarg($this->tmp_file));
+		}
+
 		exec($cmd_line, $output, $return_code);
 
 		$this->moveTempFileToDst();
@@ -28,6 +34,8 @@ class Image_Resizer_GM extends Image_Resizer {
 
 
 	public function thumbs() {
+		global $pic_useImageThumbsGammaCorrection;
+
 		$this->createTempFile('/tmp/1/');
 
 		$dimensions = $this->width.'x'.$this->height;
@@ -38,7 +46,16 @@ class Image_Resizer_GM extends Image_Resizer {
 			$quality_cmd_part = '-quality '.$this->quality;
 		}
 
-		$cmd_line = sprintf('/usr/bin/gm convert -size %s '.$quality_cmd_part.' -resize %s +profile "*" %s %s', $dimensions, $dimensions, escapeshellarg($this->src_file), escapeshellarg($this->tmp_file));
+
+		// with gamma correction
+		if ($pic_useImageThumbsGammaCorrection) {
+			$cmd_line = sprintf('/usr/bin/gm convert -depth 16 -gamma 0.454545 -filter lanczos -size %s '.$quality_cmd_part.' -resize %s -gamma 2.2 -sampling-factor 1x1 +profile "*" %s %s', $dimensions, $dimensions, escapeshellarg($this->src_file), escapeshellarg($this->tmp_file));
+		} else {
+			// without gamma correction
+			$cmd_line = sprintf('/usr/bin/gm convert -size %s '.$quality_cmd_part.' -resize %s +profile "*" %s %s', $dimensions, $dimensions, escapeshellarg($this->src_file), escapeshellarg($this->tmp_file));
+		}
+
+
 		exec($cmd_line, $output, $return_code);
 
 		$this->moveTempFileToDst();

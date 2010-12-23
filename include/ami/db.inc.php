@@ -115,8 +115,8 @@ class DB {
 		$key_length = $key_length_min;
 		do {
 			$hash = ami_GenerateRandomHash($key_length);
-			$row = $db->getRow("SELECT COUNT(*) AS N FROM $table WHERE ?=? LIMIT 1", $key_name, $hash);
-			if (intval($row['N'], 10) === 0) {
+			$_n = $db->numRows("SELECT * FROM $table WHERE $key_name=?", $hash);
+			if ($_n == 0) {
 				return $hash;
 			}
 
