@@ -73,39 +73,39 @@ define('PIC_IMAGE_SIZE_GALLERY', 5);
 define('PIC_IMAGE_SIZE_SLIDESHOW', 6);
 
 $ami_BaseURL = $pic_BaseURL = 'http://pic.lluga.net';
-$pic_DefaultPreviewSize = PIC_IMAGE_SIZE_MIDDLE;
 
 // IMAGE SECTION
-$pic_image_autorotate = TRUE;
+define('PIC_IMAGE_AUTOROTATE', TRUE);
 
 //
-$pic_image_gallery_height = 70;
-$pic_image_gallery_width = 70;
-$pic_image_gallery_quality = 90;
+define('PIC_IMAGE_GALLERY_HEIGHT', 70);
+define('PIC_IMAGE_GALLERY_WIDTH', 70);
+define('PIC_IMAGE_GALLERY_QUALITY', 90);
 //
-$pic_image_small_height = 250;
-$pic_image_small_width = 250;
-$pic_image_small_quality = 92;
+define('PIC_IMAGE_SMALL_HEIGHT', 250);
+define('PIC_IMAGE_SMALL_WIDTH', 250);
+define('PIC_IMAGE_SMALL_QUALITY', 92);
 //
-$pic_image_medium_height = 350;
-$pic_image_medium_width = 500;
-$pic_image_medium_quality = 92;
+define('PIC_IMAGE_MEDIUM_HEIGHT', 350);
+define('PIC_IMAGE_MEDIUM_WIDTH', 500);
+define('PIC_IMAGE_MEDIUM_QUALITY', 92);
 //
-$pic_image_preview_height = 650;
-$pic_image_preview_width = 875;
-$pic_image_preview_quality = 93;
+define('PIC_IMAGE_PREVIEW_HEIGHT', 650);
+define('PIC_IMAGE_PREVIEW_WIDTH', 875);
+define('PIC_IMAGE_PREVIEW_QUALITY', 93);
+
 //
 define('PIC_IMAGE_RESIZE_ORIGINAL_QUALITY', 95);
 
 // USE PREVIEW IMAGE FOR CREATING THUMBS
-$pic_useImageThumbsOptimize = TRUE;
+define('PIC_USE_IMAGE_THUMBS_OPTIMIZE', TRUE);
 
-$pic_useImageThumbsGammaCorrection = TRUE;
+define('PIC_USE_IMAGE_THUMBS_GAMMA_CORRECTION', TRUE);
 
 
 // UPLOAD
-$pic_UploadBaseDir = '/var/upload/pic2/';
-$pic_MaxUploadSize = 11*1048576;
+define('PIC_UPLOAD_BASE_DIR', '/var/upload/pic2/');
+define('PIC_UPLOAD_MAX_FILE_SIZE', 11534336);
 
 // TMP
 $pic_TMPdir = '/var/upload/pic2/tmp/';
@@ -116,7 +116,7 @@ $pic_UploadStorages = array('1');
 define('API_KEY_ID_UNKNOWN', 0);
 
 //
-define('PIC_VERSION', '7a2');
+define('PIC_VERSION', '7.2');
 
 define('FACEBOOK_APP_ID', '142764589077335');
 define('FACEBOOK_APP_SECRET', 'b1da5f70416eed03e55c7b2ce7190bd6');

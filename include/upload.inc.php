@@ -32,7 +32,7 @@ class Upload {
 
 
 	public function run($user, $reduce_original=0, $upload_type, $api_key_uid, $upload_options) {
-		global $pic_MaxUploadSize, $pic_BaseURL, $pic_DefaultPreviewSize;
+		global $pic_BaseURL;
 
 		$uploaded_return_info = '';
 		$num_all_items = count($this->_upload_items);
@@ -98,7 +98,7 @@ class Upload {
 					throw new AppLevelException('Получен пустой файл');
 				}
 
-				if ($uploader->getSize() > $pic_MaxUploadSize) {
+				if ($uploader->getSize() > PIC_UPLOAD_MAX_FILE_SIZE) {
 					throw new AppLevelException('Неверный размер файла');
 				}
 
@@ -187,14 +187,11 @@ class Upload {
 
 
 	private function get_upload_dir() {
-		global $pic_UploadBaseDir;
-
-
 		$max_try = 32;
 
 		do {
 			$storage = $this->get_storage();
-			$uploadBaseDir = $pic_UploadBaseDir.$storage;
+			$uploadBaseDir = PIC_UPLOAD_BASE_DIR.$storage;
 
 			$image_path_hash = $this->generate_image_upload_save_path(6);
 			$full_dir = $uploadBaseDir.'/'.$image_path_hash;
@@ -220,10 +217,10 @@ class Upload {
 
 
 	private function get_storage() {
-		global $pic_UploadStorages, $pic_UploadBaseDir;
+		global $pic_UploadStorages;
 
 		$storage = array_rand(array_flip($pic_UploadStorages), 1);
-		$fullUploadDir = $pic_UploadBaseDir.$storage;
+		$fullUploadDir = PIC_UPLOAD_BASE_DIR.$storage;
 
 		if (!is_dir($fullUploadDir)) {
 			throw new Exception("Upload base dir '$fullUploadDir' not exists");

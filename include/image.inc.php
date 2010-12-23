@@ -189,8 +189,6 @@ class Image {
 
 
 	public function process_thumbs() {
-		global $pic_useImageThumbsOptimize;
-
 		// 1 - preview
 		$preview_file = $this->create_preview();
 
@@ -199,7 +197,7 @@ class Image {
 			$preview_file = FALSE;
 		}
 
-		if (FALSE === $pic_useImageThumbsOptimize) {
+		if (FALSE === PIC_USE_IMAGE_THUMBS_OPTIMIZE) {
 			$preview_file = FALSE;
 		}
 
@@ -209,54 +207,49 @@ class Image {
 	}
 
 	private function create_gallery_thumbs($src_file) {
-		global $pic_image_gallery_height, $pic_image_gallery_width, $pic_image_gallery_quality;
-
 		$just_make_link = FALSE;
-		if (($pic_image_gallery_height >= $this->height) && ($pic_image_gallery_width >= $this->width)) {
+
+		if ((PIC_IMAGE_GALLERY_HEIGHT >= $this->height) && (PIC_IMAGE_GALLERY_WIDTH >= $this->width)) {
 			$just_make_link = TRUE;
 		}
 
-		$this->create_thumbs($pic_image_gallery_width, $pic_image_gallery_height, $pic_image_gallery_quality, $this->get_prefixed_name_for_thumbs('gl', $this->image), $just_make_link, $src_file, FALSE);
+		$this->create_thumbs(PIC_IMAGE_GALLERY_WIDTH, PIC_IMAGE_GALLERY_HEIGHT, PIC_IMAGE_GALLERY_QUALITY, $this->get_prefixed_name_for_thumbs('gl', $this->image), $just_make_link, $src_file, FALSE);
 	}
 
 	private function create_small_thumbs($src_file) {
-		global $pic_image_small_height, $pic_image_small_width, $pic_image_small_quality;
-
 		$just_make_link = FALSE;
-		if (($pic_image_small_height >= $this->height) && ($pic_image_small_width >= $this->width)) {
+
+		if ((PIC_IMAGE_SMALL_HEIGHT >= $this->height) && (PIC_IMAGE_SMALL_WIDTH >= $this->width)) {
 			$just_make_link = TRUE;
 		}
 
-		$this->create_thumbs($pic_image_small_width, $pic_image_small_height, $pic_image_small_quality, $this->get_prefixed_name_for_thumbs('sm', $this->image), $just_make_link, $src_file, FALSE);
+		$this->create_thumbs(PIC_IMAGE_SMALL_WIDTH, PIC_IMAGE_SMALL_HEIGHT, PIC_IMAGE_SMALL_QUALITY, $this->get_prefixed_name_for_thumbs('sm', $this->image), $just_make_link, $src_file, FALSE);
 	}
 
 	private function create_medium_thumbs($src_file) {
-		global $pic_image_medium_height, $pic_image_medium_width, $pic_image_medium_quality;
-
 		$just_make_link = FALSE;
-		if (($pic_image_medium_height >= $this->height) && ($pic_image_medium_width >= $this->width)) {
+
+		if ((PIC_IMAGE_MEDIUM_HEIGHT >= $this->height) && (PIC_IMAGE_MEDIUM_WIDTH >= $this->width)) {
 			$just_make_link = TRUE;
 		}
 
-		$this->create_thumbs($pic_image_medium_width, $pic_image_medium_height, $pic_image_medium_quality, $this->get_prefixed_name_for_thumbs('md', $this->image), $just_make_link, $src_file, FALSE);
+		$this->create_thumbs(PIC_IMAGE_MEDIUM_WIDTH, PIC_IMAGE_MEDIUM_HEIGHT, PIC_IMAGE_MEDIUM_QUALITY, $this->get_prefixed_name_for_thumbs('md', $this->image), $just_make_link, $src_file, FALSE);
 	}
 
 	private function create_preview() {
-		global $pic_image_preview_height, $pic_image_preview_width, $pic_image_preview_quality;
+		$just_make_link = $prefer_speed = FALSE;
 
-		$just_make_link = FALSE;
-		if (($pic_image_preview_height >= $this->height) && ($pic_image_preview_width >= $this->width)) {
+		if ((PIC_IMAGE_PREVIEW_HEIGHT >= $this->height) && (PIC_IMAGE_PREVIEW_WIDTH >= $this->width)) {
 			$just_make_link = TRUE;
 		}
 
-		$prefer_speed = FALSE;
 		$original_d = $this->height * $this->width;
-		$result_d = $pic_image_preview_height * $pic_image_preview_width;
+		$result_d = PIC_IMAGE_PREVIEW_HEIGHT * PIC_IMAGE_PREVIEW_WIDTH;
 		if (($original_d > $result_d) && intval(($original_d / $result_d), 10) > 4) {
 			$prefer_speed = TRUE;
 		}
 
-		$result_file = $this->create_thumbs($pic_image_preview_width, $pic_image_preview_height, $pic_image_preview_quality, $this->get_prefixed_name_for_thumbs('pv', $this->image), $just_make_link, FALSE, $prefer_speed);
+		$result_file = $this->create_thumbs(PIC_IMAGE_PREVIEW_WIDTH, PIC_IMAGE_PREVIEW_HEIGHT, PIC_IMAGE_PREVIEW_QUALITY, $this->get_prefixed_name_for_thumbs('pv', $this->image), $just_make_link, FALSE, $prefer_speed);
 
 		// UPDATE preview INFO
 		$preview_image = $this->get_prefixed_name_for_thumbs('pv', $this->image);
@@ -291,8 +284,6 @@ class Image {
 
 
 	private function create_thumbs($width, $height, $quality, $file, $just_make_link=FALSE, $src_file=FALSE, $prefer_speed) {
-		global $pic_image_autorotate;
-
 		// MAKE link EXCEPT TIFF & BMP
 		if (($just_make_link === TRUE) && ($this->format != self::TIFF_II) && ($this->format != self::TIFF_MM) && ($this->format != self::BMP)) {
 			if (!link($this->image, $file)) {
