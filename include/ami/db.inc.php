@@ -114,7 +114,7 @@ class DB {
 
 		$key_length = $key_length_min;
 		do {
-			$hash = ami_GenerateRandomHash($key_length);
+			$hash = ami_GenerateRandom($key_length, TRUE, FALSE);
 			$_n = $db->numRows("SELECT * FROM $table WHERE $key_name=?", $hash);
 			if ($_n == 0) {
 				return $hash;

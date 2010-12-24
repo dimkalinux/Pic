@@ -40,7 +40,7 @@ try {
 	$hash_filename = $row['hash_filename'];
 
 	// REMOVE FROM SERVER
-	$storage_dir = $pic_UploadBaseDir.$storage.'/'.$location;
+	$storage_dir = PIC_UPLOAD_BASE_DIR.$storage.'/'.$location;
 	ami_cleanDir($storage_dir);
 	if (!rmdir($storage_dir)) {
 		$log = Logger::singleton();

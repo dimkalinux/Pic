@@ -360,6 +360,28 @@ function ami_GenerateRandomHash($maxLength=null, $strong=FALSE) {
     return $hash;
 }
 
+
+// Generate a random key of length $len
+function ami_GenerateRandom($len, $readable = FALSE, $hash = FALSE) {
+	$key = '';
+
+	if ($hash) {
+		$key = ami_GenerateRandomHash($len);
+	} else if ($readable) {
+		$chars = 'ABCDEFGHJKMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz023456789';
+
+		for ($i = 0; $i < $len; ++$i) {
+			$key .= substr($chars, (mt_rand() % strlen($chars)), 1);
+		}
+	} else {
+		for ($i = 0; $i < $len; ++$i) {
+			$key .= chr(mt_rand(33, 126));
+		}
+	}
+
+	return $key;
+}
+
 function ami_CreateNewPassword($maxLength=null) {
 	return ami_GenerateRandomHash($maxLength);
 }

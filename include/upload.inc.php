@@ -44,7 +44,7 @@ class Upload {
 		// GENERATE UPLAOD GROUP KEY
 		$db = DB::singleton();
 		$this->upload_uid = $db->create_uniq_hash_key_range('group_id', 'pic', 5, 12);
-		$this->upload_delete_key = ami_GenerateRandomHash(8);
+		$this->upload_delete_key = ami_GenerateRandom(6, TRUE, FALSE);
 
 		// NEED SHoRTEN LINK?
 		if ($user['is_guest']) {
