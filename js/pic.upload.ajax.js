@@ -10,20 +10,13 @@ PIC.upload.ajax = function () {
 	function start() {
 		PIC.upload.base.set_status(true); 	// set start
 
-		$(submit).attr("disabled", "disabled");
+		$(submit).attr("disabled", "disabled").blur();
 
 		// HIDE ADVANCED OPTIONS
 		PIC.upload.base.hide_advanced_options();
 
-		// SHOW OVERLAY
-		PIC.upload.base.overlay_show();
-
-		// SET STATUS
-		$(status)
-			.removeClass('error')
-			.html('Ожидайте, файл загружается на сервер&hellip; <a href="/" id="link_abort_upload">отменить</a>')
-			.center(true)
-			.fadeIn(350);
+		// SHOW STATUS
+		PIC.upload.base.status_show('Ожидайте, файл загружается на сервер&hellip; <a href="/" id="link_abort_upload">отменить</a>');
 
 		// UNLOAD HANDLER
 		PIC.upload.base.init_unload();

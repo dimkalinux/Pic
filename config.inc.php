@@ -100,7 +100,13 @@ define('PIC_IMAGE_RESIZE_ORIGINAL_QUALITY', 97);
 // USE PREVIEW IMAGE FOR CREATING THUMBS
 define('PIC_USE_IMAGE_THUMBS_OPTIMIZE', TRUE);
 
+// CORRECTION GAMMA
 define('PIC_USE_IMAGE_THUMBS_GAMMA_CORRECTION', TRUE);
+
+// CORRECTION SHARPEN
+define('PIC_USE_IMAGE_SHARPEN', TRUE);
+define('PIC_USE_IMAGE_SHARPEN_PARAM', '0.6x0.6+0.6+0.008');
+define('PIC_USE_IMAGE_SHARPEN_THRESHOLD', 0.85);
 
 
 // UPLOAD
@@ -108,7 +114,7 @@ define('PIC_UPLOAD_BASE_DIR', '/var/upload/pic2/');
 define('PIC_UPLOAD_MAX_FILE_SIZE', 11534336);
 
 // TMP
-$pic_TMPdir = '/var/upload/pic2/tmp/';
+define('PIC_TMP_DIR', '/var/upload/pic2/tmp/');
 
 $pic_UploadStorages = array('1');
 
@@ -118,7 +124,7 @@ define('API_KEY_ID_UNKNOWN', 0);
 define('PIC_FEEDBACK_EMAIL', 'webmaster@iteam.lg.ua');
 
 //
-define('PIC_VERSION', '7.2');
+define('PIC_VERSION', '8');
 
 define('FACEBOOK_APP_ID', '142764589077335');
 define('FACEBOOK_APP_SECRET', 'b1da5f70416eed03e55c7b2ce7190bd6');

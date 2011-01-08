@@ -10,8 +10,13 @@ class Image_Resizer {
 	//
 	protected $src_file;
 	protected $dst_file;
+
 	protected $width;
 	protected $height;
+
+	protected $src_width;
+	protected $src_height;
+
 	protected $quality;
 	protected $format;
 	protected $tmp_file;
@@ -49,6 +54,11 @@ class Image_Resizer {
 	public function set_OutputDimensions($width, $height) {
 		$this->width = intval($width, 10);
 		$this->height = intval($height, 10);
+	}
+
+	public function set_SrcDimensions($width, $height) {
+		$this->src_width = intval($width, 10);
+		$this->src_height = intval($height, 10);
 	}
 
 	public function set_OutputQuality($quality) {

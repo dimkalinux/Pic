@@ -69,7 +69,7 @@ header('Expires: Thu, 21 Jul 1977 07:30:00 GMT');	// When yours truly first set 
 header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
 
 // FLUSH FP-cache
-if (defined('AMI_PAGE_TYPE') && AMI_PAGE_TYPE == 'upload_page') {
+if (defined('AMI_PAGE_TYPE') && in_array(AMI_PAGE_TYPE, array('upload_page','links_page','links_group_page'))) {
 	header('Cache-Control: no-store', false);
 } else {
 	header('Cache-Control: post-check=0, pre-check=0', false);

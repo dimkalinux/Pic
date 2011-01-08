@@ -28,14 +28,10 @@ class Upload_url extends Upload_base {
 
 
 	public function proccess_upload() {
-		global $pic_TMPdir;
-
-		$temp_name = tempnam($pic_TMPdir,'piclgua');
+		$temp_name = tempnam(PIC_TMP_DIR, 'piclgua');
 		if (FALSE === $temp_name) {
 			throw new Exception('Не удалось создать временный файл');
 		}
-
-		ami_debug("tmp: $pic_TMPdir $temp_name");
 
 		$temp_handle = fopen($temp_name, "wb");
 		if (FALSE === $temp_handle) {

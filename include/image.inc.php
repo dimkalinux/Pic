@@ -298,12 +298,19 @@ class Image {
 			$src_file = $this->image;
 		}
 
+		// GET SRC DIMENSIONS
+		// UPDATE IMAGE SIZE
+		$info = @/**/getimagesize($src_file);
+		$src_width = $info[0];
+		$src_height = $info[1];
+
 		$ir = new Image_Resizer_IM;
 
 		$ir->set_SourceFilename($src_file);
 		$ir->set_DestFilename($file);
 		$ir->set_OutputFormat($this->phpThumbFormat);
 		$ir->set_OutputDimensions($width, $height);
+		$ir->set_SrcDimensions($src_width, $src_height);
 		$ir->set_OutputQuality($quality);
 
 		if ($prefer_speed) {

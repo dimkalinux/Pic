@@ -8,9 +8,7 @@ if (!defined('AMI')) {
 class Image_Resizer_IM extends Image_Resizer {
 
 	public function resize() {
-		global $pic_useImageThumbsGammaCorrection;
-
-		$this->createTempFile('/tmp/1/');
+		$this->createTempFile(PIC_TMP_DIR);
 
 		$dimensions = $this->width.'x'.$this->height;
 
@@ -24,15 +22,21 @@ class Image_Resizer_IM extends Image_Resizer {
 			$output_depth_cmd_part = '-depth 8';
 		}
 
-		// with gamma correction
-		if ($pic_useImageThumbsGammaCorrection) {
-			$cmd_line = sprintf('/usr/bin/convert %s -depth 16 -gamma 0.454545 -filter lanczos -resize %s -gamma 2.2 '.$quality_cmd_part.' -sampling-factor 1x1 '.$output_depth_cmd_part.' %s', escapeshellarg($this->src_file), $dimensions, escapeshellarg($this->tmp_file));
-		} else {
-			// without gamma correction
-			$cmd_line = sprintf('/usr/bin/convert %s -resize %s '.$quality_cmd_part.' %s', escapeshellarg($this->src_file), $dimensions, escapeshellarg($this->tmp_file));
+		// SHARPEN?
+		$sharpen_cmd_part = '';
+		if (TRUE === PIC_USE_IMAGE_SHARPEN) {
+			if (($this->width * $this->height) / ($this->src_width * $this->src_height) < PIC_USE_IMAGE_SHARPEN_THRESHOLD) {
+				$sharpen_cmd_part = '-unsharp '.PIC_USE_IMAGE_SHARPEN_PARAM;
+			}
 		}
 
-		ami_debug('resize cmd: '.$cmd_line);
+		// with gamma correction
+		if (PIC_USE_IMAGE_THUMBS_GAMMA_CORRECTION) {
+			$cmd_line = sprintf('/usr/bin/convert %s -depth 16 -gamma 0.454545 -filter lanczos -resize %s -gamma 2.2 '.$quality_cmd_part.' -sampling-factor 1x1 '.$sharpen_cmd_part.' '.$output_depth_cmd_part.' '.$this->format.':%s', escapeshellarg($this->src_file), $dimensions, escapeshellarg($this->tmp_file));
+		} else {
+			// without gamma correction
+			$cmd_line = sprintf('/usr/bin/convert %s -resize %s '.$quality_cmd_part.' '.$sharpen_cmd_part.' '.$this->format.':%s', escapeshellarg($this->src_file), $dimensions, escapeshellarg($this->tmp_file));
+		}
 
 		exec($cmd_line, $output, $return_code);
 
@@ -41,9 +45,7 @@ class Image_Resizer_IM extends Image_Resizer {
 
 
 	public function thumbs() {
-		global $pic_useImageThumbsGammaCorrection;
-
-		$this->createTempFile('/tmp/1/');
+		$this->createTempFile(PIC_TMP_DIR);
 
 		$dimensions = $this->width.'x'.$this->height;
 
@@ -58,16 +60,22 @@ class Image_Resizer_IM extends Image_Resizer {
 			$output_depth_cmd_part = '-depth 8';
 		}
 
-
-		// with gamma correction
-		if ($pic_useImageThumbsGammaCorrection) {
-			$cmd_line = sprintf('/usr/bin/convert %s -depth 16 -gamma 0.454545 -filter lanczos '.$quality_cmd_part.' -resize %s -gamma 2.2 -sampling-factor 1x1 '.$output_depth_cmd_part.' %s', escapeshellarg($this->src_file), $dimensions, escapeshellarg($this->tmp_file));
-		} else {
-			// without gamma correction
-			$cmd_line = sprintf('/usr/bin/convert %s -resize %s '.$quality_cmd_part.' %s', escapeshellarg($this->src_file), $dimensions, escapeshellarg($this->tmp_file));
+		// SHARPEN?
+		$sharpen_cmd_part = '';
+		if (TRUE === PIC_USE_IMAGE_SHARPEN) {
+			if (($this->width * $this->height) / ($this->src_width * $this->src_height) < PIC_USE_IMAGE_SHARPEN_THRESHOLD) {
+				$sharpen_cmd_part = '-unsharp '.PIC_USE_IMAGE_SHARPEN_PARAM;
+			}
 		}
 
-		ami_debug('thumbs cmd: '.$cmd_line);
+
+		// with gamma correction
+		if (PIC_USE_IMAGE_THUMBS_GAMMA_CORRECTION) {
+			$cmd_line = sprintf('/usr/bin/convert %s -depth 16 -gamma 0.454545 -filter lanczos '.$quality_cmd_part.' -resize %s -gamma 2.2 -sampling-factor 1x1 '.$sharpen_cmd_part.' '.$output_depth_cmd_part.' '.$this->format.':%s', escapeshellarg($this->src_file), $dimensions, escapeshellarg($this->tmp_file));
+		} else {
+			// without gamma correction
+			$cmd_line = sprintf('/usr/bin/convert %s -resize %s '.$quality_cmd_part.' '.$sharpen_cmd_part.' '.$this->format.':%s', escapeshellarg($this->src_file), $dimensions, escapeshellarg($this->tmp_file));
+		}
 
 		exec($cmd_line, $output, $return_code);
 

@@ -62,7 +62,7 @@ PIC.upload.dnd_formdata = function () {
 
 				PIC.upload.base.set_status(true); 	// set start
 
-				$(submit).attr("disabled", "disabled");
+				$(submit).attr("disabled", "disabled").blur();
 
 				// HIDE ADVANCED OPTIONS
 				PIC.upload.base.hide_advanced_options();
@@ -74,16 +74,8 @@ PIC.upload.dnd_formdata = function () {
 					var wait_message = 'Ожидайте, файл загружается на сервер&hellip;';
 				}
 
-				// SHOW OVERLAY
-				PIC.upload.base.overlay_show();
-
-
-				// SET STATUS
-				$(status)
-					.removeClass('error')
-					.html('<div>'+wait_message+'<a href="/" title="Прервать загрузку" id="link_abort_upload">отменить</a></div><div id="progress"><div id="progressbar"></div><span id="progress_str"></span></div>')
-					.center(true)
-					.fadeTo(250, 1.0);
+				// SHOW STATUS
+				PIC.upload.base.status_show('<div>'+wait_message+'<a href="/" title="Прервать загрузку" id="link_abort_upload">отменить</a></div><div id="progress"><div id="progressbar"></div><span id="progress_str"></span></div>');
 
 				$('#link_abort_upload').addClass('as_js_link');
 
@@ -100,7 +92,7 @@ PIC.upload.dnd_formdata = function () {
 				$(__input).trigger('change');
 
 				// HIDE OVERLAY
-				PIC.upload.base.overlay_hide();
+				PIC.upload.base.status_hide('');
 			}
   		};
 
@@ -116,20 +108,20 @@ PIC.upload.dnd_formdata = function () {
 	}
 
 	function on_loaded(aEvt) {
-		$(status).html("Обрабатываются картинки&hellip;");
+		PIC.upload.base.status_show('Файлы обрабатываются, подождите&hellip;');
 	}
 
 	//
 	function on_abort() {
 		PIC.upload.base.set_status(false);
 		$(status).fadeTo(150, 0.1, function () {
-			$(this).html('&nbsp;');
+			PIC.upload.base.status_hide('');
 		});
 	}
 
 	function abort() {
 		if (__xhr !== null) {
-			$(status).html("Останавливается закачка&hellip;");
+			PIC.upload.base.status_show('Закачка останавливается&hellip;');
 			__forced_abort = true;
 			__xhr.abort();
 		}
@@ -150,7 +142,7 @@ PIC.upload.dnd_formdata = function () {
 	 * @param {File[]} files
 	 */
 	function filterFileList(files) {
-		var allowed_types = {png: 1, jpeg: 1, jpg: 1, gif: 1, bmp: 1, tiff: 1, tiff: 1},
+		var allowed_types = {png: 1, jpeg: 1, jpg: 1, gif: 1, bmp: 1, tiff: 1, tif: 1},
 			result = [];
 
 		for (var i = 0, il = files.length; i < il; i++) {

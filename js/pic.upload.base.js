@@ -6,11 +6,12 @@ PIC.upload.base = function () {
 	var form = $("form[name='upload']"),
 		submit = $(form).find("input[type='submit']"),
 		input_file = $(form).find("input[type='file']"),
-		status = $('#upload_status'),
+		$status = $('#upload_status'),
 		$overlay = null;
 
 
-	var active = false;
+	var active = false,
+		status_showed = false;
 
 
 	//
@@ -67,6 +68,14 @@ PIC.upload.base = function () {
 		$overlay = $('<div id="overlay"></div>').appendTo('body');
 	}
 
+	function overlay_show() {
+		$overlay.show();
+	}
+
+	function overlay_hide() {
+		$overlay.hide();
+	}
+
 	//public
 	return {
 		init: function () {
@@ -121,14 +130,6 @@ PIC.upload.base = function () {
 			return $overlay;
 		},
 
-		overlay_show: function () {
-			$overlay.show();
-		},
-
-		overlay_hide: function () {
-			$overlay.hide();
-		},
-
 		// FINISH UPLOAD PROCESS
 		finish: function (url) {
 			active = false;
@@ -137,7 +138,7 @@ PIC.upload.base = function () {
 			$('title').text('Готово');
 
 			$(document).oneTime(300, 'finish', function () {
-				$(status).html('Ok. <a href="'+url+'">Переходим к загруженной картинке</a>')
+				PIC.upload.base.status_show('Ok. <a href="'+url+'">Переходим к загруженной картинке</a>');
 			});
 
 			AMI.utils.makeGETRequest(url);
@@ -146,10 +147,9 @@ PIC.upload.base = function () {
 		//
 		error: function (msg) {
 			active = false;
-			$(status).html('').hide();
 
-			// HIDE OVERLAY
-			PIC.upload.base.overlay_hide();
+			// HIDE STATUS
+			PIC.upload.base.status_hide('');
 
 			alert('Во время загрузки файла произошла ошибка.\nТекст ошибки: "'+msg+'"\n\nПопробуйте загрузить файл ещё раз.')
 
@@ -227,6 +227,46 @@ PIC.upload.base = function () {
 
 			// SEND
 			return $.ajax(ajax_settings);
+		},
+
+		// SHOW STATUS BLOCK
+		status_show: function(html) {
+			// IF showed JUST CHANGE HTML
+			if (status_showed === true && html) {
+				$status.html(html);
+				return;
+			}
+
+			overlay_show();
+
+			if (html && html.length) {
+				$status.html(html);
+			}
+
+			// SET STATE
+			status_showed = true;
+
+			$status
+				.center(true)
+				.css('margin-left', '-275px')
+				.fadeTo(350, 1.0);
+		},
+
+		// HIDE STATUS BLOCK
+		status_hide: function(html) {
+			overlay_hide();
+
+			if (html && html.length) {
+				$status.html(html);
+			}
+
+			status_showed = false;
+
+			$status.hide();
+		},
+
+		status_clear: function() {
+			$status.html('');
 		}
 	};
 }();
