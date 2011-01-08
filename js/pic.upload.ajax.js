@@ -15,10 +15,14 @@ PIC.upload.ajax = function () {
 		// HIDE ADVANCED OPTIONS
 		PIC.upload.base.hide_advanced_options();
 
+		// SHOW OVERLAY
+		PIC.upload.base.overlay_show();
+
 		// SET STATUS
 		$(status)
 			.removeClass('error')
 			.html('Ожидайте, файл загружается на сервер&hellip; <a href="/" id="link_abort_upload">отменить</a>')
+			.center(true)
 			.fadeIn(350);
 
 		// UNLOAD HANDLER

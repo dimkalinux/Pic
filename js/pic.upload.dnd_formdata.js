@@ -55,10 +55,6 @@ PIC.upload.dnd_formdata = function () {
 				//
 				__forced_abort = false;
 
-				// HIDE FORM
-				$("#footer,#form_upload").fadeTo(300, 0.01);
-				$(status).addClass("dnd_upload");
-
 				//
 				xhr.upload.addEventListener("progress", on_progress, false);
 				xhr.upload.addEventListener("load", on_loaded, false);
@@ -78,10 +74,15 @@ PIC.upload.dnd_formdata = function () {
 					var wait_message = 'Ожидайте, файл загружается на сервер&hellip;';
 				}
 
+				// SHOW OVERLAY
+				PIC.upload.base.overlay_show();
+
+
 				// SET STATUS
 				$(status)
 					.removeClass('error')
 					.html('<div>'+wait_message+'<a href="/" title="Прервать загрузку" id="link_abort_upload">отменить</a></div><div id="progress"><div id="progressbar"></div><span id="progress_str"></span></div>')
+					.center(true)
 					.fadeTo(250, 1.0);
 
 				$('#link_abort_upload').addClass('as_js_link');
@@ -95,12 +96,11 @@ PIC.upload.dnd_formdata = function () {
 					PIC.upload.base.error('Произошел сбой при загрузке: '+textStatus);
 				}
 
-				// SHOW FORM
-				$("#footer,#form_upload").fadeTo(500, 1.0);
-				$(status).removeClass("dnd_upload");
-
 				// FORM check
 				$(__input).trigger('change');
+
+				// HIDE OVERLAY
+				PIC.upload.base.overlay_hide();
 			}
   		};
 

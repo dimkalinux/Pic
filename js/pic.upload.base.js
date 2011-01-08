@@ -6,7 +6,8 @@ PIC.upload.base = function () {
 	var form = $("form[name='upload']"),
 		submit = $(form).find("input[type='submit']"),
 		input_file = $(form).find("input[type='file']"),
-		status = $('#upload_status');
+		status = $('#upload_status'),
+		$overlay = null;
 
 
 	var active = false;
@@ -62,6 +63,10 @@ PIC.upload.base = function () {
 		}
 	}
 
+	function init_overlay() {
+		$overlay = $('<div id="overlay"></div>').appendTo('body');
+	}
+
 	//public
 	return {
 		init: function () {
@@ -84,6 +89,8 @@ PIC.upload.base = function () {
 
 			// END
 			$('#uploadFile').focus();
+
+			init_overlay();
 		},
 
 		get_form_el: function () {
@@ -110,6 +117,18 @@ PIC.upload.base = function () {
 			active = act;
 		},
 
+		get_overlay: function (act) {
+			return $overlay;
+		},
+
+		overlay_show: function () {
+			$overlay.show();
+		},
+
+		overlay_hide: function () {
+			$overlay.hide();
+		},
+
 		// FINISH UPLOAD PROCESS
 		finish: function (url) {
 			active = false;
@@ -127,7 +146,11 @@ PIC.upload.base = function () {
 		//
 		error: function (msg) {
 			active = false;
-			$(status).html('');
+			$(status).html('').hide();
+
+			// HIDE OVERLAY
+			PIC.upload.base.overlay_hide();
+
 			alert('Во время загрузки файла произошла ошибка.\nТекст ошибки: "'+msg+'"\n\nПопробуйте загрузить файл ещё раз.')
 
 			// ACTIVATE FORM

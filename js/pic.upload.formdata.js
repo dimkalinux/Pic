@@ -73,10 +73,14 @@ PIC.upload.formdata = function () {
 					var wait_message = 'Ожидайте, файл загружается на сервер&hellip;';
 				}
 
+				// SHOW OVERLAY
+				PIC.upload.base.overlay_show();
+
 				// SET STATUS
 				$(status)
 					.removeClass('error')
 					.html('<div>'+wait_message+'<a href="/" title="Прервать загрузку" id="link_abort_upload">отменить</a></div><div id="progress"><div id="progressbar"></div><span id="progress_str"></span></div>')
+					.center(true)
 					.fadeTo(350, 1.0);
 
 				$('#link_abort_upload').addClass('as_js_link');
@@ -115,9 +119,12 @@ PIC.upload.formdata = function () {
 	//
 	function on_abort() {
 		PIC.upload.base.set_status(false);
-		$(status).fadeTo(150, 0.1, function () {
+		$(status).fadeTo(150, 0, function () {
 			$(this).html('&nbsp;');
 		});
+
+		// HIDE OVERLAY
+		PIC.upload.base.overlay_hide();
 	}
 
 	function abort() {
