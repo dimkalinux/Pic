@@ -36,8 +36,9 @@ require AMI_ROOT.'header.php';
 
 
 		<h3>Обратная связь</h3>
-		<p>Форум: <a href="http://forum.iteam.ua/topic/19377/">forum.iteam.ua/topic/19377/</a><br>
-		Электронная почта: <a href="mailto:webmaster@iteam.lg.ua">webmaster@iteam.lg.ua</a></p>
+		<p>Форма обратной связи: <a href="<?php echo ami_link('feedback'); ?>"><?php echo ami_link('feedback'); ?></a><br>
+		Электронная почта: <a href="mailto:webmaster@iteam.lg.ua">webmaster@iteam.lg.ua</a><br>
+		Форум: <a href="http://forum.iteam.ua/topic/19377/">forum.iteam.ua/topic/19377/</a><br></p>
 	</div>
 <?php
 require AMI_ROOT.'footer.php';

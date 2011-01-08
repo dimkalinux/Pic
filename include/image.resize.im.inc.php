@@ -19,9 +19,14 @@ class Image_Resizer_IM extends Image_Resizer {
 			$quality_cmd_part = '-quality '.$this->quality;
 		}
 
+		$output_depth_cmd_part = '';
+		if ($this->format != 'jpeg') {
+			$output_depth_cmd_part = '-depth 8';
+		}
+
 		// with gamma correction
 		if ($pic_useImageThumbsGammaCorrection) {
-			$cmd_line = sprintf('/usr/bin/convert %s -depth 16 -gamma 0.454545 -filter lanczos -resize %s -gamma 2.2 '.$quality_cmd_part.' -sampling-factor 1x1 %s', escapeshellarg($this->src_file), $dimensions, escapeshellarg($this->tmp_file));
+			$cmd_line = sprintf('/usr/bin/convert %s -depth 16 -gamma 0.454545 -filter lanczos -resize %s -gamma 2.2 '.$quality_cmd_part.' -sampling-factor 1x1 '.$output_depth_cmd_part.' %s', escapeshellarg($this->src_file), $dimensions, escapeshellarg($this->tmp_file));
 		} else {
 			// without gamma correction
 			$cmd_line = sprintf('/usr/bin/convert %s -resize %s '.$quality_cmd_part.' %s', escapeshellarg($this->src_file), $dimensions, escapeshellarg($this->tmp_file));
@@ -48,10 +53,15 @@ class Image_Resizer_IM extends Image_Resizer {
 			$quality_cmd_part = '-quality '.$this->quality;
 		}
 
+		$output_depth_cmd_part = '';
+		if ($this->format != 'jpeg') {
+			$output_depth_cmd_part = '-depth 8';
+		}
+
 
 		// with gamma correction
 		if ($pic_useImageThumbsGammaCorrection) {
-			$cmd_line = sprintf('/usr/bin/convert %s -depth 16 -gamma 0.454545 -filter lanczos '.$quality_cmd_part.' -resize %s -gamma 2.2 -sampling-factor 1x1 %s', escapeshellarg($this->src_file), $dimensions, escapeshellarg($this->tmp_file));
+			$cmd_line = sprintf('/usr/bin/convert %s -depth 16 -gamma 0.454545 -filter lanczos '.$quality_cmd_part.' -resize %s -gamma 2.2 -sampling-factor 1x1 '.$output_depth_cmd_part.' %s', escapeshellarg($this->src_file), $dimensions, escapeshellarg($this->tmp_file));
 		} else {
 			// without gamma correction
 			$cmd_line = sprintf('/usr/bin/convert %s -resize %s '.$quality_cmd_part.' %s', escapeshellarg($this->src_file), $dimensions, escapeshellarg($this->tmp_file));

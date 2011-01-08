@@ -95,7 +95,7 @@ define('PIC_IMAGE_PREVIEW_WIDTH', 875);
 define('PIC_IMAGE_PREVIEW_QUALITY', 95);
 
 //
-define('PIC_IMAGE_RESIZE_ORIGINAL_QUALITY', 95);
+define('PIC_IMAGE_RESIZE_ORIGINAL_QUALITY', 97);
 
 // USE PREVIEW IMAGE FOR CREATING THUMBS
 define('PIC_USE_IMAGE_THUMBS_OPTIMIZE', TRUE);
@@ -114,6 +114,8 @@ $pic_UploadStorages = array('1');
 
 // API KEYS
 define('API_KEY_ID_UNKNOWN', 0);
+
+define('PIC_FEEDBACK_EMAIL', 'webmaster@iteam.lg.ua');
 
 //
 define('PIC_VERSION', '7.2');

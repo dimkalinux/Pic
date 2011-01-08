@@ -1,7 +1,7 @@
 /* LINKs */
 a,
 .as_js_link {
-	color: #0074B8;
+	color: #005CD4;
 }
 
 a:link,
@@ -12,7 +12,7 @@ a:active {
 
 a:hover {
 	text-decoration: underline;
-	color: #0074B8;
+	color: red;
 }
 
 a:focus {
@@ -24,13 +24,15 @@ a:focus {
 .as_js_link:active,
 .as_js_link:visited,
 .as_js_link:focus {
-	color: #0074B8;
+	color: #005CD4;
 	text-decoration: none;
 	border-bottom: dashed 1px #0074B8;
 }
 
 .as_js_link:hover {
 	text-decoration: none;
+	color: red;
+	border-bottom: dashed 1px red;
 }
 
 img.as_js_link,
@@ -145,7 +147,7 @@ img.as_js_link,
 }
 
 #menu a:hover {
-	color: #0074B8;
+	color: #005CD4;
 	text-decoration: none;
 }
 
@@ -219,7 +221,7 @@ img.as_js_link,
 	margin-bottom: .8em;
 	text-align: right;
 	display: block;
-	color: #0074B8;
+	color: #005CD4;
 	border-bottom: solid 1px #eee;
 	padding-right: 0;
 	padding-bottom: .2em;
@@ -232,7 +234,7 @@ img.as_js_link,
 }
 
 .image_menu a:hover {
-	color: #0074B8;
+	color: red;
 	text-decoration: none;
 }
 
@@ -422,10 +424,10 @@ input[type=text]:hover,
 input[type=email],
 input[type=password]:hover,
 textarea:hover {
-	-moz-box-shadow: 1px 1px 5px #A7D5F8;
+/*	-moz-box-shadow: 1px 1px 5px #A7D5F8;
 	-webkit-box-shadow: 1px 1px 5px #A7D5F8;
 	box-shadow: 1px 1px 5px #A7D5F8;
-	border: 1px solid #71B3E6;
+	border: 1px solid #71B3E6;*/
 }
 
 #thumbs_block {
@@ -615,3 +617,30 @@ label.unbold {
 	float: left;
 	margin: .15em .5em 0 0;
 }
+
+input[type="submit"] {
+	background: #f6f6f6;
+	background: -moz-linear-gradient(center top , #FFFFFF, #EEEEEE) repeat scroll 0 0 #F6F6F6;
+	background: -webkit-gradient(linear, 0% 100%, 0% 0%, from(#ffffff), to(#eeeeee));
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	border: 1px solid #CCCCCC;
+	color: #000;
+	padding: .3em .6em;
+}
+
+input[type="submit"]:hover,
+input[type="submit"]:focus {
+	background: #f3f3f3;
+	background: -moz-linear-gradient(center top , #FFFFFF, #EEEEEE) repeat scroll 0 0 #F3F3F3;
+	background: -webkit-gradient(linear, 0% 100%, 0% 0%, from(#ffffff), to(#eeeeee));
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	border: 1px solid #999;
+	color: #000;
+	-moz-box-shadow: 0 0 3px #999;
+	-webkit-box-shadow: 0 0 3px #999;
+}
+

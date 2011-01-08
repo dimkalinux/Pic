@@ -34,7 +34,7 @@ if (in_array($ami_CurrentPage, array('links.php', 'links_group.php'))) {
 
 
 // ABOUT PAGE
-if (in_array($ami_CurrentPage, array('index.php', 'about.php', 'about_ext.php', 'about_updates.php', 'login.php', 'register.php', 'myfiles.php', 'profile.php', 'links.php', 'links_group.php', 'upload.php', 'settings.php'))) {
+if (in_array($ami_CurrentPage, array('index.php', 'about.php', 'about_ext.php', 'about_updates.php', 'login.php', 'register.php', 'myfiles.php', 'profile.php', 'links.php', 'links_group.php', 'upload.php', 'settings.php', 'feedback.php'))) {
 	if ($ami_CurrentPage == 'about.php') {
 		ami_array_insert($ami_Menu, 10, '<li class="current">О проекте</li>', 'about');
 	} else {
@@ -67,7 +67,14 @@ if ($ami_User['is_guest']) {
 // SEND NO-CACHE HEADERS
 header('Expires: Thu, 21 Jul 1977 07:30:00 GMT');	// When yours truly first set eyes on this world! :)
 header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
-header('Cache-Control: post-check=0, pre-check=0', false);
+
+// FLUSH FP-cache
+if (defined('AMI_PAGE_TYPE') && AMI_PAGE_TYPE == 'upload_page') {
+	header('Cache-Control: no-store', false);
+} else {
+	header('Cache-Control: post-check=0, pre-check=0', false);
+}
+
 header('Pragma: no-cache');		// For HTTP/1.0 compability
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">

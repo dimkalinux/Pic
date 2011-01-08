@@ -69,5 +69,10 @@ RewriteRule 	^ajax/$											ajax.php [L]
 RewriteRule 	^upload-remote/$								upload_remote.php [L]
 
 
+RewriteRule 	^feedback/ok$									feedback.php?ok=1 [L]
+RewriteRule 	^feedback										feedback.php [L]
+
+
+
 
 

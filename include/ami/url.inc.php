@@ -77,6 +77,10 @@ $ami_urls = array(
     'settings_save'			    	=> 'settings/save/',
     'settings_ok'			    	=> 'settings/ok/',
     'ajax'                      	=> 'ajax/',
+
+
+	'feedback'			    	   	=> 'feedback',
+    'feedback_ok'		     	   	=> 'feedback/ok',
 );
 
 ?>

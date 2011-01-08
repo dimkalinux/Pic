@@ -56,6 +56,7 @@ require AMI_ROOT.'header.php';
 					<li><a href="http://serial.iteam.ua/" title="Сайт популярных сериалов">Сериалы</a></li>
 				<?php endif; ?>
 					<li><a href="http://hosting.iteam.lg.ua/" title="Айтим хостинг">Хостинг</a></li>
+					<li><a href="<?php echo ami_link('feedback'); ?>" title="Связь с администрацией сервиса">Обратная связь</a></li>
 				</ul>
 			</div>
 	</div>
