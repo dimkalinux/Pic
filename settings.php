@@ -15,7 +15,7 @@ $csrf = ami_MakeFormToken($settings_form_action);
 
 $ok_message = '';
 if (isset($_GET['ok'])) {
-	$ok_message = '<div class="span-20"><div class="success span-10 last">Настройки сохранены</div></div>';
+	ami_redirect(ami_link('profile'));
 }
 
 // build info
@@ -57,8 +57,8 @@ try {
 	);
 
 	foreach($shorteners as $key => $name) {
-		$selected = ($key == $user_prefered_service) ? 'selected' : '';
-		$url_shortener_select_items .= '<option '.$selected.' value="'.$key.'">'.$name.'</option>';
+		$selected = ($key == $user_prefered_service) ? 'checked' : '';
+		$url_shortener_select_items .= '<label><input type="radio" name="settings_short_links_service" value="'.$key.'" '.$selected.'>'.$name.'</label><br>';
 	}
 
 	//
@@ -88,7 +88,6 @@ try {
 
 $out = <<<FMB
 	<div class="span-15 last prepend-5 body_block">
-		$ok_message
 		<h2>Настройки</h2>
 
 		<form method="post" action="$settings_form_action" name="save" accept-charset="utf-8">
@@ -96,37 +95,42 @@ $out = <<<FMB
 				<input type="hidden" name="form_sent" value="1">
 				<input type="hidden" name="csrf_token" value="$csrf">
 			</p>
-			<h3>Короткие ссылки</h3>
-				<div class="">
-					<label for="settings_short_links_service">
-					сервис коротких ссылок<br>
-					<select id="settings_short_links_service" name="settings_short_links_service">
-						$url_shortener_select_items
-					</select>
-					</label>
-				</div>
+
+			<table class="t-settings">
+			<tbody>
+				<tr>
+					<th></th><th>Короткие ссылки</th>
+				</tr>
+				<tr>
+					<td class="t-dt">Сервис коротких ссылок:</td>
+					<td>$url_shortener_select_items</td>
+				</tr>
+
+
 FMB;
 
 //
 if ($user_prefered_service != URL_SHORTENER_NONE) {
 	$out .= <<<FMB
-				<div class="">
-					<label for="settings_short_links_auto">
-						автоматически сокращать ссылки
-						<input id="settings_short_links_auto" name="settings_short_links_auto" type="checkbox" value="1" $settings_short_links_auto_checked>
-					</label>
-				</div>
+				<tr>
+					<td class="t-dt">Сокращать ссылки:</td>
+					<td><input id="settings_short_links_auto" name="settings_short_links_auto" type="checkbox" value="1" $settings_short_links_auto_checked>
+						<label for="settings_short_links_auto">автоматически</label>
+					</td>
+				</tr>
 FMB;
 }
 
 $out .= <<<FMB
+			</tbody>
+			</table>
 			<hr class="prepend-top">
-			<input class="button" type="submit" name="do" value="Сохранить" tabindex="2">
+			<input class="button" type="submit" name="do" value="Сохранить и вернуться в профиль" tabindex="2">
 		</form>
 	</div>
 FMB;
 
-// SET PAGE TITLE as FILENAME
-$ami_PageTitle = 'Мой профиль';
+// SET PAGE TITLE
+$ami_PageTitle = 'Мои настройки';
 ami_printPage($out, 'myfiles_page');
 ?>

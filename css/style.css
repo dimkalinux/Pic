@@ -669,3 +669,29 @@ input[type="submit"][disabled]:focus {
 	background: #fafafa;
 	opacity: .7;
 }
+
+
+.t-settings label {
+	font-weight: normal;
+	border-collapse: collapse;
+}
+
+.t-dt {
+	width: 23%;
+	padding-right: 1em;
+}
+
+.t-settings td {
+	background: #fff !important;
+	vertical-align: top;
+	padding: 0 0 1em;
+}
+
+.t-settings th {
+	font-weight: bold;
+	font-size: 1.1em
+}
+
+.t-settings select + label {
+	margin-left: 1em;
+]
