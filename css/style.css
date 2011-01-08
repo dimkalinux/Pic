@@ -644,3 +644,13 @@ input[type="submit"]:focus {
 	-webkit-box-shadow: 0 0 3px #999;
 }
 
+input[type="submit"][disabled] {
+	opacity: .5;
+}
+
+input[type="submit"][disabled]:hover,
+input[type="submit"][disabled]:focus {
+	border: 1px solid #CCCCCC;
+	-moz-box-shadow: none;
+	-webkit-box-shadow: none;
+}
