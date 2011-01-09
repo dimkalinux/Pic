@@ -16,7 +16,7 @@ if (file_exists(AMI_ROOT.'config.inc.php')) {
 }
 
 if (!defined('AMI')) {
-    ami_show_error("Файл конфигурации «config.inc.php» не найден или повреждён.");
+    die('Файл конфигурации «config.inc.php» не найден или повреждён.');
 }
 
 // Block prefetch requests
@@ -75,6 +75,9 @@ try {
     $o_ami_user = new AMI_User();
     $ami_User = $o_ami_user->get_CurrentUser();
 } catch(Exception $e) {
+	// LOG
+	ami_exception_log('AMI_User: '.$e->getMessage());
+
     ami_show_error($e->getMessage());
 }
 
@@ -86,43 +89,43 @@ if (isset($_GET['debug'])) {
 
 function pic_getImageLink($storage, $location, $hashed_filename, $size) {
     switch ($size) {
-	case PIC_IMAGE_SIZE_SMALL:
-	    $image_link = 'sm_'.$hashed_filename;
-	    break;
+		case PIC_IMAGE_SIZE_SMALL:
+		    $image_link = 'sm_'.$hashed_filename;
+		    break;
 
-	case PIC_IMAGE_SIZE_MIDDLE:
-	    $image_link = 'md_'.$hashed_filename;
-	    break;
+		case PIC_IMAGE_SIZE_MIDDLE:
+		    $image_link = 'md_'.$hashed_filename;
+		    break;
 
-	case PIC_IMAGE_SIZE_PREVIEW:
-	    $image_link = 'pv_'.$hashed_filename;
-	    break;
+		case PIC_IMAGE_SIZE_PREVIEW:
+		    $image_link = 'pv_'.$hashed_filename;
+		    break;
 
-	case PIC_IMAGE_SIZE_GALLERY:
-	    $image_link = 'gl_'.$hashed_filename;
-	    break;
+		case PIC_IMAGE_SIZE_GALLERY:
+		    $image_link = 'gl_'.$hashed_filename;
+		    break;
 
-	case PIC_IMAGE_SIZE_ORIGINAL:
-	    $image_link = $hashed_filename;
-	    break;
+		case PIC_IMAGE_SIZE_ORIGINAL:
+		    $image_link = $hashed_filename;
+		    break;
 
-	default:
-	    throw new Exception(__METHOD__.': неизвестный размер картинки');
-	    break;
+		default:
+		    throw new Exception(__METHOD__.': неизвестный размер картинки');
+		    break;
     }
 
     // CHANGE ext FOR thumbs in TIFF format
     if ($size != PIC_IMAGE_SIZE_ORIGINAL) {
         $file_ext = pic_GetFileExt($hashed_filename);
-	switch ($file_ext) {
-	    case  'tif':
-	    case  'bmp':
-		$image_link = pic_replaceFileExtension($image_link, 'png');
-		break;
+		switch ($file_ext) {
+		    case  'tif':
+		    case  'bmp':
+				$image_link = pic_replaceFileExtension($image_link, 'png');
+				break;
 
-	    default:
-		break;
-	}
+		    default:
+				break;
+		}
     }
 
     return ami_link('image', array($storage, $location, $image_link));

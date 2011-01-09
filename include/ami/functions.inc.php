@@ -546,6 +546,26 @@ function ami_debug($x, $m = null) {
     }
 }
 
+function ami_exception_log($x, $m = null) {
+    if (!defined('AMI_EXCEPTION_LOG')) {
+		exit('not defined excep');
+		return;
+    }
+
+    if (is_writable(AMI_EXCEPTION_LOG)) {
+		if (is_array($x)) {
+			ob_start();
+			print_r($x);
+			$x = $m . ($m != null ? "\n" : '') . ob_get_clean();
+		} else {
+			$x .= "\n";
+		}
+
+		error_log(strftime('%c').' '.$x . "\n", 3, AMI_EXCEPTION_LOG);
+    }
+}
+
+
 function ami_getmicrotime() {
 	list($usec, $sec) = explode(" ",microtime());
 	return ((float)$usec + (float)$sec);

@@ -69,6 +69,9 @@ try {
         ami_show_error_message($e->getMessage());
     }
 } catch (Exception $e) {
+	// LOG
+	ami_exception_log('upload: '.$e->getMessage());
+
     if ($async || $use_api) {
         ami_async_response(array('error'=> 1, 'message' => $e->getMessage()), $return_format);
     } else {

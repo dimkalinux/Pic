@@ -3,6 +3,9 @@
 define('AMI_DEBUG', TRUE);
 define('AMI_DEBUG_LOG', '/tmp/pic2.log');
 
+// EXCEPTION LOG
+define('AMI_EXCEPTION_LOG', '/var/log/pic2.exception.log');
+
 // DATABASE
 define('AMI_MYSQL_ADDRESS', '194.146.132.67');
 define('AMI_MYSQL_DB', 'pic2');
@@ -106,7 +109,7 @@ define('PIC_USE_IMAGE_THUMBS_GAMMA_CORRECTION', TRUE);
 // CORRECTION SHARPEN
 define('PIC_USE_IMAGE_SHARPEN', TRUE);
 define('PIC_USE_IMAGE_SHARPEN_PARAM', '0.5x0.5+0.5+0.008');
-define('PIC_USE_IMAGE_SHARPEN_PARAM_PNG', '0.5x0.5+0.5+0.008');
+define('PIC_USE_IMAGE_SHARPEN_PARAM_PNG', '0.4x0.4+0.4+0.008');
 define('PIC_USE_IMAGE_SHARPEN_THRESHOLD', 0.85);
 
 

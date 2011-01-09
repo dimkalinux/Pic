@@ -238,6 +238,9 @@ FMB;
 		exit();
 	}
 } catch (Exception $e) {
+	// LOG
+	ami_exception_log('login: '.$e->getMessage());
+
 	if ($async) {
 		ami_async_response(array('error'=> 1, 'message' => $e->getMessage()), AMI_ASYNC_JSON);
 	} else {

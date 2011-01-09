@@ -43,6 +43,9 @@ class AJAX extends AMI_Ajax {
 
 			$result = AMI_AJAX_RESULT_OK;
 		} catch (Exception $e) {
+			// LOG
+			ami_exception_log('ajax: '.$e->getMessage());
+
 			$this->exitWithError($e->getMessage());
 		}
 	}

@@ -43,6 +43,8 @@ class Image_Resizer_IM extends Image_Resizer {
 			$cmd_line = sprintf('/usr/bin/convert %s -resize %s '.$quality_cmd_part.' '.$sharpen_cmd_part.' '.$this->format.':%s', escapeshellarg($this->src_file), $dimensions, escapeshellarg($this->tmp_file));
 		}
 
+		ami_debug('resize cmd: '.$cmd_line);
+
 		exec($cmd_line, $output, $return_code);
 
 		$this->moveTempFileToDst();
@@ -86,6 +88,8 @@ class Image_Resizer_IM extends Image_Resizer {
 			// without gamma correction
 			$cmd_line = sprintf('/usr/bin/convert %s -resize %s '.$quality_cmd_part.' '.$sharpen_cmd_part.' '.$this->format.':%s', escapeshellarg($this->src_file), $dimensions, escapeshellarg($this->tmp_file));
 		}
+
+		ami_debug('resize cmd: '.$cmd_line);
 
 		exec($cmd_line, $output, $return_code);
 
