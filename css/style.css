@@ -694,4 +694,8 @@ input[type="submit"][disabled]:focus {
 
 .t-settings select + label {
 	margin-left: 1em;
-]
+}
+
+#form_upload input[type="submit"] {
+	margin-left: .7em;
+}

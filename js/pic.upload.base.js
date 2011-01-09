@@ -79,6 +79,11 @@ PIC.upload.base = function () {
 	//public
 	return {
 		init: function () {
+			// REMOVE MULTIPLY FOR OPERA
+			if (!$.browser.opera) {
+				$('#file_input').attr('multiple', true);
+			}
+
 			if (typeof FormData === 'function') {
 				//
 				PIC.upload.formdata.init();

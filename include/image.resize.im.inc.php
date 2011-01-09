@@ -27,6 +27,11 @@ class Image_Resizer_IM extends Image_Resizer {
 		if (TRUE === PIC_USE_IMAGE_SHARPEN) {
 			if (($this->width * $this->height) / ($this->src_width * $this->src_height) < PIC_USE_IMAGE_SHARPEN_THRESHOLD) {
 				$sharpen_cmd_part = '-unsharp '.PIC_USE_IMAGE_SHARPEN_PARAM;
+
+				// SLIGTH SHARP FOR PNG
+				if ($this->format == 'png') {
+					$sharpen_cmd_part = '-unsharp '.PIC_USE_IMAGE_SHARPEN_PARAM_PNG;
+				}
 			}
 		}
 
@@ -65,6 +70,11 @@ class Image_Resizer_IM extends Image_Resizer {
 		if (TRUE === PIC_USE_IMAGE_SHARPEN) {
 			if (($this->width * $this->height) / ($this->src_width * $this->src_height) < PIC_USE_IMAGE_SHARPEN_THRESHOLD) {
 				$sharpen_cmd_part = '-unsharp '.PIC_USE_IMAGE_SHARPEN_PARAM;
+
+				// SLIGTH SHARP FOR PNG
+				if ($this->format == 'png') {
+					$sharpen_cmd_part = '-unsharp '.PIC_USE_IMAGE_SHARPEN_PARAM_PNG;
+				}
 			}
 		}
 

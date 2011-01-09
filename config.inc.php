@@ -24,7 +24,7 @@ define('AMI_CONFIG_TIMEZONE', "Europe/Zaporozhye");
 
 $ami_EnablePrintCSS = FALSE;
 
-$ami_Production = FALSE;
+$ami_Production = TRUE;
 
 // COOKIE SECTION
 $ami_LoginCookieName = 'pic_login';
@@ -105,7 +105,8 @@ define('PIC_USE_IMAGE_THUMBS_GAMMA_CORRECTION', TRUE);
 
 // CORRECTION SHARPEN
 define('PIC_USE_IMAGE_SHARPEN', TRUE);
-define('PIC_USE_IMAGE_SHARPEN_PARAM', '0.6x0.6+0.6+0.008');
+define('PIC_USE_IMAGE_SHARPEN_PARAM', '0.5x0.5+0.5+0.008');
+define('PIC_USE_IMAGE_SHARPEN_PARAM_PNG', '0.5x0.5+0.5+0.008');
 define('PIC_USE_IMAGE_SHARPEN_THRESHOLD', 0.85);
 
 

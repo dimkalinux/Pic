@@ -24,7 +24,7 @@ require AMI_ROOT.'header.php';
 					} else {
 						$form_desc = 'jpeg, png, gif, tiff, bmp до&nbsp;10&nbsp;мегабайт';
 				?>
-					<input id="file_input" type="file" name="upload" tabindex="1" multiple="true" accept="image/*">
+					<input id="file_input" type="file" name="upload" tabindex="1" multiple="false" accept="image/*">
 				<?php } ?>
 					<input type="submit" name="do" value="Загрузить" tabindex="2"><br>
 					<span class="input_description quiet"><?php echo $form_desc; ?></span>
