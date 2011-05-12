@@ -56,7 +56,7 @@ CREATE TABLE `session` (
 SET character_set_client = @saved_cs_client;
 
 
-ALTER TABLE pic ADD COLUMN owner_id int(10) unsigned NOT NULL AFTER 'p_size';
+ALTER TABLE pic ADD COLUMN owner_id int(10) unsigned NOT NULL AFTER p_size;
 
 
 DROP TABLE IF EXISTS `users_config`;
